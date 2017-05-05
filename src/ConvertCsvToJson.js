@@ -5,8 +5,8 @@ let fs = require('fs');
 const fieldDelimiter = ';';
 const newLine = '\n';
 
-let fileInputName = 'input.csv';
-let fileOutputName = 'output.json';
+let fileInputName = './input.csv';
+let fileOutputName = './output.json';
 
 /**
  * From CSV file generate a JSON file with structure like: 
