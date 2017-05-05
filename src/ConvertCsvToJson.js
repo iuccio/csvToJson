@@ -8,10 +8,6 @@ const newLine = '\n';
 let fileInputName = './input.csv';
 let fileOutputName = './output.json';
 
-/**
- * From CSV file generate a JSON file with structure like: 
- * [{"forename":"Diego Armando","surename":"Maradona"},{....}]
- */
 generateJsonFromCsv();
 
 function generateJsonFromCsv() {
