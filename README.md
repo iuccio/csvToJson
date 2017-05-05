@@ -1,5 +1,5 @@
 # CSVtoJSON
-Convert a csv file to JSON.
+A simple JS that convert *csv* file to *JSON* file with Node.js. 
 
 Given an input file like:
 
