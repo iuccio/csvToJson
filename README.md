@@ -1,5 +1,5 @@
 # CSVtoJSON
-A simple JS that convert *csv* file to *JSON* file with Node.js. 
+Convert *csv* file to *JSON* file with Node.js. 
 
 Given an input file like:
 
@@ -32,8 +32,8 @@ will generate:
 ## Prerequisites
 **Node.js**. To install **Node.js** see [Installing Node.js](https://nodejs.org/en/download/package-manager/).
 
-## Run CSVtoJSON
-` node src/ConvertCsvToJson.js `    
+## Generate a JSON file
+Type in terminal: ` node index.js `    
 
 ## License
 
