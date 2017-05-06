@@ -7,7 +7,7 @@ class FileUtils{
 		return fs.readFileSync(fileInputName).toString();
 	}
 
-	writeJsonFile(json,fileOutputName) {
+	writeFile(json,fileOutputName) {
 		fs.writeFile(fileOutputName, json, function(err) {
 			if (err) {
 				throw err;
