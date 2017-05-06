@@ -10,7 +10,7 @@ class CsvToJson{
 
 	generateJsonFileFromCsv(fileInputName, fileOutputName) {
 		let parsedJson = this.getJsonFromCsv(fileInputName);
-		fileUtils.writeJsonFile(parsedJson,fileOutputName);
+		fileUtils.writeFile(parsedJson,fileOutputName);
 	}
 	
 	getJsonFromCsv(fileInputName){
