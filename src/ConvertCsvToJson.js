@@ -1,32 +1,32 @@
-/*jshint node:true */
-/*jshint esversion: 6 */
-let fs = require('fs');
+'use strict';
+
+var fs = require('fs');
 
 const fieldDelimiter = ';';
 const newLine = '\n';
 
-let fileInputName = './input.csv';
-let fileOutputName = './output.json';
+var fileInputName = './input.csv';
+var fileOutputName = './output.json';
 
 generateJsonFromCsv();
 
 function generateJsonFromCsv() {
-	let parsedCsv = fs.readFileSync(fileInputName).toString();
-	let parsedJson = csvToJsonStringfy(parsedCsv);
+	var parsedCsv = fs.readFileSync(fileInputName).toString();
+	var parsedJson = csvToJsonStringfy(parsedCsv);
 	writeJsonFile(parsedJson);
 }
 
 function csvToJsonStringfy(parsedCsv) {
-	let lines = parsedCsv.split(newLine);
-	let headers = lines[0].split(fieldDelimiter);
+	var lines = parsedCsv.split(newLine);
+	var headers = lines[0].split(fieldDelimiter);
 
-	let jsonResult = [];
-	for (let i = 1; i < lines.length; i++) {
-		let currentLine = lines[i].split(fieldDelimiter);
-		let jsonObject = {};
-		for (let j = 0; j < headers.length; j++) {
-			let propertyName = trimPropertyName(headers[j]);
-			let value = getValueFormatByType(currentLine[j]);
+	var jsonResult = [];
+	for (var i = 1; i < lines.length; i++) {
+		var currentLine = lines[i].split(fieldDelimiter);
+		var jsonObject = {};
+		for (var j = 0; j < headers.length; j++) {
+			var propertyName = trimPropertyName(headers[j]);
+			var value = getValueFormatByType(currentLine[j]);
 			jsonObject[propertyName] = value;
 		}
 		jsonResult.push(jsonObject);
@@ -49,7 +49,7 @@ function trimPropertyName(value) {
 }
 
 function getValueFormatByType(value) {
-	let isNumber = /^\d+$/.test(value);
+	var isNumber = /^\d+$/.test(value);
 	if (isNumber) {
 		return Number(value);
 	}
