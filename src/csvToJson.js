@@ -1,40 +1,40 @@
-/*jshint node:true */
-/*jshint esversion: 6 */
+'use strict';
+
 let fileUtils = require('././util/fileUtils');
-let stringUtils = require('././util/stringUtils')
+let stringUtils = require('././util/stringUtils');
 
 const fieldDelimiter = ';';
 const newLine = '\n';
 
-class CsvToJson{
+class CsvToJson {
 
-	generateJsonFileFromCsv(fileInputName, fileOutputName) {
-		let parsedJson = this.getJsonFromCsv(fileInputName);
-		fileUtils.writeFile(parsedJson,fileOutputName);
-	}
-	
-	getJsonFromCsv(fileInputName){
-		let parsedCsv = fileUtils.readFile(fileInputName);
-		return this.csvToJsonStringfy(parsedCsv)
-	}
+    generateJsonFileFromCsv(fileInputName, fileOutputName) {
+        let parsedJson = this.getJsonFromCsv(fileInputName);
+        fileUtils.writeFile(parsedJson, fileOutputName);
+    }
 
-	csvToJsonStringfy(parsedCsv) {
-		let lines = parsedCsv.split(newLine);
-		let headers = lines[0].split(fieldDelimiter);
+    getJsonFromCsv(fileInputName) {
+        let parsedCsv = fileUtils.readFile(fileInputName);
+        return this.csvToJsonStringfy(parsedCsv);
+    }
 
-		let jsonResult = [];
-		for (let i = 1; i < lines.length; i++) {
-			let currentLine = lines[i].split(fieldDelimiter);
-			let jsonObject = {};
-			for (let j = 0; j < headers.length; j++) {
-				let propertyName = stringUtils.trimPropertyName(headers[j]);
-				let value = stringUtils.getValueFormatByType(currentLine[j]);
-				jsonObject[propertyName] = value;
-			}
-			jsonResult.push(jsonObject);
-		}
-	return JSON.stringify(jsonResult, undefined, 1);
-	}
+    csvToJsonStringfy(parsedCsv) {
+        let lines = parsedCsv.split(newLine);
+        let headers = lines[0].split(fieldDelimiter);
+
+        let jsonResult = [];
+        for (let i = 1; i < lines.length; i++) {
+            let currentLine = lines[i].split(fieldDelimiter);
+            let jsonObject = {};
+            for (let j = 0; j < headers.length; j++) {
+                let propertyName = stringUtils.trimPropertyName(headers[j]);
+                let value = stringUtils.getValueFormatByType(currentLine[j]);
+                jsonObject[propertyName] = value;
+            }
+            jsonResult.push(jsonObject);
+        }
+        return JSON.stringify(jsonResult, undefined, 1);
+    }
 }
 
 module.exports = new CsvToJson();
