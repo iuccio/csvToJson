@@ -1,5 +1,8 @@
 # CSVtoJSON
 Convert *csv* file to *JSON* file with Node.js. 
+**This project is not dependent on others packages or libraries.**
+
+The cvs file must be **; separated**.
 
 Give an input file like:
 
@@ -8,7 +11,15 @@ Give an input file like:
 |Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
 |Norah|Raison|nraison1@wired.com|Female|32|
 
+or:
+```json
+first_name;last_name;email;gender;age
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96
+Norah;Raison;nraison1@wired.com;Female;32
+```
+
 will generate:
+
 
 ```json
 [
