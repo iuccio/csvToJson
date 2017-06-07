@@ -2,7 +2,7 @@
 
 let csvToJson = require('./src/csvToJson.js');
 
-let fileInputName = './input.csv';
-let fileOutputName = './output.json';
+exports.jsonToCsv= function(input,output){
+    csvToJson.generateJsonFileFromCsv(input, output);
 
-csvToJson.generateJsonFileFromCsv(fileInputName, fileOutputName);
+};

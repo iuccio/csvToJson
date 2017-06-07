@@ -30,10 +30,27 @@ will generate:
 ```
 
 ## Prerequisites
-**Node.js**. To install **Node.js** see [Installing Node.js](https://nodejs.org/en/download/package-manager/).
+**npm**. [Installing npm](https://docs.npmjs.com/getting-started/installing-node).
 
-## Generate a JSON file
-Type in terminal: ` node index.js `    
+## npm
+npm package [convert-csv-to-json](https://www.npmjs.com/package/convert-csv-to-json).
+
+### Install
+In terminal: 
+```{r, engine='bash', count_lines}
+npm i convert-csv-to-json
+```
+
+
+### Usage
+```js
+let csvToJson = require('convert-csv-to-json');
+
+let fileInputName = './input.csv'; 
+let fileOutputName = './output.json';
+
+csvToJson.jsonToCsv(fileInputName,fileOutputName);
+```
 
 ## License
 
