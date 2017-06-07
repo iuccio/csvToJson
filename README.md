@@ -30,7 +30,7 @@ will generate:
 ```
 
 ## Prerequisites
-**Node.js** [Installing Node.js](https://nodejs.org/en/download/package-manager/).
+**Node.js** ([Install Node.js](https://nodejs.org/en/download/package-manager/)).
 
 ## Run CSVtoJSON
 ` node src/ConvertCsvToJson.js `    
