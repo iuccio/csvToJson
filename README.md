@@ -47,9 +47,9 @@ will generate:
 npm package [convert-csv-to-json](https://www.npmjs.com/package/convert-csv-to-json).
 
 ### Install
-In terminal: 
-```{r, engine='bash', count_lines}
-npm i convert-csv-to-json
+
+```bash
+$ npm install convert-csv-to-json --save
 ```
 
 
