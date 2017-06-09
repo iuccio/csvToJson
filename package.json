@@ -1,0 +1,36 @@
+{
+  "name": "convert-csv-to-json",
+  "version": "0.0.3",
+  "description": "Convert CSV to JSON",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iuccio/CSVtoJSON.git"
+  },
+  "keywords": [
+    "csv",
+    "to",
+    "json",
+    "csvtojson",
+    "converter",
+    "css",
+    "json",
+    "parser",
+    "javascript",
+    "nodejs",
+    "node",
+    "npm",
+    "npm-package",
+    "npm-module",
+    "csv-parser"
+  ],
+  "author": "iuccio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iuccio/CSVtoJSON/issues"
+  },
+  "homepage": "https://github.com/iuccio/CSVtoJSON#readme"
+}

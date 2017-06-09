@@ -1,5 +1,9 @@
 # CSVtoJSON
-A simple JS that convert *csv* file to *JSON* file with Node.js. 
+Convert *csv* file to *JSON* file with Node.js. 
+
+**This project is not dependent on others packages or libraries.**
+
+The cvs file must be **semicolon (;) separated**.
 
 Give an input file like:
 
@@ -8,7 +12,15 @@ Give an input file like:
 |Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
 |Norah|Raison|nraison1@wired.com|Female|32|
 
+e.g. :
+```json
+first_name;last_name;email;gender;age
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96
+Norah;Raison;nraison1@wired.com;Female;32
+```
+
 will generate:
+
 
 ```json
 [
@@ -30,11 +42,40 @@ will generate:
 ```
 
 ## Prerequisites
-**Node.js** ([Install Node.js](https://nodejs.org/en/download/package-manager/)).
+**NPM** (see [Installing Npm](https://docs.npmjs.com/getting-started/installing-node)).
 
-## Run CSVtoJSON
-` node src/ConvertCsvToJson.js `    
+## npm
+Go to NPM package [convert-csv-to-json](https://www.npmjs.com/package/convert-csv-to-json).
 
+### Install
+Install package in your *package.json*
+```bash
+$ npm install convert-csv-to-json --save
+```
+Install package on your machine
+```bash
+$ npm install -g convert-csv-to-json
+```
+
+### Usage
+#### Generate JSON file
+```js
+let csvToJson = require('convert-csv-to-json');
+
+let fileInputName = './myInputFile.csv'; 
+let fileOutputName = './myOutputFile.json';
+
+csvToJson.generateJsonFileFromCsv(fileInputName,fileOutputName);
+```
+#### Generate Array of Object in JSON format
+```js
+let csvToJson = require('convert-csv-to-json');
+
+let json = csvToJson.getJsonFromCsv("myInputFile.csv");
+for(let i=0; i<json.length;i++){
+    console.log(json[i]);
+}
+```
 ## License
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
