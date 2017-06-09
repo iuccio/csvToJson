@@ -9,16 +9,21 @@ const newLine = '\n';
 class CsvToJson {
 
     generateJsonFileFromCsv(fileInputName, fileOutputName) {
-        let parsedJson = this.getJsonFromCsv(fileInputName);
-        fileUtils.writeFile(parsedJson, fileOutputName);
+        let jsonStringified = this.getJsonFromCsvStringified(fileInputName);
+        fileUtils.writeFile(jsonStringified, fileOutputName);
+    }
+
+    getJsonFromCsvStringified(fileInputName) {
+        let json = this.getJsonFromCsv(fileInputName);
+        return JSON.stringify(json, undefined, 1);
     }
 
     getJsonFromCsv(fileInputName) {
         let parsedCsv = fileUtils.readFile(fileInputName);
-        return this.csvToJsonStringfy(parsedCsv);
+        return this.csvToJson(parsedCsv);
     }
 
-    csvToJsonStringfy(parsedCsv) {
+    csvToJson(parsedCsv) {
         let lines = parsedCsv.split(newLine);
         let headers = lines[0].split(fieldDelimiter);
 
@@ -33,8 +38,9 @@ class CsvToJson {
             }
             jsonResult.push(jsonObject);
         }
-        return JSON.stringify(jsonResult, undefined, 1);
+        return jsonResult;
     }
+
 }
 
 module.exports = new CsvToJson();
