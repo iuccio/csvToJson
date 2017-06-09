@@ -2,6 +2,7 @@
 
 let fileUtils = require('././util/fileUtils');
 let stringUtils = require('././util/stringUtils');
+let jsonUtils = require('././util/jsonUtils');
 
 const fieldDelimiter = ';';
 const newLine = '\n';
@@ -15,7 +16,9 @@ class CsvToJson {
 
     getJsonFromCsvStringified(fileInputName) {
         let json = this.getJsonFromCsv(fileInputName);
-        return JSON.stringify(json, undefined, 1);
+        let jsonStringified = JSON.stringify(json, undefined, 1);
+        jsonUtils.validateJson(jsonStringified);
+        return jsonStringified;
     }
 
     getJsonFromCsv(fileInputName) {
