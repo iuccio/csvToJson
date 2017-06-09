@@ -4,7 +4,7 @@
   "description": "Convert CSV to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -32,5 +32,9 @@
   "bugs": {
     "url": "https://github.com/iuccio/CSVtoJSON/issues"
   },
-  "homepage": "https://github.com/iuccio/CSVtoJSON#readme"
+  "homepage": "https://github.com/iuccio/CSVtoJSON#readme",
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
+  }
 }
