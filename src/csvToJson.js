@@ -33,13 +33,15 @@ class CsvToJson {
         let jsonResult = [];
         for (let i = 1; i < lines.length; i++) {
             let currentLine = lines[i].split(fieldDelimiter);
-            let jsonObject = {};
-            for (let j = 0; j < headers.length; j++) {
-                let propertyName = stringUtils.trimPropertyName(headers[j]);
-                let value = stringUtils.getValueFormatByType(currentLine[j]);
-                jsonObject[propertyName] = value;
+            if (stringUtils.hasContent(currentLine)) {
+                let jsonObject = {};
+                for (let j = 0; j < headers.length; j++) {
+                    let propertyName = stringUtils.trimPropertyName(headers[j]);
+                    let value = stringUtils.getValueFormatByType(currentLine[j]);
+                    jsonObject[propertyName] = value;
+                }
+                jsonResult.push(jsonObject);
             }
-            jsonResult.push(jsonObject);
         }
         return jsonResult;
     }
