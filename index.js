@@ -20,7 +20,7 @@ exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
     if(!outputFileName){
         throw new Error('outpuFileName is not defined!!!');
     }
-    csvToJson.generateJsonFileFromCsv(this.inputFileName, this.outputFileName);
+    csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
 
 /**
