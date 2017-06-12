@@ -1,14 +1,26 @@
 'use strict';
 
+let csvToJson = require('./src/csvToJson.js');
+
 /**
  * Parse .csv file and put its content into a file in json format.
  * @param {inputFileName} path/filename
  * @param {outputFileName} path/filename
  *
  */
-let csvToJson = require('./src/csvToJson.js');
+exports.formatValueByType = function () {
+  csvToJson.formatValueByType();
+  return this;
+};
+
 exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
-    csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
+    if(!inputFileName){
+        throw new Error('inputFileName is not defined!!!');
+    }
+    if(!outputFileName){
+        throw new Error('outpuFileName is not defined!!!');
+    }
+    csvToJson.generateJsonFileFromCsv(this.inputFileName, this.outputFileName);
 };
 
 /**
@@ -18,6 +30,9 @@ exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
  *
  */
 exports.getJsonFromCsv = function (inputFileName) {
+    if(!inputFileName){
+        throw new Error('inputFileName is not defined!!!');
+    }
     return csvToJson.getJsonFromCsv(inputFileName);
 };
 

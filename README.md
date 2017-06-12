@@ -29,14 +29,14 @@ will generate:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": 96
+  "age": "96"
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": 32
+  "age": "32"
  }
 ]
 ```
@@ -62,8 +62,8 @@ $ npm install -g convert-csv-to-json
 ```js
 let csvToJson = require('convert-csv-to-json');
 
-let fileInputName = './myInputFile.csv'; 
-let fileOutputName = './myOutputFile.json';
+let fileInputName = 'myInputFile.csv'; 
+let fileOutputName = 'myOutputFile.json';
 
 csvToJson.generateJsonFileFromCsv(fileInputName,fileOutputName);
 ```
@@ -76,6 +76,32 @@ for(let i=0; i<json.length;i++){
     console.log(json[i]);
 }
 ```
+#### Format property value by type
+If you want that a number will be printed as a Numbert type and not as a String type, use:
+```js
+ csvToJson.formatValueByType().getJsonFromCsv(fileInputName)
+```
+In this case the result will be: 
+
+```json
+[
+ {
+  "first_name": "Constantin",
+  "last_name": "Langsdon",
+  "email": "clangsdon0@hc360.com",
+  "gender": "Male",
+  "age": 96 //instead of "96"
+ },
+ {
+  "first_name": "Norah",
+  "last_name": "Raison",
+  "email": "nraison1@wired.com",
+  "gender": "Female",
+  "age": 32 //instead of "32"
+ }
+]
+```
+
 ## License
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).

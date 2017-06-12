@@ -9,14 +9,14 @@ let expectedJson = [{
     lastName: 'Langsdon',
     email: 'clangsdon0@hc360.com',
     gender: 'Male',
-    age: 96,
+    age: "96",
     birth: '10.02.1965'
 }, {
     firstName: 'Norah',
     lastName: 'Raison',
     email: 'nraison1@wired.com',
     gender: 'Female',
-    age: 32,
+    age: "32",
     birth: '10.05.2000'
 }];
 
@@ -29,6 +29,20 @@ describe('CsvToJson class testing', function () {
 
         //when
         let result = csvToJson.getJsonFromCsv(fileInputName);
+
+        //then
+        expect(result.length).to.equal(expectedJson.length);
+        expect(result).to.deep.equal(expectedJson);
+
+    });
+
+    it('should return json array with value formatted by type', function () {
+        //given
+        expectedJson[0].age = 96;
+        expectedJson[1].age = 32;
+
+        //when
+        let result = csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
 
         //then
         expect(result.length).to.equal(expectedJson.length);
