@@ -77,7 +77,7 @@ for(let i=0; i<json.length;i++){
 }
 ```
 #### Format property value by type
-If you want that a number will be printed as a Numbert type and not as a String type, use:
+If you want that a number will be printed as a Number type and not as a String type, use:
 ```js
  csvToJson.formatValueByType().getJsonFromCsv(fileInputName)
 ```
@@ -90,18 +90,26 @@ In this case the result will be:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": 96 //instead of "96"
+  "age": 96
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": 32 //instead of "32"
+  "age": 32
  }
 ]
 ```
-
+The property **age** is printed as 
+```json
+ "age": 32
+```
+instead of
+```json
+  "age": "32"
+ ```
+ 
 ## License
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
