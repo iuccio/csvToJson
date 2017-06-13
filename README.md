@@ -1,4 +1,6 @@
-# CSVtoJSON [![Build Status](https://travis-ci.org/iuccio/csvToJson.svg?branch=master)](https://travis-ci.org/iuccio/csvToJson)
+# CSVtoJSON 
+[![Build Status](https://travis-ci.org/iuccio/csvToJson.svg?branch=master)](https://travis-ci.org/iuccio/csvToJson) [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
+
 Convert *csv* file to *JSON* file with Node.js. 
 
 **This project is not dependent on others packages or libraries.**
