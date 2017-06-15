@@ -9,7 +9,7 @@ const newLine = '\n';
 
 class CsvToJson {
 
-    formatValueByType(){
+    formatValueByType() {
         this.printValueFormatByType = true;
         return this;
     }
@@ -37,21 +37,22 @@ class CsvToJson {
 
         let jsonResult = [];
         for (let i = 1; i < lines.length; i++) {
-            let currentLine = lines[i].split(fieldDelimiter);
+            let currentLine = lines[i].replace(/""/g, '"').split(fieldDelimiter);
+            console.log('CURRENT LINE\N ' + currentLine);
             if (stringUtils.hasContent(currentLine)) {
-                jsonResult.push(this.buildJsonResult(headers,currentLine));
+                jsonResult.push(this.buildJsonResult(headers, currentLine));
             }
         }
         return jsonResult;
     }
 
-    buildJsonResult(headers,currentLine){
+    buildJsonResult(headers, currentLine) {
         let jsonObject = {};
         for (let j = 0; j < headers.length; j++) {
             let propertyName = stringUtils.trimPropertyName(headers[j]);
 
             let value = currentLine[j];
-            if(this.printValueFormatByType){
+            if (this.printValueFormatByType) {
                 value = stringUtils.getValueFormatByType(currentLine[j]);
             }
             jsonObject[propertyName] = value;
