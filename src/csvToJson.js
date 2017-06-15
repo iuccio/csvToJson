@@ -37,8 +37,7 @@ class CsvToJson {
 
         let jsonResult = [];
         for (let i = 1; i < lines.length; i++) {
-            let currentLine = lines[i].replace(/""/g, '"').split(fieldDelimiter);
-            console.log('CURRENT LINE\N ' + currentLine);
+            let currentLine = lines[i].replace(/""/g, '').split(fieldDelimiter);
             if (stringUtils.hasContent(currentLine)) {
                 jsonResult.push(this.buildJsonResult(headers, currentLine));
             }
