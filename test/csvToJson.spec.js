@@ -59,7 +59,7 @@ describe('CsvToJson class testing', function () {
 
         //then
         assert.isDefined(result);
-        assert.hasAllKeys(result[0],headers);
+        assert.hasAllKeys(result[0], headers);
     });
 
 });
