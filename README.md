@@ -6,7 +6,7 @@
 ## Table of Contents
 1. [Description](#description)
 1. [Prerequisites](#prerequisites)
-1. [npm](#npm)
+1. [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
 1. [Usage](#usage)
     * [Generate JSON file](#generate-json-file)
     * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
@@ -21,11 +21,7 @@ Converts *csv* files to *JSON* files with Node.js.
 Given an input file like:
 
 |first_name|last_name|email|gender|age|
-Converts *csv* files to *JSON* files with Node.js. 
-
-**This project is not dependent on others packages or libraries.**
-
-|----------|:-------:|:---:|:----:|:-:|
+|:----------:|:-------:|:---:|:----:|:---:|
 |Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
 |Norah|Raison|nraison1@wired.com|Female|32|
 
@@ -61,7 +57,7 @@ will generate:
 ## Prerequisites
 **NPM** (see [Installing Npm](https://docs.npmjs.com/getting-started/installing-node)).
 
-## npm
+## Install npm *convert-csv-to-json package*
 Go to NPM package [convert-csv-to-json](https://www.npmjs.com/package/convert-csv-to-json).
 
 ### Install
