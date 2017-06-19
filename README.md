@@ -4,9 +4,8 @@
 **This project is not dependent on others packages or libraries.**
 
 ## Table of Contents
+1. [Description](#description)
 1. [Prerequisites](#prerequisites)
-1. [Description](#escription)
-1. [Description](#escription)
 1. [npm](#npm)
 1. [Usage](#usage)
     * [Generate JSON file](#generate-json-file)
