@@ -4,13 +4,18 @@ let fileUtils = require('././util/fileUtils');
 let stringUtils = require('././util/stringUtils');
 let jsonUtils = require('././util/jsonUtils');
 
-const fieldDelimiter = ';';
 const newLine = '\n';
+const defaultFieldDelimiter = ';';
 
 class CsvToJson {
 
     formatValueByType() {
         this.printValueFormatByType = true;
+        return this;
+    }
+
+    fieldDelimiter(delimieter){
+        this.delimiter = delimieter;
         return this;
     }
 
@@ -33,16 +38,24 @@ class CsvToJson {
 
     csvToJson(parsedCsv) {
         let lines = parsedCsv.split(newLine);
+        let fieldDelimiter = this.getFieldDelimiter();
         let headers = lines[0].split(fieldDelimiter);
 
         let jsonResult = [];
         for (let i = 1; i < lines.length; i++) {
-            let currentLine = lines[i].replace(/""/g, '').replace(/"/g, '').split(fieldDelimiter);
+            let currentLine = lines[i].split(fieldDelimiter);
             if (stringUtils.hasContent(currentLine)) {
                 jsonResult.push(this.buildJsonResult(headers, currentLine));
             }
         }
         return jsonResult;
+    }
+
+    getFieldDelimiter(){
+        if(this.delimiter){
+            return this.delimiter;
+        }
+        return defaultFieldDelimiter;
     }
 
     buildJsonResult(headers, currentLine) {

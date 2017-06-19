@@ -1,15 +1,31 @@
 # CSVtoJSON 
 [![Build Status](https://travis-ci.org/iuccio/csvToJson.svg?branch=master)](https://travis-ci.org/iuccio/csvToJson) [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 
-Convert *csv* file to *JSON* file with Node.js. 
+**This project is not dependent on others packages or libraries.**
+
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+1. [Description](#escription)
+1. [Description](#escription)
+1. [npm](#npm)
+1. [Usage](#usage)
+    * [Generate JSON file](#generate-json-file)
+    * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
+    * [Define field delimiter](#define-field-delimiter)
+    * [Format property value by type](#format-property-value-by-type)
+1. [License](#license)
+
+
+## Description
+Converts *csv* files to *JSON* files with Node.js. 
+
+Given an input file like:
+
+|first_name|last_name|email|gender|age|
+Converts *csv* files to *JSON* files with Node.js. 
 
 **This project is not dependent on others packages or libraries.**
 
-The cvs file must be **semicolon (;) separated**.
-
-Give an input file like:
-
-|first_name|last_name|email|gender|age|
 |----------|:-------:|:---:|:----:|:-:|
 |Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
 |Norah|Raison|nraison1@wired.com|Female|32|
@@ -78,10 +94,20 @@ for(let i=0; i<json.length;i++){
     console.log(json[i]);
 }
 ```
+#### Define field delimiter
+As default the filed delimiter is the **semicolon** (**;**). You can define another field delimiter 
+by call the function ```fieldDelimiter(myDilimiter)```.
+If you want that the field delimiter is a **~**:
+
+```js
+ csvToJson.fieldDelimiter('~') .getJsonFromCsv(fileInputName);
+```
+
+
 #### Format property value by type
 If you want that a number will be printed as a Number type and not as a String type, use:
 ```js
- csvToJson.formatValueByType().getJsonFromCsv(fileInputName)
+ csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
 ```
 In this case the result will be: 
 
