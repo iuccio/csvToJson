@@ -18,7 +18,7 @@
 ## Description
 Converts *csv* files to *JSON* files with Node.js. 
 
-Given an input file like:
+Give an input file like:
 
 |first_name|last_name|email|gender|age|
 |:----------:|:-------:|:---:|:----:|:---:|
