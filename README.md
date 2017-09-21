@@ -1,5 +1,7 @@
 # CSVtoJSON 
 [![Build Status](https://travis-ci.org/iuccio/csvToJson.svg?branch=master)](https://travis-ci.org/iuccio/csvToJson) [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
+[![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
+[![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 
 **This project is not dependent on others packages or libraries.**
 
