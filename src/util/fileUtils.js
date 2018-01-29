@@ -5,7 +5,6 @@ let fs = require('fs');
 class FileUtils {
 
     readFile(fileInputName) {
-        console.log('Read file: ' + fileInputName);
         return fs.readFileSync(fileInputName).toString();
     }
 
