@@ -7,7 +7,7 @@ class StringUtils {
     }
 
     getValueFormatByType(value) {
-        let isNumber = /^\d+$/.test(value);
+        let isNumber = !isNaN(value);
         if (isNumber) {
             return Number(value);
         }
