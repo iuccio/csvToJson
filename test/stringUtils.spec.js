@@ -20,7 +20,7 @@ describe('StringUtils class testing', function () {
     });
 
     describe('getValueFormatByType()', function () {
-        it('should return type of Number', function () {
+        it('should return type of Number for integers', function () {
             //given
             let value = '23';
 
@@ -30,6 +30,18 @@ describe('StringUtils class testing', function () {
             //then
             expect(result).to.be.an('number');
             expect(result).to.equal(23);
+        });
+
+        it('should return type of Number for non-integers', function () {
+            //given
+            let value = '0.23';
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('number');
+            expect(result).to.equal(0.23);
         });
 
         it('should return type of String when value contains only words', function () {

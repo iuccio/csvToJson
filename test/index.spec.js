@@ -16,7 +16,7 @@ let expectedJson = [{
     lastName: 'Raison',
     email: 'nraison1@wired.com',
     gender: 'Female',
-    age: "32",
+    age: "32.5",
     birth: '10.05.2000'
 }];
 
@@ -35,13 +35,12 @@ describe('API testing', function () {
             //then
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
-
         });
 
         it('should return json array with value formatted by type', function () {
             //given
             expectedJson[0].age = 96;
-            expectedJson[1].age = 32;
+            expectedJson[1].age = 32.5;
 
             //when
             let result = index.formatValueByType().getJsonFromCsv(fileInputName);
@@ -49,7 +48,6 @@ describe('API testing', function () {
             //then
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
-
         });
 
         it('should return json array that contains the same property of the csv header', function () {
@@ -65,7 +63,7 @@ describe('API testing', function () {
         });
 
 
-        it('should return json array from csv with tilde ad field delimiter', function () {
+        it('should return json array from csv with tilde as field delimiter', function () {
             //given
 
             //when
@@ -74,7 +72,6 @@ describe('API testing', function () {
             //then
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
-
         });
     });
 });
