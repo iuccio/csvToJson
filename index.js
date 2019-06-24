@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-let csvToJson = require('./src/csvToJson.js');
+let csvToJson = require("./src/csvToJson.js");
 
 /**
  * Prints a digit as Number type (for example 32 instead of '32')
  */
-exports.formatValueByType = function () {
+exports.formatValueByType = function() {
   csvToJson.formatValueByType();
   return this;
 };
@@ -13,7 +13,7 @@ exports.formatValueByType = function () {
 /**
  * Defines the field delimiter which will be used to split the fields
  */
-exports.fieldDelimiter = function (delimiter) {
+exports.fieldDelimiter = function(delimiter) {
   csvToJson.fieldDelimiter(delimiter);
   return this;
 };
@@ -24,14 +24,14 @@ exports.fieldDelimiter = function (delimiter) {
  * @param {outputFileName} path/filename
  *
  */
-exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
-    if(!inputFileName){
-        throw new Error('inputFileName is not defined!!!');
-    }
-    if(!outputFileName){
-        throw new Error('outputFileName is not defined!!!');
-    }
-    csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
+exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
+  if (!inputFileName) {
+    throw new Error("inputFileName is not defined!!!");
+  }
+  if (!outputFileName) {
+    throw new Error("outputFileName is not defined!!!");
+  }
+  csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
 
 /**
@@ -40,11 +40,15 @@ exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
  * @return {Array} Array of Object in json format
  *
  */
-exports.getJsonFromCsv = function (inputFileName) {
-    if(!inputFileName){
-        throw new Error('inputFileName is not defined!!!');
-    }
-    return csvToJson.getJsonFromCsv(inputFileName);
+exports.getJsonFromCsv = function(inputFileName) {
+  if (!inputFileName) {
+    throw new Error("inputFileName is not defined!!!");
+  }
+  return csvToJson.getJsonFromCsv(inputFileName);
+};
+
+exports.csvStringToJson = function(csvString) {
+  return csvStringToJson(csvString);
 };
 
 /**
@@ -54,6 +58,6 @@ exports.getJsonFromCsv = function (inputFileName) {
  *
  * @deprecated Use generateJsonFileFromCsv()
  */
-exports.jsonToCsv = function (inputFileName, outputFileName) {
-    csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
+exports.jsonToCsv = function(inputFileName, outputFileName) {
+  csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
