@@ -48,7 +48,7 @@ exports.getJsonFromCsv = function(inputFileName) {
 };
 
 exports.csvStringToJson = function(csvString) {
-  return csvStringToJson(csvString);
+  return csvToJson.csvStringToJson(csvString);
 };
 
 /**
