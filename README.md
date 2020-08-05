@@ -138,3 +138,7 @@ instead of
 ## License
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
+
+## Buy me a coffee
+Just if you want support this repository:
+   * **BTC** tip address: 33nwiCPMsxgMQJ4MHwfoz8ib9Jr1CPpXUu
