@@ -15,6 +15,7 @@
     * [Define field delimiter](#define-field-delimiter)
     * [Format property value by type](#format-property-value-by-type)
 1. [License](#license)
+1. [Buy me a Coffee](#buy-me-a-coffee)
 
 
 ## Description
@@ -139,6 +140,6 @@ instead of
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
 
-## Buy me a coffee
+## Buy me a Coffee
 Just if you want support this repository:
    * **BTC** tip address: 33nwiCPMsxgMQJ4MHwfoz8ib9Jr1CPpXUu
