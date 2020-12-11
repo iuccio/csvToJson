@@ -11,6 +11,10 @@ class StringUtils {
         if (isNumber) {
             return Number(value);
         }
+        const boolValue = value.toLowerCase();
+        if (['true', 'false'].includes(boolValue)) {
+            return Boolean(value === 'true' ? true : false)
+        }
         return String(value);
     }
 

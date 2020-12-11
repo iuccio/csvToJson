@@ -67,6 +67,18 @@ describe('StringUtils class testing', function () {
             expect(result).to.be.an('string');
             expect(result).to.equal('11value');
         });
+
+        it('should return type of Boolean when value contains true or false', function () {
+            //given
+            let value = 'False';
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('boolean');
+            expect(result).to.equal(false);
+        });
     });
 
 
