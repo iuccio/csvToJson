@@ -23,17 +23,17 @@ Converts *csv* files to *JSON* files with Node.js.
 
 Give an input file like:
 
-|first_name|last_name|email|gender|age|
-|:----------:|:-------:|:---:|:----:|:---:|
-|Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
-|Norah|Raison|nraison1@wired.com|Female|32|
+|first_name|last_name|email|gender|age|zip|
+|:----------:|:-------:|:---:|:----:|:---:|:---:|
+|Constantin|Langsdon|clangsdon0@hc360.com|Male|96|123|
+|Norah|Raison|nraison1@wired.com|Female|32| |
 
 e.g. :
-```json
-first_name;last_name;email;gender;age
-Constantin;Langsdon;clangsdon0@hc360.com;Male;96
-Norah;Raison;nraison1@wired.com;Female;32
-```
+~~~
+first_name;last_name;email;gender;age;zip
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96;123
+Norah;Raison;nraison1@wired.com;Female;32; 
+~~~
 
 will generate:
 
@@ -45,14 +45,16 @@ will generate:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": "96"
+  "age": "96",
+  "zip": 123
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": "32"
+  "age": "32",
+  "zip": ""
  }
 ]
 ```
@@ -116,14 +118,16 @@ In this case the result will be:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": 96
+  "age": 96,
+  "zip": 123
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": 32
+  "age": 32,
+  "zip": ""
  }
 ]
 ```

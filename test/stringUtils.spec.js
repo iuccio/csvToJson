@@ -67,6 +67,30 @@ describe('StringUtils class testing', function () {
             expect(result).to.be.an('string');
             expect(result).to.equal('11value');
         });
+
+        it('should return empty value when input value is not defined', function () {
+            //given
+            let value;
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('string');
+            expect(result).to.equal('');
+        });
+
+        it('should return empty value when input value is empty string', function () {
+            //given
+            let value = '';
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('string');
+            expect(result).to.equal('');
+        });
     });
 
 

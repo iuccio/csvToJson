@@ -7,6 +7,9 @@ class StringUtils {
     }
 
     getValueFormatByType(value) {
+        if(value === undefined || value === ''){
+            return String();
+        }
         let isNumber = !isNaN(value);
         if (isNumber) {
             return Number(value);
