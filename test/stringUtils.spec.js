@@ -91,6 +91,30 @@ describe('StringUtils class testing', function () {
             expect(result).to.be.an('string');
             expect(result).to.equal('');
         });
+
+        it('should return Boolean value when input value is "true"', function () {
+            //given
+            let value = "true";
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('boolean');
+            expect(result).to.equal(true);
+        });
+
+        it('should return Boolean value when input value is "false"', function () {
+            //given
+            let value = "false";
+
+            //when
+            let result = stringUtils.getValueFormatByType(value);
+
+            //then
+            expect(result).to.be.an('boolean');
+            expect(result).to.equal(false);
+        });
     });
 
 
