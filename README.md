@@ -14,6 +14,8 @@
     * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
     * [Define field delimiter](#define-field-delimiter)
     * [Format property value by type](#format-property-value-by-type)
+        * [Number](#number)
+        * [Boolean](#boolean)
 1. [License](#license)
 1. [Buy me a Coffee](#buy-me-a-coffee)
 
@@ -23,17 +25,17 @@ Converts *csv* files to *JSON* files with Node.js.
 
 Give an input file like:
 
-|first_name|last_name|email|gender|age|
-|:----------:|:-------:|:---:|:----:|:---:|
-|Constantin|Langsdon|clangsdon0@hc360.com|Male|96|
-|Norah|Raison|nraison1@wired.com|Female|32|
+|first_name|last_name|email|gender|age|zip|registered|
+|:----------:|:-------:|:---:|:----:|:---:|:---:|:---:|
+|Constantin|Langsdon|clangsdon0@hc360.com|Male|96|123|true|
+|Norah|Raison|nraison1@wired.com|Female|32| |false|
 
 e.g. :
-```json
-first_name;last_name;email;gender;age
-Constantin;Langsdon;clangsdon0@hc360.com;Male;96
-Norah;Raison;nraison1@wired.com;Female;32
-```
+~~~
+first_name;last_name;email;gender;age;zip;registered;
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96;123;true
+Norah;Raison;nraison1@wired.com;Female;32;;false
+~~~
 
 will generate:
 
@@ -45,14 +47,18 @@ will generate:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": "96"
+  "age": "96",
+  "zip": "123",
+  "registered": "true"
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": "32"
+  "age": "32",
+  "zip": "",
+  "registered": "false"
  }
 ]
 ```
@@ -98,12 +104,12 @@ by call the function ```fieldDelimiter(myDilimiter)```.
 If you want that the field delimiter is a **~**:
 
 ```js
- csvToJson.fieldDelimiter('~') .getJsonFromCsv(fileInputName);
+ csvToJson.fieldDelimiter('~').getJsonFromCsv(fileInputName);
 ```
 
 
 #### Format property value by type
-If you want that a number will be printed as a Number type and not as a String type, use:
+If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a Boolean Type, use:
 ```js
  csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
 ```
@@ -116,17 +122,22 @@ In this case the result will be:
   "last_name": "Langsdon",
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
-  "age": 96
+  "age": 96,
+  "zip": 123,
+  "registered": true
  },
  {
   "first_name": "Norah",
   "last_name": "Raison",
   "email": "nraison1@wired.com",
   "gender": "Female",
-  "age": 32
+  "age": 32,
+  "zip": "",
+  "registered": false
  }
 ]
 ```
+##### Number
 The property **age** is printed as 
 ```json
  "age": 32
@@ -135,7 +146,15 @@ instead of
 ```json
   "age": "32"
  ```
- 
+##### Boolean
+The property **registered** is printed as 
+```json
+ "registered": true
+```
+instead of
+```json
+  "registered": "true"
+ ```
 ## License
 
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).

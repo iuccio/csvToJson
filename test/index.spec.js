@@ -10,14 +10,18 @@ let expectedJson = [{
     email: 'clangsdon0@hc360.com',
     gender: 'Male',
     age: "96",
-    birth: '10.02.1965'
+    birth: '10.02.1965',
+    zip: "123",
+    registered: "true"
 }, {
     firstName: 'Norah',
     lastName: 'Raison',
     email: 'nraison1@wired.com',
     gender: 'Female',
     age: "32.5",
-    birth: '10.05.2000'
+    birth: '10.05.2000',
+    zip: '',
+    registered: "false"
 }];
 
 let fileInputName = 'test/resource/input.csv';
@@ -40,7 +44,10 @@ describe('API testing', function () {
         it('should return json array with value formatted by type', function () {
             //given
             expectedJson[0].age = 96;
+            expectedJson[0].zip = 123;
             expectedJson[1].age = 32.5;
+            expectedJson[0].registered = true;
+            expectedJson[1].registered = false;
 
             //when
             let result = index.formatValueByType().getJsonFromCsv(fileInputName);
@@ -52,7 +59,7 @@ describe('API testing', function () {
 
         it('should return json array that contains the same property of the csv header', function () {
             //given
-            let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth'];
+            let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth','zip','registered'];
 
             //when
             let result = index.getJsonFromCsv(fileInputName);
