@@ -33,7 +33,7 @@ Give an input file like:
 
 e.g. :
 ~~~
-first_name;last_name;email;gender;age;zip;registered;
+first_name;last_name;email;gender;age;zip;registered
 Constantin;Langsdon;clangsdon0@hc360.com;Male;96;123;true
 Norah;Raison;nraison1@wired.com;Female;32;;false
 ~~~
