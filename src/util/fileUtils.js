@@ -17,5 +17,6 @@ class FileUtils {
             }
         });
     }
+
 }
 module.exports = new FileUtils();

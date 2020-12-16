@@ -115,7 +115,7 @@ describe('StringUtils class testing', function () {
             expect(result).to.be.an('boolean');
             expect(result).to.equal(false);
         });
-    });
 
+    });
 
 });

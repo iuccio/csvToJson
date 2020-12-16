@@ -69,7 +69,6 @@ describe('API testing', function () {
             assert.hasAllKeys(result[0], headers);
         });
 
-
         it('should return json array from csv with tilde as field delimiter', function () {
             //given
 
@@ -80,5 +79,7 @@ describe('API testing', function () {
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
+
     });
+
 });

@@ -33,4 +33,5 @@ class StringUtils {
         return false;
     }
 }
+
 module.exports = new StringUtils();

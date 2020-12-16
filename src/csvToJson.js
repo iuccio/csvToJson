@@ -8,6 +8,7 @@ const newLine = /\r?\n/;
 const defaultFieldDelimiter = ";";
 
 class CsvToJson {
+
   formatValueByType() {
     this.printValueFormatByType = true;
     return this;
@@ -74,6 +75,7 @@ class CsvToJson {
     }
     return jsonObject;
   }
+
 }
 
 module.exports = new CsvToJson();
