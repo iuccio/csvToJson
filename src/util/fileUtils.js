@@ -4,8 +4,8 @@ let fs = require('fs');
 
 class FileUtils {
 
-    readFile(fileInputName) {
-        return fs.readFileSync(fileInputName).toString();
+    readFile(fileInputName, encoding) {
+        return fs.readFileSync(fileInputName, encoding).toString();
     }
 
     writeFile(json, fileOutputName) {

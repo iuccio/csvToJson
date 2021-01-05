@@ -157,6 +157,37 @@ instead of
   "registered": "true"
  ```
 
+#### Encoding
+You can read and decode files with the following encoding:
+ * utf8: 
+    ```js
+     csvToJson.utf8Encoding().getJsonFromCsv(fileInputName);
+    ```
+ * ucs2:
+    ```js
+      csvToJson.ucs2Encoding().getJsonFromCsv(fileInputName);
+     ```
+ * utf16le:
+     ```js
+       csvToJson.utf16leEncoding().getJsonFromCsv(fileInputName);
+      ```
+ * latin1:
+     ```js
+       csvToJson.latin1Encoding().getJsonFromCsv(fileInputName);
+      ```
+ * ascii:
+     ```js
+       csvToJson.asciiEncoding().getJsonFromCsv(fileInputName);
+      ```
+ * base64:
+     ```js
+       csvToJson.base64Encoding().getJsonFromCsv(fileInputName);
+      ```
+ * hex:
+     ```js
+       csvToJson.hexEncoding().getJsonFromCsv(fileInputName);
+      ```
+
 ## Development
 * Download all csvToJson dependencies:
     ~~~

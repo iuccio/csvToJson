@@ -19,6 +19,11 @@ class CsvToJson {
     return this;
   }
 
+  encoding(encoding){
+    this.encoding = encoding;
+    return this;
+  }
+
   generateJsonFileFromCsv(fileInputName, fileOutputName) {
     let jsonStringified = this.getJsonFromCsvStringified(fileInputName);
     fileUtils.writeFile(jsonStringified, fileOutputName);
@@ -32,7 +37,7 @@ class CsvToJson {
   }
 
   getJsonFromCsv(fileInputName) {
-    let parsedCsv = fileUtils.readFile(fileInputName);
+    let parsedCsv = fileUtils.readFile(fileInputName, this.encoding);
     return this.csvToJson(parsedCsv);
   }
 
