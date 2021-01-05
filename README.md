@@ -16,6 +16,7 @@
     * [Format property value by type](#format-property-value-by-type)
         * [Number](#number)
         * [Boolean](#boolean)
+    * [Encoding](#encoding)
 1. [Development](#development)
 1. [License](#license)
 1. [Buy me a Coffee](#buy-me-a-coffee)
