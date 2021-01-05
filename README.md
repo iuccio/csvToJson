@@ -1,4 +1,6 @@
 # CSVtoJSON 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/iuccio/csvToJson/Node%20CI)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/iuccio/csvToJson/master)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
