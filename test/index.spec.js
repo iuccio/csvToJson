@@ -4,32 +4,35 @@ let expect = require('chai').expect;
 let assert = require('chai').assert;
 let index = require('../index');
 
-let expectedJson = [{
-    firstName: 'Constantin',
-    lastName: 'Langsdon',
-    email: 'clangsdon0@hc360.com',
-    gender: 'Male',
-    age: "96",
-    birth: '10.02.1965',
-    zip: "123",
-    registered: "true"
-}, {
-    firstName: 'Norah',
-    lastName: 'Raison',
-    email: 'nraison1@wired.com',
-    gender: 'Female',
-    age: "32.5",
-    birth: '10.05.2000',
-    zip: '',
-    registered: "false"
-}];
 
 let fileInputName = 'test/resource/input.csv';
 
 describe('API testing', function () {
 
     describe('getJsonFromCsv() testing', function () {
-
+        let expectedJson;
+        beforeEach(function () {
+            expectedJson = [{
+                firstName: 'Constantin',
+                lastName: 'Langsdon',
+                email: 'clangsdon0@hc360.com',
+                gender: 'Male',
+                age: "96",
+                birth: '10.02.1965',
+                zip: "123",
+                registered: "true"
+            },
+                {
+                    firstName: 'Norah',
+                    lastName: 'Raison',
+                    email: 'nraison1@wired.com',
+                    gender: 'Female',
+                    age: "32.5",
+                    birth: '10.05.2000',
+                    zip: '',
+                    registered: "false"
+                }];
+        });
         it('should return json array', function () {
             //given
 
@@ -41,21 +44,6 @@ describe('API testing', function () {
             expect(result).to.deep.equal(expectedJson);
         });
 
-        it('should return json array with value formatted by type', function () {
-            //given
-            expectedJson[0].age = 96;
-            expectedJson[0].zip = 123;
-            expectedJson[1].age = 32.5;
-            expectedJson[0].registered = true;
-            expectedJson[1].registered = false;
-
-            //when
-            let result = index.formatValueByType().getJsonFromCsv(fileInputName);
-
-            //then
-            expect(result.length).to.equal(expectedJson.length);
-            expect(result).to.deep.equal(expectedJson);
-        });
 
         it('should return json array that contains the same property of the csv header', function () {
             //given
@@ -79,6 +67,84 @@ describe('API testing', function () {
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
+
+        it('should return json array with subArray', function () {
+            //given
+
+            let expectedResult = [{
+                firstName: 'Constantin',
+                lastName: 'Langsdon',
+                email: 'clangsdon0@hc360.com',
+                gender: 'Male',
+                age: "96",
+                birth: '10.02.1965',
+                sons: ['anto','diego','hamsik']
+            },{
+                firstName: 'Constantin',
+                lastName: 'Langsdon',
+                email: 'clangsdon0@hc360.com',
+                gender: 'Male',
+                age: "96",
+                birth: '10.02.1965',
+                sons: ['12','10','13']
+            }];
+            //when
+            let result = index.parseSubArray("*",',').fieldDelimiter(";").getJsonFromCsv('test/resource/input_example_sub_array.csv');
+            //then
+            expect(result.length).to.equal(2);
+            console.log(result);
+            expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
+            expect(result[1].sons).to.deep.equal(expectedResult[1].sons);
+
+        });
+
+        it('should return json array with subArray both formatted by type', function () {
+            //given
+
+            let expectedResult = [{
+                firstName: 'Constantin',
+                lastName: 'Langsdon',
+                email: 'clangsdon0@hc360.com',
+                gender: 'Male',
+                age: "96",
+                birth: '10.02.1965',
+                sons: ['anto','diego','hamsik']
+            },{
+                firstName: 'Constantin',
+                lastName: 'Langsdon',
+                email: 'clangsdon0@hc360.com',
+                gender: 'Male',
+                age: "96",
+                birth: '10.02.1965',
+                sons: [12,10,13]
+            }];
+            //when
+            let result = index.parseSubArray("*",',').fieldDelimiter(";").formatValueByType().getJsonFromCsv('test/resource/input_example_sub_array.csv');
+            //then
+            expect(result.length).to.equal(2);
+            console.log(result);
+            expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
+
+        });
+
+        it('should return json array with value formatted by type', function () {
+            //given
+            expectedJson[0].age = 96;
+            expectedJson[0].zip = 123;
+            expectedJson[1].age = 32.5;
+            expectedJson[0].registered = true;
+            expectedJson[1].registered = false;
+
+            //when
+            let result = index.formatValueByType().fieldDelimiter(";").getJsonFromCsv(fileInputName);
+
+            //then
+            expect(result.length).to.equal(expectedJson.length);
+            expect(result).to.deep.equal(expectedJson);
+        });
+
+
+
 
     });
 

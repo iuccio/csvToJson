@@ -29,6 +29,14 @@ exports.fieldDelimiter = function (delimiter) {
 };
 
 /**
+ * Defines the field delimiter which will be used to split the fields
+ */
+exports.parseSubArray = function (delimiter) {
+  csvToJson.parseSubArray(delimiter);
+  return this;
+};
+
+/**
  * Defines a custom encoding to decode a file
  */
 exports.customEncoding = function (encoding) {

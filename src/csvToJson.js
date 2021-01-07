@@ -19,6 +19,11 @@ class CsvToJson {
     return this;
   }
 
+  parseSubArray(delimiter = '*',separator = ',') {
+    this.parseSubArrayDelimiter = delimiter;
+    this.parseSubArraySeparator = separator;
+  }
+
   encoding(encoding){
     this.encoding = encoding;
     return this;
@@ -71,14 +76,43 @@ class CsvToJson {
     let jsonObject = {};
     for (let j = 0; j < headers.length; j++) {
       let propertyName = stringUtils.trimPropertyName(headers[j]);
-
       let value = currentLine[j];
-      if (this.printValueFormatByType) {
+
+      if(this.isParseSubArray(value)){
+        value = this.buildJsonSubArray(value);
+      }
+
+      if (this.printValueFormatByType && !Array.isArray(value)) {
         value = stringUtils.getValueFormatByType(currentLine[j]);
       }
+
       jsonObject[propertyName] = value;
     }
     return jsonObject;
+  }
+
+  buildJsonSubArray(value) {
+    let extractedValues = value.substring(
+        value.indexOf(this.parseSubArrayDelimiter) + 1,
+        value.lastIndexOf(this.parseSubArrayDelimiter)
+    );
+    extractedValues.trim();
+    value = extractedValues.split(this.parseSubArraySeparator);
+    if(this.printValueFormatByType){
+      for(let i=0; i < value.length; i++){
+        value[i] = stringUtils.getValueFormatByType(value[i]);
+      }
+    }
+    return value;
+  }
+
+  isParseSubArray(value){
+    if(this.parseSubArrayDelimiter){
+      if (value && (value.indexOf(this.parseSubArrayDelimiter) === 0 && value.lastIndexOf(this.parseSubArrayDelimiter) === (value.length - 1))) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
