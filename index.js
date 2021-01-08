@@ -15,8 +15,8 @@ const encodingOps = {
 /**
  * Prints a digit as Number type (for example 32 instead of '32')
  */
-exports.formatValueByType = function () {
-  csvToJson.formatValueByType();
+exports.formatValueByType = function (active = true) {
+  csvToJson.formatValueByType(active);
   return this;
 };
 
@@ -29,10 +29,10 @@ exports.fieldDelimiter = function (delimiter) {
 };
 
 /**
- * Defines the field delimiter which will be used to split the fields
+ * Defines how to match and parse a sub array
  */
-exports.parseSubArray = function (delimiter) {
-  csvToJson.parseSubArray(delimiter);
+exports.parseSubArray = function (delimiter, separator) {
+  csvToJson.parseSubArray(delimiter, separator);
   return this;
 };
 

@@ -9,8 +9,8 @@ const defaultFieldDelimiter = ";";
 
 class CsvToJson {
 
-  formatValueByType() {
-    this.printValueFormatByType = true;
+  formatValueByType(active) {
+    this.printValueFormatByType = active;
     return this;
   }
 

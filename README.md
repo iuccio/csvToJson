@@ -14,6 +14,7 @@
 1. [Usage](#usage)
     * [Generate JSON file](#generate-json-file)
     * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
+    * [Generate Object with sub array](#generate-object-with-sub-array)
     * [Define field delimiter](#define-field-delimiter)
     * [Format property value by type](#format-property-value-by-type)
         * [Number](#number)
@@ -102,22 +103,48 @@ for(let i=0; i<json.length;i++){
     console.log(json[i]);
 }
 ```
+
+#### Generate Object with sub array 
+```
+firstName;lastName;email;gender;age;birth;sons
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96;10.02.1965;*diego,marek,dries*
+```
+Given the above CSV example, to generate a JSON Object with properties that contains sub Array, like the property **sons** 
+with the values <b>*diego,marek,dries*</b> you have to call the function ```parseSubArray(delimiter, separator)``` .
+To generate the JSON Object with sub array from the above CSV example:
+```js
+    csvToJson.parseSubArray('*',',').getJsonFromCsv('myInputFile.csv');
+``` 
+The result will be:
+```json
+[
+  {
+      "firstName": "Constantin",
+      "lastName": "Langsdon",
+      "email": "clangsdon0@hc360.com",
+      "gender": "Male",
+      "age": "96",
+      "birth": "10.02.1965",
+      "sons": ["diego","marek","dries"]
+    }
+]
+``` 
+
 #### Define field delimiter
 As default the filed delimiter is the **semicolon** (**;**). You can define another field delimiter 
-by call the function ```fieldDelimiter(myDilimiter)```.
+by call the function ```fieldDelimiter(myDelimiter)```.
 If you want that the field delimiter is a **~**:
 
 ```js
  csvToJson.fieldDelimiter('~').getJsonFromCsv(fileInputName);
 ```
 
-
 #### Format property value by type
 If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a Boolean Type, use:
 ```js
  csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
 ```
-In this case the result will be: 
+For example: 
 
 ```json
 [

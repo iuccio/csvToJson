@@ -44,6 +44,10 @@ describe('API testing', function () {
             expect(result).to.deep.equal(expectedJson);
         });
 
+        afterEach(function () {
+           index.formatValueByType(false);
+        });
+
 
         it('should return json array that contains the same property of the csv header', function () {
             //given
@@ -92,7 +96,6 @@ describe('API testing', function () {
             let result = index.parseSubArray("*",',').fieldDelimiter(";").getJsonFromCsv('test/resource/input_example_sub_array.csv');
             //then
             expect(result.length).to.equal(2);
-            console.log(result);
             expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
             expect(result[1].sons).to.deep.equal(expectedResult[1].sons);
 
@@ -122,7 +125,6 @@ describe('API testing', function () {
             let result = index.parseSubArray("*",',').fieldDelimiter(";").formatValueByType().getJsonFromCsv('test/resource/input_example_sub_array.csv');
             //then
             expect(result.length).to.equal(2);
-            console.log(result);
             expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
 
         });
@@ -142,9 +144,6 @@ describe('API testing', function () {
             expect(result.length).to.equal(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
-
-
-
 
     });
 
