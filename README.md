@@ -141,7 +141,7 @@ E.g. if your field delimiter is the comma **,** then:
 ```
 
 #### Format property value by type
-If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a Boolean Type, use:
+If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a boolean Type, use:
 ```js
  csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
 ```
