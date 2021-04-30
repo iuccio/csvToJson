@@ -131,12 +131,12 @@ The result will be:
 ``` 
 
 #### Define field delimiter
-As default the filed delimiter is the **semicolon** (**;**). You can define another field delimiter 
-by call the function ```fieldDelimiter(myDelimiter)```.
-If you want that the field delimiter is a **~**:
+A field delimiter is needed to split the parsed values. As default the field delimiter is the **semicolon** (**;**), this means that during the parsing when a **semicolon (;)** is matched a new JSON entry is created.
+In case your CSV file has defined another field delimiter you have to call the function ```fieldDelimiter(myDelimiter)``` and pass it as parameter the field delimiter.
+E.g. if your field delimiter is the comma **,** then:
 
 ```js
- csvToJson.fieldDelimiter('~').getJsonFromCsv(fileInputName);
+ csvToJson.fieldDelimiter(',').getJsonFromCsv(fileInputName);
 ```
 
 #### Format property value by type
