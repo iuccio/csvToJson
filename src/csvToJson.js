@@ -59,6 +59,13 @@ class CsvToJson {
     for (let i = 1; i < lines.length; i++) {
       let currentLine = lines[i].split(fieldDelimiter);
       if (stringUtils.hasContent(currentLine)) {
+
+        if (this.mapCallback && typeof this.mapCallback === 'function') {
+          const data = this.buildJsonResult(headers, currentLine)
+          jsonResult.push(this.mapCallback(headers, data, i));
+
+          continue
+        }
         jsonResult.push(this.buildJsonResult(headers, currentLine));
       }
     }
@@ -82,12 +89,6 @@ class CsvToJson {
         value = this.buildJsonSubArray(value);
       }
 
-      if (this.mapCallback) {
-        const data = this.mapCallback(propertyName, value, j)
-        const keys = Object.keys(data)
-        jsonObject[keys[0]] = data[keys[0]];
-        continue
-      }
       if (this.printValueFormatByType && !Array.isArray(value)) {
         value = stringUtils.getValueFormatByType(currentLine[j]);
       }
