@@ -82,6 +82,12 @@ class CsvToJson {
         value = this.buildJsonSubArray(value);
       }
 
+      if (this.mapCallback) {
+        const data = this.mapCallback(propertyName, value, j)
+        const keys = Object.keys(data)
+        jsonObject[keys[0]] = data[keys[0]];
+        continue
+      }
       if (this.printValueFormatByType && !Array.isArray(value)) {
         value = stringUtils.getValueFormatByType(currentLine[j]);
       }
@@ -114,6 +120,11 @@ class CsvToJson {
     }
     return false;
   }
+
+  map(callback) {
+    this.mapCallback = callback
+  }
+
 
 }
 
