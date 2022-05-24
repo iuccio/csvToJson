@@ -7,6 +7,9 @@ This means that the prduced [npm package](https://www.npmjs.com/package/convert-
 For the **devDependencies** Github Dependabot is enabled and inform us when a security vulnerability affects [csvToJson](https://github.com/iuccio/csvToJson). 
 A generated Github Depedabot PR is normally quickly merged and a new version is released.
 
+## Vulnerabities 
+[![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
+
 ## Supported Versions
 
 | Version | Supported          |
