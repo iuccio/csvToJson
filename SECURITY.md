@@ -1,0 +1,19 @@
+# Security Policy
+
+[csvToJson](https://github.com/iuccio/csvToJson) is not dependent on others packages or libraries. The only dependencies that [csvToJson](https://github.com/iuccio/csvToJson) uses 
+are **devDependencies**.
+This means that the prduced [npm package](https://www.npmjs.com/package/convert-csv-to-json) is never affected by dependency vulnerabilities.
+
+For the **devDependencies** Github Dependabot is enabled and inform us when a security vulnerability affects [csvToJson](https://github.com/iuccio/csvToJson). 
+A generated Github Depedabot PR is normally quickly merged and a new version is released.
+
+## Supported Versions
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.3.3   | :white_check_mark: |
+| 1.3.2   | :white_check_mark: |      
+
+## Reporting a Vulnerability
+
+To report a Security Vulnerability please add an [Vulnerabilty Issue](https://github.com/iuccio/csvToJson/labels/vulnerabilty).  
