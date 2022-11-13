@@ -1,4 +1,5 @@
 # CSVtoJSON 
+![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=12.x-brightgreen.svg)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/iuccio/csvToJson/Node%20CI?label=Build)](https://github.com/iuccio/csvToJson/actions?query=workflow%3A%22Node+CI%22)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/iuccio/csvToJson/CodeQL/master?label=CodeQL)](https://github.com/iuccio/csvToJson/actions?query=workflow%3ACodeQL)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
