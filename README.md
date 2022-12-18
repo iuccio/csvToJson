@@ -1,7 +1,7 @@
 # CSVtoJSON 
 ![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=12.x-brightgreen.svg)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/iuccio/csvToJson/Node%20CI?label=Build)](https://github.com/iuccio/csvToJson/actions?query=workflow%3A%22Node+CI%22)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/iuccio/csvToJson/CodeQL/master?label=CodeQL)](https://github.com/iuccio/csvToJson/actions?query=workflow%3ACodeQL)
+![Build](https://github.com/iuccio/csvToJson/actions/workflows/nodejs.yml/badge.svg)
+![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
@@ -9,23 +9,29 @@
 
 **This project is not dependent on others packages or libraries.**
 
-## Table of Contents
-1. [Description](#description)
-1. [Prerequisites](#prerequisites)
-1. [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
-1. [Usage](#usage)
-    * [Generate JSON file](#generate-json-file)
-    * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
-    * [Generate Object with sub array](#generate-object-with-sub-array)
-    * [Define field delimiter](#define-field-delimiter)
-    * [Format property value by type](#format-property-value-by-type)
-        * [Number](#number)
-        * [Boolean](#boolean)
-    * [Encoding](#encoding)
-1. [Development](#development)
-1. [License](#license)
-1. [Buy me a Coffee](#buy-me-a-coffee)
 
+## Table of Contents
+
+<!-- toc -->
+
+- [Description](#description)
+- [Prerequisites](#prerequisites)
+- [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
+  * [Install](#install)
+  * [Usage](#usage)
+    + [Generate JSON file](#generate-json-file)
+    + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
+    + [Generate Object with sub array](#generate-object-with-sub-array)
+    + [Define field delimiter](#define-field-delimiter)
+    + [Format property value by type](#format-property-value-by-type)
+      - [Number](#number)
+      - [Boolean](#boolean)
+    + [Encoding](#encoding)
+- [Development](#development)
+- [License](#license)
+- [Buy me a Coffee](#buy-me-a-coffee)
+
+<!-- tocstop -->
 
 ## Description
 Converts *csv* files to *JSON* files with Node.js. 
