@@ -23,6 +23,7 @@
     + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
     + [Generate Object with sub array](#generate-object-with-sub-array)
     + [Define field delimiter](#define-field-delimiter)
+    + [Index header](#index-header)
     + [Format property value by type](#format-property-value-by-type)
       - [Number](#number)
       - [Boolean](#boolean)
@@ -146,6 +147,13 @@ E.g. if your field delimiter is the comma **,** then:
 
 ```js
  csvToJson.fieldDelimiter(',').getJsonFromCsv(fileInputName);
+```
+
+#### Index header
+If the header is not on the first line you can define the header index like: 
+
+```js
+ csvToJson.indexHeader(3).getJsonFromCsv(fileInputName);
 ```
 
 #### Format property value by type

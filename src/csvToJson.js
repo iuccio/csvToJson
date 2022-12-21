@@ -14,10 +14,19 @@ class CsvToJson {
     return this;
   }
 
-  fieldDelimiter(delimieter) {
-    this.delimiter = delimieter;
+  fieldDelimiter(delimiter) {
+    this.delimiter = delimiter;
     return this;
   }
+
+  indexHeader(indexHeader) {
+    if(isNaN(indexHeader)){
+        throw new Error('The index Header must be a Number!');
+    }
+    this.indexHeader = indexHeader;
+    return this;
+  }
+
 
   parseSubArray(delimiter = '*',separator = ',') {
     this.parseSubArrayDelimiter = delimiter;
@@ -53,8 +62,8 @@ class CsvToJson {
   csvToJson(parsedCsv) {
     let lines = parsedCsv.split(newLine);
     let fieldDelimiter = this.getFieldDelimiter();
-    let headers = lines[0].split(fieldDelimiter);
-    let index = 0;
+    let index = this.getIndexHeader();
+    let headers = lines[index].split(fieldDelimiter);
 
     while(!stringUtils.hasContent(headers) && index <= lines.length){
         index = index + 1;
@@ -76,6 +85,13 @@ class CsvToJson {
       return this.delimiter;
     }
     return defaultFieldDelimiter;
+  }
+
+  getIndexHeader(){
+    if(this.indexHeader !== null && !isNaN(this.indexHeader)){
+        return this.indexHeader;
+    }
+    return 0;
   }
 
   buildJsonResult(headers, currentLine) {

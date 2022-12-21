@@ -29,6 +29,14 @@ exports.fieldDelimiter = function (delimiter) {
 };
 
 /**
+ * Defines the index where the header is defined
+ */
+exports.indexHeader = function (index) {
+  csvToJson.indexHeader(index);
+  return this;
+};
+
+/**
  * Defines how to match and parse a sub array
  */
 exports.parseSubArray = function (delimiter, separator) {
