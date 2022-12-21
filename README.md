@@ -1,10 +1,10 @@
 # CSVtoJSON 
-![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=12.x-brightgreen.svg)
 ![Build](https://github.com/iuccio/csvToJson/actions/workflows/nodejs.yml/badge.svg)
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
-[![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
+[![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
+![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=12.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 
 **This project is not dependent on others packages or libraries.**
@@ -24,6 +24,7 @@
     + [Generate Object with sub array](#generate-object-with-sub-array)
     + [Define field delimiter](#define-field-delimiter)
     + [Index header](#index-header)
+    + [Empty rows](#empty-rows)
     + [Format property value by type](#format-property-value-by-type)
       - [Number](#number)
       - [Boolean](#boolean)
@@ -155,6 +156,9 @@ If the header is not on the first line you can define the header index like:
 ```js
  csvToJson.indexHeader(3).getJsonFromCsv(fileInputName);
 ```
+
+#### Empty rows
+Empty rows are ignored and not parsed.
 
 #### Format property value by type
 If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a boolean Type, use:
