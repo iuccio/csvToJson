@@ -54,9 +54,15 @@ class CsvToJson {
     let lines = parsedCsv.split(newLine);
     let fieldDelimiter = this.getFieldDelimiter();
     let headers = lines[0].split(fieldDelimiter);
+    let index = 0;
+
+    while(!stringUtils.hasContent(headers) && index <= lines.length){
+        index = index + 1;
+        headers = lines[index].split(fieldDelimiter);
+    }
 
     let jsonResult = [];
-    for (let i = 1; i < lines.length; i++) {
+    for (let i = (index + 1); i < lines.length; i++) {
       let currentLine = lines[i].split(fieldDelimiter);
       if (stringUtils.hasContent(currentLine)) {
         jsonResult.push(this.buildJsonResult(headers, currentLine));
