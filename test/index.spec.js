@@ -145,6 +145,28 @@ describe('API testing', function () {
             expect(result).to.deep.equal(expectedJson);
         });
 
+        it('should return json array when file contains empty rows', function () {
+            //given
+
+            //when
+            let result = index.fieldDelimiter(";").getJsonFromCsv('test/resource/input_with_empty_row_at_the_beginning.csv');
+
+            //then
+            expect(result.length).to.equal(expectedJson.length);
+            expect(result).to.deep.equal(expectedJson);
+        });
+
+        it('should return json array header is not the first line', function () {
+            //given
+
+            //when
+            let result = index.fieldDelimiter(";").indexHeader(5).getJsonFromCsv('test/resource/input_with_header_not_first_line.csv');
+
+            //then
+            expect(result.length).to.equal(expectedJson.length);
+            expect(result).to.deep.equal(expectedJson);
+        });
+
     });
 
 });
