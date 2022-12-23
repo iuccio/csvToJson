@@ -74,6 +74,13 @@ class CsvToJson {
     for (let i = (index + 1); i < lines.length; i++) {
       let currentLine = lines[i].split(fieldDelimiter);
       if (stringUtils.hasContent(currentLine)) {
+
+        if (this.mapCallback && typeof this.mapCallback === 'function') {
+          const data = this.buildJsonResult(headers, currentLine)
+          jsonResult.push(this.mapCallback(headers, data, i));
+
+          continue
+        }
         jsonResult.push(this.buildJsonResult(headers, currentLine));
       }
     }
@@ -136,6 +143,11 @@ class CsvToJson {
     }
     return false;
   }
+
+  map(callback) {
+    this.mapCallback = callback
+  }
+
 
 }
 

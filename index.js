@@ -151,3 +151,18 @@ exports.csvStringToJson = function(csvString) {
 exports.jsonToCsv = function(inputFileName, outputFileName) {
   csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
+
+
+/**
+ * map through individual row.
+ * @param {callback} function takes
+ * callback @param {header} the header or key
+ * callback @param {value} value/data
+ *
+ */
+
+exports.map = function(callback) {
+  // callback = function(header, value, index){  }
+  csvToJson.map(callback)
+  return this
+}
