@@ -72,7 +72,7 @@ class CsvToJson {
 
     let jsonResult = [];
     for (let i = (index + 1); i < lines.length; i++) {
-      let currentLine = lines[i].split(fieldDelimiter);
+      let currentLine = this.split(lines[i]);
       if (stringUtils.hasContent(currentLine)) {
         jsonResult.push(this.buildJsonResult(headers, currentLine));
       }
@@ -137,6 +137,62 @@ class CsvToJson {
     return false;
   }
 
+  hasQuotes(line) {
+    return line.includes('"');
+  }
+
+  split(line) {
+    if(line.length == 0){
+      return [];
+    }
+    let delim = this.getFieldDelimiter();
+    let subSplits = [''];
+    if (this.hasQuotes(line)) {
+        let chars = line.split('');
+
+        let subIndex = 0;
+        let startQuote = false;
+        let isDouble = false;
+        chars.forEach((c, i, arr) => {
+            if (isDouble) { //when run into double just pop it into current and move on
+                subSplits[subIndex] += c;
+                isDouble = false;
+                return;
+            }
+
+            if (c != '"' && c != delim ) {
+                subSplits[subIndex] += c;
+            } else if(c == delim && startQuote){
+                subSplits[subIndex] += c;
+            } else if( c == delim ){
+                subIndex++
+                subSplits[subIndex] = '';
+                return;
+            } else {
+                if (arr[i + 1] === '"') {
+                    //Double quote
+                    isDouble = true;
+                    subSplits[subIndex] += c;
+                } else {
+                    if (!startQuote) {
+                        startQuote = true;
+                        subSplits[subIndex] += c;
+                    } else {
+                        //end
+                        startQuote = false;
+                        subSplits[subIndex] += c;
+                    }
+                }
+            }
+        });
+        if(startQuote){
+            throw new Error('Row contains mismatched quotes!');
+        }
+        return subSplits;
+    } else {
+        line.split(delim);
+    }
+  }
 }
 
 module.exports = new CsvToJson();
