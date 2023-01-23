@@ -190,7 +190,7 @@ class CsvToJson {
         }
         return subSplits;
     } else {
-        line.split(delim);
+        return line.split(delim);
     }
   }
 }
