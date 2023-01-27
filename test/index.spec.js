@@ -167,6 +167,19 @@ describe('API testing', function () {
             expect(result).to.deep.equal(expectedJson);
         });
 
+        it('should handle quoted fields', function () {
+            let result = index.fieldDelimiter(',').getJsonFromCsv('test/resource/input_quoted_fields.csv');
+
+            let first = result[0];
+            expect(first.lastName).to.equal('Langsdon');
+            
+            let second = result[1];
+            expect(second.gender).to.equal('Female" ');
+
+            let third = result[2];
+            expect(third.lastName).to.equal(',Taborre');
+
+        });
     });
 
 });

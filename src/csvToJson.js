@@ -172,15 +172,15 @@ class CsvToJson {
                 if (arr[i + 1] === '"') {
                     //Double quote
                     isDouble = true;
-                    subSplits[subIndex] += c;
+                    //subSplits[subIndex] += c; //Skip because this is escaped quote
                 } else {
                     if (!startQuote) {
                         startQuote = true;
-                        subSplits[subIndex] += c;
+                        //subSplits[subIndex] += c; //Skip because we don't want quotes wrapping value
                     } else {
                         //end
                         startQuote = false;
-                        subSplits[subIndex] += c;
+                        //subSplits[subIndex] += c; //Skip because we don't want quotes wrapping value
                     }
                 }
             }
