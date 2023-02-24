@@ -152,18 +152,28 @@ E.g. if your field delimiter is the comma **,** then:
 ```
 
 #### Support Quoted Fields
-To be able to parse correctly fields wrapped in quote, like the last_name in the first row in the following example:
+To be able to parse correctly fields wrapped in quote, like the **last_name** in the first row in the following example:
 
 |first_name|         last_name          |email|
 |:----------:|:--------------------------:|:---:|
 |Constantin| "Langsdon,Nandson,Gangson" |clangsdon0@hc360.com|
-|Norah|           Raison           |nraison1@wired.com|
 
-yoo need to activate the support quoted fields feature: 
+you need to activate the support quoted fields feature: 
 
 ```js
  csvToJson.supportQuotedField(true).getJsonFromCsv(fileInputName);
 ```
+
+The result will be:
+```json
+[
+  {
+      "firstName": "Constantin",
+      "lastName": "Langsdon,Nandson,Gangson",
+      "email": "clangsdon0@hc360.com"
+    }
+]
+``` 
 
 #### Index header
 If the header is not on the first line you can define the header index like: 
