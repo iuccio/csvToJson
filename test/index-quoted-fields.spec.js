@@ -8,14 +8,17 @@ const index = require('../index');
 describe('API testing quoted fields', function () {
     afterEach(function () {
         index.formatValueByType(false);
+        index.supportQuotedField(false)
     });
 
     it('should handle quoted fields', function () {
-        let result = index.fieldDelimiter(',').getJsonFromCsv('test/resource/input_quoted_fields.csv');
+        let result = index.fieldDelimiter(',')
+                            .supportQuotedField(true)
+                            .getJsonFromCsv('test/resource/input_quoted_fields.csv');
 
         let first = result[0];
-        expect(first.lastName).to.equal('Langsdon');
-            
+        expect(first.lastName).to.equal('Langsdon,Langsdon');
+
         let second = result[1];
         expect(second.gender).to.equal('Female" ');
 
@@ -24,8 +27,26 @@ describe('API testing quoted fields', function () {
 
     });
 
+    it('should handle quoted fields', function () {
+        let result = index.fieldDelimiter(',')
+                            .getJsonFromCsv('test/resource/input_quoted_fields.csv');
+
+        let first = result[0];
+        expect(first.lastName).to.equal('"Langsdon');
+
+        let second = result[1];
+        expect(second.gender).to.equal('"Female"" "');
+
+        let third = result[2];
+        expect(third.lastName).to.equal('"');
+
+    });
+
     it('should handle quoted fields with subarray', function () {
-        let result = index.fieldDelimiter(';').parseSubArray('*',',').getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
+        let result = index.fieldDelimiter(';')
+                            .parseSubArray('*',',')
+                            .supportQuotedField(true)
+                            .getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
 
         let first = result[0];
         expect(first.lastName).to.equal('Langsdon');
@@ -34,6 +55,23 @@ describe('API testing quoted fields', function () {
 
         let second = result[1];
         expect(second.gender).to.equal('Male');
+        expect(second.sons.length).to.equal(3);
+        expect(second.sons).to.have.members(['12','10','13']);
+
+    });
+
+    it('should not handle quoted fields with subarray', function () {
+    	let result = index.fieldDelimiter(';')
+    						.parseSubArray('*',',')
+                          	.getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
+
+        let first = result[0];
+        expect(first.lastName).to.equal('"Langsdon"');
+        expect(first.sons.length).to.equal(3);
+        expect(first.sons).to.have.members(['anto','diego','hamsik']);
+
+        let second = result[1];
+        expect(second.gender).to.equal('"Male"');
         expect(second.sons.length).to.equal(3);
         expect(second.sons).to.have.members(['12','10','13']);
 

@@ -23,6 +23,7 @@
     + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
     + [Generate Object with sub array](#generate-object-with-sub-array)
     + [Define field delimiter](#define-field-delimiter)
+    + [Support Quoted Fields](#support-quoted-fields)
     + [Index header](#index-header)
     + [Empty rows](#empty-rows)
     + [Format property value by type](#format-property-value-by-type)
@@ -148,6 +149,20 @@ E.g. if your field delimiter is the comma **,** then:
 
 ```js
  csvToJson.fieldDelimiter(',').getJsonFromCsv(fileInputName);
+```
+
+#### Support Quoted Fields
+To be able to parse correctly fields wrapped in quote, like the last_name in the first row in the following example:
+
+|first_name|         last_name          |email|
+|:----------:|:--------------------------:|:---:|
+|Constantin| "Langsdon,Nandson,Gangson" |clangsdon0@hc360.com|
+|Norah|           Raison           |nraison1@wired.com|
+
+yoo need to activate the support quoted fields feature: 
+
+```js
+ csvToJson.supportQuotedField(true).getJsonFromCsv(fileInputName);
 ```
 
 #### Index header

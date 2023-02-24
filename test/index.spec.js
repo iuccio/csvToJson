@@ -168,4 +168,49 @@ describe('API testing', function () {
         });
     });
 
+
+	describe('Input config testing', function () {
+		beforeEach(function () {
+			index.supportQuotedField(false);
+			index.fieldDelimiter(";")
+		});
+
+		it('should throw error when isSupportQuotedField active and fieldDelimiter is equal to "', function () {
+        	//given
+
+            //when
+            expect(function(){
+                index.supportQuotedField(true)
+                		.fieldDelimiter('"')
+                    	.getJsonFromCsv(fileInputName);
+            }).to.throw('When SupportQuotedFields is enabled you cannot defined the field delimiter as quote -> ["]');
+
+        });
+		it('should throw error when parseSubArrayDelimiter active and fieldDelimiter is equal to "', function () {
+        	//given
+
+            //when
+            expect(function(){
+                index.supportQuotedField(true)
+                		.parseSubArray('"', ',')
+                    	.getJsonFromCsv(fileInputName);
+            }).to.throw('When SupportQuotedFields is enabled you cannot defined the field parseSubArrayDelimiter as quote -> ["]');
+
+        });
+
+		it('should throw error when parseSubArraySeparator active and parseSubArraySeparator is equal to "', function () {
+        	//given
+
+            //when
+            expect(function(){
+                index.supportQuotedField(true)
+                		.parseSubArray('*', '"')
+                    	.getJsonFromCsv(fileInputName);
+            }).to.throw('When SupportQuotedFields is enabled you cannot defined the field parseSubArraySeparator as quote -> ["]');
+
+        });
+
+	});
+
+
 });

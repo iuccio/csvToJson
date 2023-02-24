@@ -14,6 +14,11 @@ class CsvToJson {
     return this;
   }
 
+  supportQuotedField(active) {
+    this.isSupportQuotedField = active;
+    return this;
+  }
+
   fieldDelimiter(delimiter) {
     this.delimiter = delimiter;
     return this;
@@ -60,6 +65,7 @@ class CsvToJson {
   }
 
   csvToJson(parsedCsv) {
+  	this.validateInputConfig();
     let lines = parsedCsv.split(newLine);
     let fieldDelimiter = this.getFieldDelimiter();
     let index = this.getIndexHeader();
@@ -72,11 +78,17 @@ class CsvToJson {
 
     let jsonResult = [];
     for (let i = (index + 1); i < lines.length; i++) {
-      let currentLine = this.split(lines[i]);
-      if (stringUtils.hasContent(currentLine)) {
-        jsonResult.push(this.buildJsonResult(headers, currentLine));
-      }
-    }
+        let currentLine;
+        if(this.isSupportQuotedField){
+            currentLine = this.split(lines[i]);
+        }
+        else{
+            currentLine = lines[i].split(fieldDelimiter);
+        }
+        if (stringUtils.hasContent(currentLine)) {
+            jsonResult.push(this.buildJsonResult(headers, currentLine));
+        }
+       }
     return jsonResult;
   }
 
@@ -135,6 +147,20 @@ class CsvToJson {
       }
     }
     return false;
+  }
+
+  validateInputConfig(){
+  	if(this.isSupportQuotedField) {
+  	 	if(this.getFieldDelimiter() === '"'){
+  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field delimiter as quote -> ["]');
+  	 	}
+  	 	if(this.parseSubArraySeparator === '"'){
+  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field parseSubArraySeparator as quote -> ["]');
+  	 	}
+  	 	if(this.parseSubArrayDelimiter === '"'){
+  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field parseSubArrayDelimiter as quote -> ["]');
+  	 	}
+  	}
   }
 
   hasQuotes(line) {

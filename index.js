@@ -21,6 +21,13 @@ exports.formatValueByType = function (active = true) {
 };
 
 /**
+ *
+ */
+exports.supportQuotedField = function (active = false) {
+  csvToJson.supportQuotedField(active);
+  return this;
+};
+/**
  * Defines the field delimiter which will be used to split the fields
  */
 exports.fieldDelimiter = function (delimiter) {
