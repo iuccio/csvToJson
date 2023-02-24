@@ -4,7 +4,7 @@
   "description": "Convert CSV to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test": "./node_modules/.bin/mocha --parallel --reporter spec",
     "test-watch": "./node_modules/.bin/mocha -w"
   },
   "repository": {
