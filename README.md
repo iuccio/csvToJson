@@ -30,7 +30,7 @@
       - [Number](#number)
       - [Boolean](#boolean)
     + [Encoding](#encoding)
-    + [Chaining Pattern](#chaining-pattern)
+  * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
@@ -278,7 +278,7 @@ You can read and decode files with the following encoding:
                   .getJsonFromCsv(fileInputName);
       ```
 
-#### Chaining Pattern
+### Chaining Pattern
 
 The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be chained, e.g.:
 
