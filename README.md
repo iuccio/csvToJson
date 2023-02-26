@@ -30,6 +30,7 @@
       - [Number](#number)
       - [Boolean](#boolean)
     + [Encoding](#encoding)
+    + [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
@@ -96,6 +97,7 @@ $ npm install -g convert-csv-to-json
 ```
 
 ### Usage
+
 #### Generate JSON file
 ```js
 let csvToJson = require('convert-csv-to-json');
@@ -275,6 +277,22 @@ You can read and decode files with the following encoding:
        csvToJson.hexEncoding()
                   .getJsonFromCsv(fileInputName);
       ```
+
+#### Chaining Pattern
+
+The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be concatenated, e.g.:
+
+```js
+let csvToJson = require('convert-csv-to-json');
+
+csvToJson.fieldDelimiter(',')
+            .formatValueByType()
+            .parseSubArray("*",',')
+            .supportQuotedField(true)
+            .getJsonFromCsv('myInputFile.csv');
+
+```
+
 
 ## Development
 * Download all csvToJson dependencies:
