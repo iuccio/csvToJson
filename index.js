@@ -21,7 +21,7 @@ exports.formatValueByType = function (active = true) {
 };
 
 /**
- *
+ * If enabled, allows fields wrapped by quotation marks to be parsed correctly and not splitted 
  */
 exports.supportQuotedField = function (active = false) {
   csvToJson.supportQuotedField(active);

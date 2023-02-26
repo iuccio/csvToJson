@@ -124,7 +124,8 @@ Given the above CSV example, to generate a JSON Object with properties that cont
 with the values <b>*diego,marek,dries*</b> you have to call the function ```parseSubArray(delimiter, separator)``` .
 To generate the JSON Object with sub array from the above CSV example:
 ```js
-    csvToJson.parseSubArray('*',',').getJsonFromCsv('myInputFile.csv');
+    csvToJson.parseSubArray('*',',')
+                .getJsonFromCsv('myInputFile.csv');
 ``` 
 The result will be:
 ```json
@@ -148,7 +149,8 @@ In case your CSV file has defined another field delimiter you have to call the f
 E.g. if your field delimiter is the comma **,** then:
 
 ```js
- csvToJson.fieldDelimiter(',').getJsonFromCsv(fileInputName);
+ csvToJson.fieldDelimiter(',')
+            .getJsonFromCsv(fileInputName);
 ```
 
 #### Support Quoted Fields
@@ -161,7 +163,8 @@ To be able to parse correctly fields wrapped in quote, like the **last_name** in
 you need to activate the support quoted fields feature: 
 
 ```js
- csvToJson.supportQuotedField(true).getJsonFromCsv(fileInputName);
+ csvToJson.supportQuotedField(true)
+            .getJsonFromCsv(fileInputName);
 ```
 
 The result will be:
@@ -179,7 +182,8 @@ The result will be:
 If the header is not on the first line you can define the header index like: 
 
 ```js
- csvToJson.indexHeader(3).getJsonFromCsv(fileInputName);
+ csvToJson.indexHeader(3)
+            .getJsonFromCsv(fileInputName);
 ```
 
 #### Empty rows
@@ -188,7 +192,8 @@ Empty rows are ignored and not parsed.
 #### Format property value by type
 If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a boolean Type, use:
 ```js
- csvToJson.formatValueByType().getJsonFromCsv(fileInputName);
+ csvToJson.formatValueByType()
+            .getJsonFromCsv(fileInputName);
 ```
 For example: 
 
@@ -237,31 +242,38 @@ instead of
 You can read and decode files with the following encoding:
  * utf8: 
     ```js
-     csvToJson.utf8Encoding().getJsonFromCsv(fileInputName);
+     csvToJson.utf8Encoding()
+                .getJsonFromCsv(fileInputName);
     ```
  * ucs2:
     ```js
-      csvToJson.ucs2Encoding().getJsonFromCsv(fileInputName);
+      csvToJson.ucs2Encoding()
+                .getJsonFromCsv(fileInputName);
      ```
  * utf16le:
      ```js
-       csvToJson.utf16leEncoding().getJsonFromCsv(fileInputName);
+       csvToJson.utf16leEncoding()
+                  .getJsonFromCsv(fileInputName);
       ```
  * latin1:
      ```js
-       csvToJson.latin1Encoding().getJsonFromCsv(fileInputName);
+       csvToJson.latin1Encoding()
+                  .getJsonFromCsv(fileInputName);
       ```
  * ascii:
      ```js
-       csvToJson.asciiEncoding().getJsonFromCsv(fileInputName);
+       csvToJson.asciiEncoding()
+                  .getJsonFromCsv(fileInputName);
       ```
  * base64:
      ```js
-       csvToJson.base64Encoding().getJsonFromCsv(fileInputName);
+       csvToJson.base64Encoding()
+                  .getJsonFromCsv(fileInputName);
       ```
  * hex:
      ```js
-       csvToJson.hexEncoding().getJsonFromCsv(fileInputName);
+       csvToJson.hexEncoding()
+                  .getJsonFromCsv(fileInputName);
       ```
 
 ## Development
