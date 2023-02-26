@@ -280,7 +280,7 @@ You can read and decode files with the following encoding:
 
 #### Chaining Pattern
 
-The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be concatenated, e.g.:
+The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be chained, e.g.:
 
 ```js
 let csvToJson = require('convert-csv-to-json');
