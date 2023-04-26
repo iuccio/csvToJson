@@ -32,7 +32,7 @@ declare module 'convert-csv-to-json' {
     /**
      * Defines a custom encoding to decode a file
      */
-    utf8Encodingutf8Encoding(): this;
+    utf8Encoding(): this;
 
     /**
      * Defines ucs2 encoding to decode a file
