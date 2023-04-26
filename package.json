@@ -1,8 +1,9 @@
 {
   "name": "convert-csv-to-json",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Convert CSV to JSON",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "./node_modules/.bin/mocha --parallel --reporter spec",
     "test-watch": "./node_modules/.bin/mocha -w"
