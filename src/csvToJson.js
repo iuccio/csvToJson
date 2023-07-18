@@ -9,6 +9,8 @@ const defaultFieldDelimiter = ";";
 
 class CsvToJson {
 
+	#index = 0
+
   formatValueByType(active) {
     this.printValueFormatByType = active;
     return this;
@@ -24,11 +26,11 @@ class CsvToJson {
     return this;
   }
 
-  indexHeader(indexHeader) {
-    if(isNaN(indexHeader)){
+  indexHeader(index) {
+    if(isNaN(index)){
         throw new Error('The index Header must be a Number!');
     }
-    this.indexHeader = indexHeader;
+    this.#index = index;
     return this;
   }
 
@@ -100,10 +102,7 @@ class CsvToJson {
   }
 
   getIndexHeader(){
-    if(this.indexHeader !== null && !isNaN(this.indexHeader)){
-        return this.indexHeader;
-    }
-    return 0;
+    return this.#index;
   }
 
   buildJsonResult(headers, currentLine) {
