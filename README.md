@@ -313,4 +313,5 @@ CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENS
 
 ## Buy me a Coffee	
 Just if you want to support this repository:	
-   * **BTC** tip address: 3KCCK292a61AHrKuVCFZ8Agr3j31Zw8Mzg
+   * **BTC** tip address: 
+37vdjQhbaR7k7XzhMKWzMcnqUxfw1njBNk
