@@ -1,7 +1,5 @@
 'use strict';
 
-let expect = require('chai').expect;
-let assert = require('chai').assert;
 const index = require('../index');
 
 
@@ -17,13 +15,13 @@ describe('API testing quoted fields', function () {
                             .getJsonFromCsv('test/resource/input_quoted_fields.csv');
 
         let first = result[0];
-        expect(first.lastName).to.equal('Langsdon,Langsdon');
+        expect(first.lastName).toEqual('Langsdon,Langsdon');
 
         let second = result[1];
-        expect(second.gender).to.equal('Female" ');
+        expect(second.gender).toEqual('Female" ');
 
         let third = result[2];
-        expect(third.lastName).to.equal(',Taborre');
+        expect(third.lastName).toEqual(',Taborre');
 
     });
 
@@ -32,13 +30,13 @@ describe('API testing quoted fields', function () {
                             .getJsonFromCsv('test/resource/input_quoted_fields.csv');
 
         let first = result[0];
-        expect(first.lastName).to.equal('"Langsdon');
+        expect(first.lastName).toEqual('"Langsdon');
 
         let second = result[1];
-        expect(second.gender).to.equal('"Female"" "');
+        expect(second.gender).toEqual('"Female"" "');
 
         let third = result[2];
-        expect(third.lastName).to.equal('"');
+        expect(third.lastName).toEqual('"');
 
     });
 
@@ -49,14 +47,14 @@ describe('API testing quoted fields', function () {
                             .getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
 
         let first = result[0];
-        expect(first.lastName).to.equal('Langsdon');
-        expect(first.sons.length).to.equal(3);
-        expect(first.sons).to.have.members(['anto','diego','hamsik']);
+        expect(first.lastName).toEqual('Langsdon');
+        expect(first.sons.length).toEqual(3);
+        expect(['anto','diego','hamsik']).toEqual(expect.arrayContaining(first.sons));
 
         let second = result[1];
-        expect(second.gender).to.equal('Male');
-        expect(second.sons.length).to.equal(3);
-        expect(second.sons).to.have.members(['12','10','13']);
+        expect(second.gender).toEqual('Male');
+        expect(second.sons.length).toEqual(3);
+        expect(['12','10','13']).toEqual(expect.arrayContaining(second.sons));
 
     });
 
@@ -66,14 +64,14 @@ describe('API testing quoted fields', function () {
                           	.getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
 
         let first = result[0];
-        expect(first.lastName).to.equal('"Langsdon"');
-        expect(first.sons.length).to.equal(3);
-        expect(first.sons).to.have.members(['anto','diego','hamsik']);
+        expect(first.lastName).toEqual('"Langsdon"');
+        expect(first.sons.length).toEqual(3);
+        expect(['anto','diego','hamsik']).toEqual(expect.arrayContaining(first.sons));
 
         let second = result[1];
-        expect(second.gender).to.equal('"Male"');
-        expect(second.sons.length).to.equal(3);
-        expect(second.sons).to.have.members(['12','10','13']);
+        expect(second.gender).toEqual('"Male"');
+        expect(second.sons.length).toEqual(3);
+        expect(['12','10','13']).toEqual(expect.arrayContaining(second.sons));
 
     });
 

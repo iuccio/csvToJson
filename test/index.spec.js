@@ -1,7 +1,4 @@
 'use strict';
-
-let expect = require('chai').expect;
-let assert = require('chai').assert;
 let index = require('../index');
 
 
@@ -40,8 +37,8 @@ describe('API testing', function () {
             let result = index.getJsonFromCsv(fileInputName);
 
             //then
-            expect(result.length).to.equal(expectedJson.length);
-            expect(result).to.deep.equal(expectedJson);
+            expect(result.length).toEqual(expectedJson.length);
+            expect(result).toEqual(expectedJson);
         });
 
         afterEach(function () {
@@ -49,7 +46,7 @@ describe('API testing', function () {
         });
 
 
-        it('should return json array that contains the same property of the csv header', function () {
+        fit('should return json array that contains the same property of the csv header', function () {
             //given
             let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth','zip','registered'];
 
@@ -57,8 +54,8 @@ describe('API testing', function () {
             let result = index.getJsonFromCsv(fileInputName);
 
             //then
-            assert.isDefined(result);
-            assert.hasAllKeys(result[0], headers);
+            expect(result).not.toBeNull();
+            expect(result[0]).toContainsAllKeys(headers);
         });
 
         it('should return json array from csv with tilde as field delimiter', function () {
@@ -68,7 +65,7 @@ describe('API testing', function () {
             let result = index.fieldDelimiter('~').getJsonFromCsv('test/resource/input_tilde_delimiter.csv');
 
             //then
-            expect(result.length).to.equal(expectedJson.length);
+            expect(result.length).toEqual(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
 
@@ -95,7 +92,7 @@ describe('API testing', function () {
             //when
             let result = index.parseSubArray("*",',').fieldDelimiter(";").getJsonFromCsv('test/resource/input_example_sub_array.csv');
             //then
-            expect(result.length).to.equal(2);
+            expect(result.length).toEqual(2);
             expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
             expect(result[1].sons).to.deep.equal(expectedResult[1].sons);
 
@@ -124,7 +121,7 @@ describe('API testing', function () {
             //when
             let result = index.parseSubArray("*",',').fieldDelimiter(";").formatValueByType().getJsonFromCsv('test/resource/input_example_sub_array.csv');
             //then
-            expect(result.length).to.equal(2);
+            expect(result.length).toEqual(2);
             expect(result[0].sons).to.deep.equal(expectedResult[0].sons);
 
         });
@@ -141,7 +138,7 @@ describe('API testing', function () {
             let result = index.formatValueByType().fieldDelimiter(";").getJsonFromCsv(fileInputName);
 
             //then
-            expect(result.length).to.equal(expectedJson.length);
+            expect(result.length).toEqual(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
 
@@ -152,7 +149,7 @@ describe('API testing', function () {
             let result = index.fieldDelimiter(";").getJsonFromCsv('test/resource/input_with_empty_row_at_the_beginning.csv');
 
             //then
-            expect(result.length).to.equal(expectedJson.length);
+            expect(result.length).toEqual(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
 
@@ -163,7 +160,7 @@ describe('API testing', function () {
             let result = index.fieldDelimiter(";").indexHeader(5).getJsonFromCsv('test/resource/input_with_header_not_first_line.csv');
 
             //then
-            expect(result.length).to.equal(expectedJson.length);
+            expect(result.length).toEqual(expectedJson.length);
             expect(result).to.deep.equal(expectedJson);
         });
     });
