@@ -303,9 +303,9 @@ csvToJson.fieldDelimiter(',')
     ~~~
     npm test
     ~~~
-* Watch Tests
+* Debug Tests
     ~~~
-    npm run test-watch
+    npm run test-debug
     ~~~
 
 ## License
