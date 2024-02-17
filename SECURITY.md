@@ -14,6 +14,7 @@ A generated Github Depedabot PR is normally quickly merged and a new version is 
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 2.0.0   | :white_check_mark: |
 | 1.4.0   | :white_check_mark: |
 | 1.3.3   | :white_check_mark: |
 | 1.3.2   | :white_check_mark: |      
@@ -22,6 +23,7 @@ A generated Github Depedabot PR is normally quickly merged and a new version is 
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 2.0.0   | :white_check_mark: |
 | 1.4.0   | :white_check_mark: |
 | 1.3.3   | :warning: moderate dev dependencies vulnerability|
 | 1.3.2   | :warning: moderate dev dependencies vulnerability|  
