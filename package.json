@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test-watch": "./node_modules/.bin/mocha -w"
+    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles"
   },
   "repository": {
     "type": "git",

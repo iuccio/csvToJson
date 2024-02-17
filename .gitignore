@@ -1,6 +1,7 @@
 .project
 .settings/
 .idea/
+coverage/
 *.iml
 node_modules
 .DS_Store
