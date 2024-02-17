@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles"
+    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles",
+    "version-patch": "npm version patch --force && npm publish && git push --follow-tags",
+    "version-minor": "npm version minor --force && npm publish && git push --follow-tags",
+    "version-major": "npm version major --force && npm publish && git push --follow-tags"
   },
   "repository": {
     "type": "git",
