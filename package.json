@@ -36,9 +36,5 @@
   "homepage": "https://github.com/iuccio/CSVtoJSON#readme",
   "devDependencies": {
     "jest": "^29.7.0"
-  },
-  "dependencies": {
-    "jest-extended": "^4.0.2",
-    "save-dev": "^0.0.1-security"
   }
 }
