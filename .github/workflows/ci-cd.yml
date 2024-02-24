@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-
+    name: build
     runs-on: ubuntu-latest
 
     strategy:
@@ -24,3 +24,19 @@ jobs:
         npm test
       env:
         CI: true
+  
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4      
+    - name: Use Node.js 21.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 21.x
+        registry-url: 'https://registry.npmjs.org'
+    - name: release
+      run: |
+        npm run release
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

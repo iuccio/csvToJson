@@ -32,6 +32,7 @@
     + [Encoding](#encoding)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
+- [CI/CD](#ci/cd-github-action)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
 
@@ -307,6 +308,14 @@ csvToJson.fieldDelimiter(',')
     ~~~
     npm run test-debug
     ~~~
+
+## CI/CD github action
+Pushing on the master branch, depending on the git message, an new version will always be released.
+If the commit message contains the keyword:
+* **[MAJOR]**: new major relase, e.g. v1.0.0 -> v2.0.0 
+* **[PATCH]**: new patch relase, e.g. v1.0.0 -> v1.0.1
+* without any of the above keywords a new minor relase will be applied, e.g. v1.0.0 -> v1.1.0
+
 
 ## License
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
