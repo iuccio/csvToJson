@@ -40,7 +40,8 @@ push_git_info(){
   git commit --amend -m "new release $TAG [skip ci]"
   echo "new commit message: $(git log -1 --pretty=format:"%s")"
   git push
-  git push origin $TAG
+  git tag $TAG
+  git push —tags origin master
 }
 
 execute-new-release(){
