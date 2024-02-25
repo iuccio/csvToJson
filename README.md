@@ -1,5 +1,5 @@
 # CSVtoJSON 
-[![Node CI/CD](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml)
+[![Node CI](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml/badge.svg?branch=master)](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml)
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
@@ -32,7 +32,7 @@
     + [Encoding](#encoding)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
-- [CI/CD](#ci/cd-github-action)
+- [CI CD](#ci-cd-github-action)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
 
@@ -309,7 +309,7 @@ csvToJson.fieldDelimiter(',')
     npm run test-debug
     ~~~
 
-## CI/CD github action
+## CI CD github action
 Pushing on the master branch, depending on the git message, an new version will always be released.
 If the commit message contains the keyword:
 * **[MAJOR]**: new major relase, e.g. v1.0.0 -> v2.0.0 
