@@ -41,6 +41,7 @@ push_git_info(){
   COMMIT_ID=$(git rev-parse HEAD);
   git commit --amend -m "new release $TAG [skip ci]";
   echo "new commit message: $(git log -1 --pretty=format:"%s")";
+  git tag -d $TAG                  # delete the old tag locally
   git tag $TAG $COMMIT_ID;
   git push;
   git push origin refs/tags/$TAG;
