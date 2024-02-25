@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.ACTION_TOKEN }}
     - uses: fregante/setup-git-user@v2      
     - name: Use Node.js 21.x
       uses: actions/setup-node@v4
