@@ -15,7 +15,7 @@ fi
 }
 
 npm_release(){
-  COMMIT_MSG="new release [skip ci]"
+  RELEASE_COMMIT_MSG="new release [skip ci]"
   PATCH_MSG="[PATCH]";
   MAJOR_MSG="[MAJOR]";
   echo "Parsing git message...";
@@ -23,25 +23,25 @@ npm_release(){
   echo "Last commit message: ${COMMIT_MSG}";
   if [[ $COMMIT_MSG == *"$PATCH_MSG"* ]]; then
       echo "Executing new PATCH release..."
-      npm version patch --force -m "$COMMIT_MSG";
+      npm version patch --force -m "{$RELEASE_COMMIT_MSG";
   elif [[ $COMMIT_MSG == *"$MAJOR_MSG"* ]]; then
       echo "Executing new MAJOR release..."
-      npm version major --force -m "$COMMIT_MSG";
+      npm version major --force -m "${RELEASE_COMMIT_MSG}";
   else
     echo "Executing new MINOR release...";
-    npm version minor --force -m "$COMMIT_MSG";
+    npm version minor --force -m "${RELEASE_COMMIT_MSG}";
   fi
   echo "Publish new version..."
-  ##npm publish;
+  npm publish;
   echo "Publish git info...";
-  ##git push --follow-tags
+  git push --follow-tags
   echo "New version successfully published."
 }
 
 execute-new-release(){
     echo "Start Semantic Versioning release...";
     validate_is_master_branch;
-    ##npm_release;
+    npm_release;
     echo "End Semantic Versioning release.";
 }
 
