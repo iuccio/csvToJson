@@ -1,14 +1,14 @@
 {
   "name": "convert-csv-to-json",
-  "version": "2.10.0",
+  "version": "2.8.0",
   "description": "Convert CSV to JSON",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "version-patch": "npm version patch --force",
-    "version-minor": "npm version minor --force",
-    "version-major": "npm version major --force",
+    "version-patch": "npm version patch --force && npm publish && git push --follow-tags",
+    "version-minor": "npm version minor --force && npm publish && git push --follow-tags",
+    "version-major": "npm version major --force && npm publish && git push --follow-tags",
     "release": "./semantic-versioning.sh"
   },
   "repository": {
