@@ -25,22 +25,3 @@ jobs:
       env:
         CI: true
   
-  release:
-    needs: build
-    name: release
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ACTION_TOKEN }}
-    - uses: fregante/setup-git-user@v2      
-    - name: Use Node.js 21.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 21.x
-        registry-url: 'https://registry.npmjs.org'
-    - name: release
-      run: |
-        npm run release
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
