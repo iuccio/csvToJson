@@ -32,9 +32,9 @@ npm_release(){
     npm version minor --force -m "$COMMIT_MSG";
   fi
   echo "Publish new version..."
-  npm publish;
+  ##npm publish;
   echo "Publish git info...";
-  git push --follow-tags
+  ##git push --follow-tags
   echo "New version successfully published."
 }
 
