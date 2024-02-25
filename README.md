@@ -1,5 +1,5 @@
 # CSVtoJSON 
-![Build](https://github.com/iuccio/csvToJson/actions/workflows/nodejs.yml/badge.svg)
+[![Node CI/CD](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml)
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
