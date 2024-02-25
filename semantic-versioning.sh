@@ -6,6 +6,7 @@ validate_is_master_branch(){
 echo "Checking branch...";
 RELEASE_BRANCH="master";
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD);
+echo "current branch: $CURRENT_BRANCH"
 if [ $RELEASE_BRANCH != $CURRENT_BRANCH ]; then
     echo "A new release version is only bumped on branch: $RELEASE_BRANCH.";
     echo "Exiting...";
@@ -40,8 +41,7 @@ push_git_info(){
   git commit --amend -m "new release $TAG [skip ci]"
   echo "new commit message: $(git log -1 --pretty=format:"%s")"
   git push
-  git tag $TAG
-  git push —tags origin master
+  git push origin refs/tags/$TAG
 }
 
 execute-new-release(){
