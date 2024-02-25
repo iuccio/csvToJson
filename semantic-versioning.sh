@@ -37,11 +37,13 @@ echo "New version successfully published."
 
 push_git_info(){
   echo "Publish git info...";
-  TAG=$(git describe --tags --abbrev=0)
-  git commit --amend -m "new release $TAG [skip ci]"
-  echo "new commit message: $(git log -1 --pretty=format:"%s")"
-  git push
-  git push origin refs/tags/$TAG
+  TAG=$(git describe --tags --abbrev=0);
+  COMMIT_ID=$(git rev-parse HEAD);
+  git commit --amend -m "new release $TAG [skip ci]";
+  echo "new commit message: $(git log -1 --pretty=format:"%s")";
+  git tag $TAG $COMMIT_ID;
+  git push;
+  git push origin refs/tags/$TAG;
 }
 
 execute-new-release(){
