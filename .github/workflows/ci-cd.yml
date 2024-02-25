@@ -26,6 +26,7 @@ jobs:
         CI: true
   
   release:
+    needs: build
     name: release
     runs-on: ubuntu-latest
     steps:

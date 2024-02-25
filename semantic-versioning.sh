@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 echo "Start Semantic Versioning release...";
 echo "Checking branch...";
 RELEASE_BRANCH="master";
