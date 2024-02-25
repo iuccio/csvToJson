@@ -1,6 +1,6 @@
 {
   "name": "convert-csv-to-json",
-  "version": "2.24.0",
+  "version": "2.25.0",
   "description": "Convert CSV to JSON",
   "main": "index.js",
   "scripts": {
