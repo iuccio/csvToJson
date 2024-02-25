@@ -30,7 +30,7 @@ else
   npm version minor --force;
 fi
 echo "Publish new version..."
-##npm publish;
+npm publish;
 echo "New version successfully published."
 }
 
@@ -39,7 +39,7 @@ push_git_info(){
   TAG=$(git describe --tags --abbrev=0)
   git commit --amend -m "new release $TAG [skip ci]"
   echo "new commit message: $(git log -1 --pretty=format:"%s")"
-  ##git push --follow-tags
+  git push --follow-tags
 }
 
 execute-new-release(){
