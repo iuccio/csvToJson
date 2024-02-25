@@ -41,7 +41,7 @@ npm_release(){
 execute-new-release(){
     echo "Start Semantic Versioning release...";
     validate_is_master_branch;
-    npm_release;
+    ##npm_release;
     echo "End Semantic Versioning release.";
 }
 
