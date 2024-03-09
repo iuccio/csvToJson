@@ -40,8 +40,11 @@ jobs:
       with:
         node-version: 21.x
         registry-url: 'https://registry.npmjs.org'
-    - name: release
-      run: |
-        npm run release
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: npm-semver-publish-action
+      uses: iuccio/npm-semantic-publish-action@v0.2.0
+      with:
+        target-branch: 'master'
+
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
