@@ -41,7 +41,7 @@ jobs:
         node-version: 21.x
         registry-url: 'https://registry.npmjs.org'
     - name: npm-semver-publish-action
-      uses: iuccio/npm-semantic-publish-action@v0.2.0
+      uses: iuccio/npm-semantic-publish-action@v0.3.0
       with:
         target-branch: 'master'
 
