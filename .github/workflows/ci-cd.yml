@@ -43,10 +43,8 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
     - name: npm-semver-publish
       uses: iuccio/npm-semver-publish-action@v1.10.0
-    
       with:
         target-branch: 'master'
-
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
