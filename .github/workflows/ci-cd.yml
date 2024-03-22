@@ -1,8 +1,6 @@
 name: Node CI
 
-on: 
-  push:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
@@ -31,6 +29,7 @@ jobs:
     needs: build
     name: release
     runs-on: ubuntu-latest
+    if: contains(github.ref, 'master')
     steps:
     - uses: actions/checkout@v4 
       with:
