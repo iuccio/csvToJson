@@ -1,8 +1,6 @@
 name: Node CI
 
-on: 
-  push:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
@@ -29,6 +27,7 @@ jobs:
   
   release:
     needs: build
+    if: github.ref == 'refs/heads/master'
     name: release
     runs-on: ubuntu-latest
     steps:
