@@ -1,14 +1,15 @@
 # CSVtoJSON 
-![Build](https://github.com/iuccio/csvToJson/actions/workflows/nodejs.yml/badge.svg)
+[![Node CI](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml/badge.svg?branch=master)](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml)
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/iuccio/csvToJson/badge.svg)](https://snyk.io/test/github/iuccio/csvToJson)
 [![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
-![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=12.x-brightgreen.svg)
+![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=14.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 
 **This project is not dependent on others packages or libraries.**
 
+This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@latest](https://img.shields.io/badge/GitHub_Action_-iuccio%2Fnpm--semantic--publish--action%40latest-2ea44f)](https://github.com/marketplace/actions/npm-semver-publish)
 
 ## Table of Contents
 
@@ -32,6 +33,7 @@
     + [Encoding](#encoding)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
+- [CI CD](#ci-cd-github-action)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
 
@@ -303,14 +305,25 @@ csvToJson.fieldDelimiter(',')
     ~~~
     npm test
     ~~~
-* Watch Tests
+* Debug Tests
     ~~~
-    npm run test-watch
+    npm run test-debug
     ~~~
+
+## CI CD github action
+
+This repository uses the [GitHub Action iuccio/npm-semantic-publish-action@latest](https://github.com/marketplace/actions/npm-semver-publish-action) to publish the npm packeges.
+Pushing on the master branch, depending on the git message, an new version will always be released.
+If the commit message contains the keyword:
+* **[MAJOR]**: new major relase, e.g. v1.0.0 -> v2.0.0 
+* **[PATCH]**: new patch relase, e.g. v1.0.0 -> v1.0.1
+* without any of the above keywords a new minor relase will be applied, e.g. v1.0.0 -> v1.1.0
+
 
 ## License
 CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
 
 ## Buy me a Coffee	
 Just if you want to support this repository:	
-   * **BTC** tip address: 3KCCK292a61AHrKuVCFZ8Agr3j31Zw8Mzg
+   * **BTC** tip address: 
+37vdjQhbaR7k7XzhMKWzMcnqUxfw1njBNk

@@ -1,0 +1,50 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x, 21.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm ci
+        npm test
+      env:
+        CI: true
+  
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4 
+      with:
+        token: ${{ secrets.ACTION_TOKEN }}
+    - uses: fregante/setup-git-user@v2      
+    - run: git config --global user.name "dependabot"
+    - name: Use Node.js 21.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 21.x
+        registry-url: 'https://registry.npmjs.org'
+    - name: npm-semver-publish
+      uses: iuccio/npm-semver-publish-action@v1.10.0
+      with:
+        target-branch: 'master'
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      

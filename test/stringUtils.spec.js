@@ -1,6 +1,5 @@
 'use strict';
 
-let expect = require('chai').expect;
 let stringUtils = require('../src/util/stringUtils');
 
 describe('StringUtils class testing', function () {
@@ -15,7 +14,7 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.trimPropertyName(value);
 
             //then
-            expect(result).to.equal('value');
+            expect(result).toEqual('value');
         });
     });
 
@@ -28,8 +27,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('number');
-            expect(result).to.equal(23);
+            expect(typeof result).toEqual('number');
+            expect(result).toEqual(23);
         });
 
         it('should return type of Number for non-integers', function () {
@@ -40,8 +39,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('number');
-            expect(result).to.equal(0.23);
+            expect(typeof result).toEqual('number');
+            expect(result).toEqual(0.23);
         });
 
         it('should return type of String when value contains only words', function () {
@@ -52,8 +51,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('string');
-            expect(result).to.equal('value');
+            expect(typeof result).toEqual('string');
+            expect(result).toEqual('value');
         });
 
         it('should return type of String when value contains words and digits', function () {
@@ -64,8 +63,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('string');
-            expect(result).to.equal('11value');
+            expect(typeof result).toEqual('string');
+            expect(result).toEqual('11value');
         });
 
         it('should return empty value when input value is not defined', function () {
@@ -76,8 +75,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('string');
-            expect(result).to.equal('');
+            expect(typeof result).toEqual('string');
+            expect(result).toEqual('');
         });
 
         it('should return empty value when input value is empty string', function () {
@@ -88,8 +87,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('string');
-            expect(result).to.equal('');
+            expect(typeof result).toEqual('string');
+            expect(result).toEqual('');
         });
 
         it('should return Boolean value when input value is "true"', function () {
@@ -100,8 +99,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('boolean');
-            expect(result).to.equal(true);
+            expect(typeof result).toEqual('boolean');
+            expect(result).toEqual(true);
         });
 
         it('should return Boolean value when input value is "false"', function () {
@@ -112,8 +111,8 @@ describe('StringUtils class testing', function () {
             let result = stringUtils.getValueFormatByType(value);
 
             //then
-            expect(result).to.be.an('boolean');
-            expect(result).to.equal(false);
+            expect(typeof result).toEqual('boolean');
+            expect(result).toEqual(false);
         });
 
     });
