@@ -69,8 +69,14 @@ class CsvToJson {
     let lines = parsedCsv.split(newLine);
     let fieldDelimiter = this.getFieldDelimiter();
     let index = this.getIndexHeader();
-    let headers = lines[index].split(fieldDelimiter);
-
+    let headers;
+    
+    if(this.isSupportQuotedField){
+      headers = this.split(lines[index]);
+    } else {
+      headers = lines[index].split(fieldDelimiter);
+    }
+    
     while(!stringUtils.hasContent(headers) && index <= lines.length){
         index = index + 1;
         headers = lines[index].split(fieldDelimiter);
