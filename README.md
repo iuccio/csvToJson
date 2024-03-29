@@ -6,16 +6,23 @@
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 ![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=14.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
+[![NPM total downloads](https://img.shields.io/npm/dt/convert-csv-to-json.svg?style=flat)](https://npmjs.org/package/convert-csv-to-json)
+
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
 **This project is not dependent on others packages or libraries.**
 
 This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@latest](https://img.shields.io/badge/GitHub_Action_-iuccio%2Fnpm--semantic--publish--action%40latest-2ea44f)](https://github.com/marketplace/actions/npm-semver-publish)
+
+Please consider following this project's author, [Antò](https://github.com/iuccio), and consider starring the project to show your :heart: and support.
 
 ## Table of Contents
 
 <!-- toc -->
 
 - [Description](#description)
+- [Support for JS & TS](#support-for-js--ts)
 - [Prerequisites](#prerequisites)
 - [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
   * [Install](#install)
@@ -33,7 +40,7 @@ This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@late
     + [Encoding](#encoding)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
-- [CI CD](#ci-cd-github-action)
+- [CI CD github action](#ci-cd-github-action)
 - [License](#license)
 - [Buy me a Coffee](#buy-me-a-coffee)
 
@@ -81,6 +88,9 @@ will generate:
  }
 ]
 ```
+## Support for JS & TS
+
+This package is compatible with ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) and ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white).
 
 ## Prerequisites
 **NPM** (see [Installing Npm](https://docs.npmjs.com/getting-started/installing-node)).

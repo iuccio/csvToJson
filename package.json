@@ -31,7 +31,11 @@
     "npm",
     "npm-package",
     "npm-module",
-    "csv-parser"
+    "csv-parser",
+    "js",
+    "javascript",
+    "ts",
+    "typescript"
   ],
   "author": "iuccio",
   "license": "ISC",
