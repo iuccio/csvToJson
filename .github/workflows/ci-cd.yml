@@ -27,7 +27,6 @@ jobs:
   
   release:
     permissions:
-      actions: write
       contents: write
       id-token: write
     needs: build
@@ -36,14 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Git Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4 
     - name: Use Node.js 21.x
       uses: actions/setup-node@v4
       with:
         node-version: 21.x
         registry-url: 'https://registry.npmjs.org'
-    - name: Execute semver npm publishing
-      uses: iuccio/npm-semver-publish-action@v1.31.0
+    - name: npm-semver-publish
+      uses: iuccio/npm-semver-publish-action@v1.10.0
       with:
         target-branch: 'master'
         provenance: true
