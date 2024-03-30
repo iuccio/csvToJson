@@ -15,7 +15,8 @@
 
 This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@latest](https://img.shields.io/badge/GitHub_Action_-iuccio%2Fnpm--semantic--publish--action%40latest-2ea44f)](https://github.com/marketplace/actions/npm-semver-publish)
 
-Please consider following this project's author, [Antò](https://github.com/iuccio), and consider starring the project to show your :heart: and support.
+Follow [me](https://github.com/iuccio), and consider starring the project to
+show your :heart: and support.
 
 ## Table of Contents
 
