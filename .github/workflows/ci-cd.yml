@@ -26,16 +26,16 @@ jobs:
         CI: true
   
   release:
-    permissions:
-      contents: write
-      id-token: write
     needs: build
+    permissions: 
+      id-token: write
     if: github.ref == 'refs/heads/master'
     name: release
     runs-on: ubuntu-latest
     steps:
-    - name: Git Checkout
-      uses: actions/checkout@v4 
+    - uses: actions/checkout@v4 
+      with:
+        token: ${{ secrets.ACTION_TOKEN }}
     - uses: fregante/setup-git-user@v2      
     - run: git config --global user.name "dependabot"
     - name: Use Node.js 21.x
