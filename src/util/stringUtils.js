@@ -3,7 +3,7 @@
 class StringUtils {
 
     trimPropertyName(value) {
-        return value.replace(/\s/g, '');
+        return value.trim();
     }
 
     getValueFormatByType(value) {
