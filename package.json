@@ -38,7 +38,7 @@
     "typescript"
   ],
   "author": "iuccio",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/iuccio/CSVtoJSON/issues"
   },
