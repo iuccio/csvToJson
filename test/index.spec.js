@@ -59,6 +59,38 @@ describe('API testing', function () {
             expect(resultHeaders).toEqual(headers);
         });
 
+
+        it('should not remove empty spaces from header field', function () {
+            //given
+            let headers = ['first Name', 'last Name', 'email', 'gender', 'age', 'birth'];
+            
+            //when
+            let result = index.trimHeaderFieldWhiteSpace(false)
+                .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
+
+
+            const resultHeaders = Object.keys(result[0]);
+            expect(result).not.toBeNull();
+            expect(resultHeaders).toEqual(headers);
+    
+        });
+
+
+        it('should remove empty spaces from header field', function () {
+            //given
+            let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth'];
+            
+            //when
+            let result = index.trimHeaderFieldWhiteSpace(true)
+                .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
+
+            const resultHeaders = Object.keys(result[0]);
+            expect(result).not.toBeNull();
+            expect(resultHeaders).toEqual(headers);
+    
+        });
+
+
         it('should return json array from csv with tilde as field delimiter', function () {
             //given
 

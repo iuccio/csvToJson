@@ -6,15 +6,26 @@ describe('StringUtils class testing', function () {
 
     describe('trimPropertyName()', function () {
 
-        it('Should trim input value', function () {
+        it('Should trim input value with empty spaces', function () {
             //given
             let value = ' value ';
 
             //when
-            let result = stringUtils.trimPropertyName(value);
+            let result = stringUtils.trimPropertyName(true,value);
 
             //then
             expect(result).toEqual('value');
+        });
+
+        it('Should trim input value without empty spaces', function () {
+            //given
+            let value = ' val ue ';
+
+            //when
+            let result = stringUtils.trimPropertyName(false,value);
+
+            //then
+            expect(result).toEqual('val ue');
         });
     });
 

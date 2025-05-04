@@ -32,6 +32,8 @@ show your :heart: and support.
     + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
     + [Generate Object with sub array](#generate-object-with-sub-array)
     + [Define field delimiter](#define-field-delimiter)
+    + [Trim header field](#trim-header-field)
+    + [Trim header field with whitespaces](#trim-header-field-with-whitespaces)
     + [Support Quoted Fields](#support-quoted-fields)
     + [Index header](#index-header)
     + [Empty rows](#empty-rows)
@@ -165,6 +167,19 @@ E.g. if your field delimiter is the comma **,** then:
 
 ```js
  csvToJson.fieldDelimiter(',')
+            .getJsonFromCsv(fileInputName);
+```
+
+#### Trim header field
+
+The content of the field header is cut off at the beginning and end of the string. E.g. " Last Name " -> "Last Name".
+
+#### Trim header field with whitespaces
+
+Use the method *trimHeaderFieldWhiteSpace(true)* to remove the whitespaces in an header field (E.g. " Last Name " -> "LastName"): 
+
+```js
+ csvToJson.rimHeaderFieldWhiteSpace(true)
             .getJsonFromCsv(fileInputName);
 ```
 

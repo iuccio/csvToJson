@@ -2,8 +2,12 @@
 
 class StringUtils {
 
-    trimPropertyName(value) {
-        return value.replace(/\s/g, '');
+    trimPropertyName(isTrimHeaderFieldWhiteSpace,value) {
+        if(isTrimHeaderFieldWhiteSpace) {
+            return value.replace(/\s/g, '');
+        }
+        return value.trim();
+        
     }
 
     getValueFormatByType(value) {

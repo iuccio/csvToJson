@@ -24,6 +24,11 @@ class CsvToJson {
     return this;
   }
 
+  trimHeaderFieldWhiteSpace(active) {
+    this.isTrimHeaderFieldWhiteSpace = active;
+    return this;
+  }
+
   indexHeader(indexHeader) {
     if(isNaN(indexHeader)){
         throw new Error('The index Header must be a Number!');
@@ -115,7 +120,7 @@ class CsvToJson {
   buildJsonResult(headers, currentLine) {
     let jsonObject = {};
     for (let j = 0; j < headers.length; j++) {
-      let propertyName = stringUtils.trimPropertyName(headers[j]);
+      let propertyName = stringUtils.trimPropertyName(this.isTrimHeaderFieldWhiteSpace, headers[j]);
       let value = currentLine[j];
 
       if(this.isParseSubArray(value)){

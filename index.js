@@ -36,6 +36,14 @@ exports.fieldDelimiter = function (delimiter) {
 };
 
 /**
+ * If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
+ */
+exports.trimHeaderFieldWhiteSpace = function (active = false) {
+  csvToJson.trimHeaderFieldWhiteSpace(active);
+  return this;
+};
+
+/**
  * Defines the index where the header is defined
  */
 exports.indexHeader = function (index) {
