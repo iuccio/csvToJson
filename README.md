@@ -179,7 +179,7 @@ The content of the field header is cut off at the beginning and end of the strin
 Use the method *trimHeaderFieldWhiteSpace(true)* to remove the whitespaces in an header field (E.g. " Last Name " -> "LastName"): 
 
 ```js
- csvToJson.rimHeaderFieldWhiteSpace(true)
+ csvToJson.trimHeaderFieldWhiteSpace(true)
             .getJsonFromCsv(fileInputName);
 ```
 
