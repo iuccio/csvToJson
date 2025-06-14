@@ -338,7 +338,7 @@ csvToJson.fieldDelimiter(',')
 
 ## CI CD github action
 
-This repository uses the [GitHub Action iuccio/npm-semantic-publish-action@latest](https://github.com/marketplace/actions/npm-semver-publish-action) to publish the npm packeges.
+This repository uses the [GitHub Action iuccio/npm-semantic-publish-action@latest](https://github.com/marketplace/actions/npm-semver-publish) to publish the npm packeges.
 Pushing on the master branch, depending on the git message, an new version will always be released.
 If the commit message contains the keyword:
 * **[MAJOR]**: new major relase, e.g. v1.0.0 -> v2.0.0 
