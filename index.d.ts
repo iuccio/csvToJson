@@ -6,9 +6,17 @@ declare module 'convert-csv-to-json' {
     formatValueByType(active: boolean): this;
 
     /**
-     *
+     * Removes any whitespaces in the header field
+     * @defaultValue `false`
+     */
+    trimHeaderFieldWhiteSpace(active: boolean): this;
+
+    /**
+     * Makes parser aware of quoted fields
+     * @defaultValue `false`
      */
     supportQuotedField(active: boolean): this;
+
     /**
      * Defines the field delimiter which will be used to split the fields
      */
