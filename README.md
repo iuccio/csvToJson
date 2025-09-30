@@ -347,7 +347,7 @@ If the commit message contains the keyword:
 
 
 ## License
-CSVtoJSON is licensed under the GNU General Public License v3.0 [License](LICENSE).
+CSVtoJSON is licensed under the MIT [License](LICENSE).
 
 ## Buy me a Coffee	
 Just if you want to support this repository:	
