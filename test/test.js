@@ -1,9 +1,9 @@
 'use strict'
 
-try {
+if (process.versions.node.split('.')[0] >= 20) {
     module.exports = require('node:test');
     return
-} catch (e) { /* Ignore */ }
+}
 
 // Simple api-compatible to nodes own testrunner as fallback
 
