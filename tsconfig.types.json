@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": ["./csv-to-json.js"]
+}

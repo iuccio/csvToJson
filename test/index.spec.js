@@ -57,7 +57,7 @@ describe('API testing', function () {
             let headers = ['first Name', 'last Name', 'email', 'gender', 'age', 'birth'];
 
             //when
-            let result = index.setShouldtrimHeaderFieldWhiteSpace(false)
+            let result = index.setShouldRemoveAllWhiteSpaceInHeaderField(false)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
             const resultHeaders = Object.keys(result[0]);
@@ -69,7 +69,7 @@ describe('API testing', function () {
             let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth'];
 
             //when
-            let result = index.setShouldtrimHeaderFieldWhiteSpace(true)
+            let result = index.setShouldRemoveAllWhiteSpaceInHeaderField(true)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
             const resultHeaders = Object.keys(result[0]);

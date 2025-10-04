@@ -2,9 +2,10 @@
   "name": "convert-csv-to-json",
   "version": "3.10.0",
   "description": "Convert CSV to JSON",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "csv-to-json.js",
+  "types": "csv-to-json.ts",
   "scripts": {
+    "build:types": "tsc --project tsconfig.types.json",
     "test": "node ./test/encoding.spec.js && node ./test/index.spec.js && node ./test/index-quoted-fields.spec.js && node ./test/string-utils.spec.js",
     "version-patch": "npm version patch",
     "version-minor": "npm version minor",
@@ -41,5 +42,9 @@
   "bugs": {
     "url": "https://github.com/iuccio/CSVtoJSON/issues"
   },
-  "homepage": "https://github.com/iuccio/CSVtoJSON#readme"
+  "homepage": "https://github.com/iuccio/CSVtoJSON#readme",
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "typescript": "^5.9.3"
+  }
 }

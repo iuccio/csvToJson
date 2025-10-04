@@ -3,9 +3,9 @@
 const { describe, it } = require('./test');
 const CsvToJson = require('../csv-to-json.js');
 
-describe('StringUtils class testing', function () {
+describe('string operations testing', function () {
 
-    describe('trimPropertyName()', function () {
+    describe('trim()', function () {
 
         it('Should trim input value with empty spaces', function (t) {
             //given

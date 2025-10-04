@@ -1,6 +1,6 @@
 'use strict'
 
-if (process.versions.node.split('.')[0] >= 20) {
+if (process.versions.node.split('.').map(v => Number(v))[0] >= 20) {
     module.exports = require('node:test');
     return
 }
@@ -29,7 +29,7 @@ function describe(name, fn) {
     // Pop hook context when exiting describe block
     hookStack.pop();
 
-    console.groupEnd(name);
+    console.groupEnd();
 }
 
 /** @param {() => void} fn */

@@ -1,6 +1,6 @@
 "use strict";
 
-const fs = require('fs');
+const fs = require('node:fs');
 
 /**
  * @param {string} fileInputName 
@@ -30,7 +30,7 @@ const newLineRegex = /\r?\n/;
  * @param {string} value 
  * @returns {string}
  */
-function trimPropertyName(removeAllWhiteSpace, value) {
+function trim(removeAllWhiteSpace, value) {
   return removeAllWhiteSpace
     ? value.replace(/\s/g, '')
     : value.trim();
@@ -70,21 +70,6 @@ function hasContent(values) {
   return false;
 }
 
-/**
- * @typedef {object} CsvToJsonOptions
- * @property {string} [delimiter=';'] - The field delimiter which will be used to split the fields
- * @property {BufferEncoding} [encoding='utf8'] - The file encoding
- * @property {number} [indexHeader=0] - The index where the header is defined
- * @property {boolean} [supportQuotedField=false] - Makes parser aware of quoted fields
- * @property {boolean} [printValueFormatByType=false] - Prints a digit as Number type (for example 32 instead of '32')
- * @property {boolean} [parseSubArrays=false] - Whether to parse sub arrays
- * @property {string} [parseSubArrayDelimiter='*'] - The delimiter to identify a sub array
- * @property {string} [parseSubArraySeparator=','] - The separator to split values in a sub array
- * @property {boolean} [trimHeaderFieldWhiteSpace=false] - If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
- */
-
-/** @typedef {Array<string>} CSVHeaders */
-
 class CsvToJson {
   /** @type {BufferEncoding} */
   #encoding;
@@ -111,7 +96,7 @@ class CsvToJson {
   #delimiter;
 
   /** @type {boolean} */
-  #shouldTrimHeaderFieldWhiteSpace;
+  #shouldRemoveAllWhiteSpaceInHeaderField;
 
   /**
    * @param {CsvToJsonOptions} opts 
@@ -125,7 +110,7 @@ class CsvToJson {
     this.#parseSubArrays = opts.parseSubArrays || false;
     this.#parseSubArrayDelimiter = opts.parseSubArrayDelimiter || '*';
     this.#parseSubArraySeparator = opts.parseSubArraySeparator || ',';
-    this.#shouldTrimHeaderFieldWhiteSpace = opts.trimHeaderFieldWhiteSpace || false;
+    this.#shouldRemoveAllWhiteSpaceInHeaderField = opts.trimHeaderFieldWhiteSpace || false;
   }
 
   /**
@@ -168,8 +153,8 @@ class CsvToJson {
    * @param {boolean} [active = false]
    * @return {this}
    */
-  setShouldtrimHeaderFieldWhiteSpace(active = false) {
-    this.#shouldTrimHeaderFieldWhiteSpace = active;
+  setShouldRemoveAllWhiteSpaceInHeaderField(active = false) {
+    this.#shouldRemoveAllWhiteSpaceInHeaderField = active;
     return this;
   }
 
@@ -282,7 +267,7 @@ class CsvToJson {
     }
 
     for (let i = 0; i < headers.length; i++) {
-      headers[i] = trimPropertyName(this.#shouldTrimHeaderFieldWhiteSpace, headers[i]);
+      headers[i] = trim(this.#shouldRemoveAllWhiteSpaceInHeaderField, headers[i]);
       this.#validateHeader(headers[i]);
     }
 
@@ -450,6 +435,21 @@ class CsvToJson {
     }
   }
 }
+
+/** @typedef {Array<string>} CSVHeaders */
+
+/**
+ * @typedef {Object} CsvToJsonOptions
+ * @property {string} [delimiter=';'] The field delimiter which will be used to split the fields
+ * @property {BufferEncoding} [encoding='utf8'] The file encoding
+ * @property {number} [indexHeader=0] The index where the header is defined
+ * @property {boolean} [supportQuotedField=false] Makes parser aware of quoted fields
+ * @property {boolean} [printValueFormatByType=false] Prints a digit as Number type (for example 32 instead of '32')
+ * @property {boolean} [parseSubArrays=false] Whether to parse sub arrays
+ * @property {string} [parseSubArrayDelimiter='*'] The delimiter to identify a sub array
+ * @property {string} [parseSubArraySeparator=','] The separator to split values in a sub array
+ * @property {boolean} [trimHeaderFieldWhiteSpace=false] If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
+ */
 
 module.exports = CsvToJson;
 module.exports.default = CsvToJson;
