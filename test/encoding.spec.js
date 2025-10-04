@@ -1,12 +1,12 @@
 'use strict';
 
 const { describe, it } = require('./test');
-const index = require('../index');
+const { CsvToJson } = require('../csv-to-json');
 
 describe('Encoding testing', function () {
     it('should return an object with latin1 encode decoded', function (t) {
         //when
-        let result = index.latin1Encoding().getJsonFromCsv('test/resource/input_latin1_encode.csv');
+        let result = new CsvToJson({ encoding: 'latin1' }).getJsonFromCsv('test/resource/input_latin1_encode.csv');
 
         //then
         t.assert.notStrictEqual(result, null);

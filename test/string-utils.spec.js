@@ -1,7 +1,7 @@
 'use strict';
 
 const { describe, it } = require('./test');
-const CsvToJson = require('../src/csv-to-json.js');
+const CsvToJson = require('../csv-to-json.js');
 
 describe('StringUtils class testing', function () {
 

@@ -189,13 +189,16 @@ class CsvToJson {
 
   /**
    * Defines how to match and parse a sub array
+   * @param {boolean} [active = false]
    * @param {string} [delimiter='*'] 
-   * @param {string} [separator=','] 
+   * @param {string} [separator=',']
+   * @returns {this}
    */
-  parseSubArray(delimiter = '*', separator = ',') {
-    this.#parseSubArrays = true;
+  setParseSubArray(active = false, delimiter = '*', separator = ',') {
+    this.#parseSubArrays = active;
     this.#parseSubArrayDelimiter = delimiter;
     this.#parseSubArraySeparator = separator;
+    return this;
   }
 
   /**

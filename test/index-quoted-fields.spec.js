@@ -1,17 +1,19 @@
 'use strict';
 
 const { describe, it, afterEach } = require('./test');
-const index = require('../index');
+const { CsvToJson } = require('../csv-to-json');
 
 describe('API testing quoted fields', function () {
+    const index = new CsvToJson();
+
     afterEach(function () {
         index.formatValueByType(false);
-        index.supportQuotedField(false);
+        index.setSupportQuotedField(false);
     });
 
     it('should handle quoted fields', function (t) {
-        let result = index.fieldDelimiter(',')
-            .supportQuotedField(true)
+        let result = index.setDelimiter(',')
+            .setSupportQuotedField(true)
             .getJsonFromCsv('test/resource/input_quoted_fields.csv');
 
         let first = result[0];
@@ -25,7 +27,7 @@ describe('API testing quoted fields', function () {
     });
 
     it('should handle quoted fields', function (t) {
-        let result = index.fieldDelimiter(',')
+        let result = index.setDelimiter(',')
             .getJsonFromCsv('test/resource/input_quoted_fields.csv');
 
         let first = result[0];
@@ -39,9 +41,9 @@ describe('API testing quoted fields', function () {
     });
 
     it('should handle quoted fields with subarray', function (t) {
-        let result = index.fieldDelimiter(';')
-            .parseSubArray('*', ',')
-            .supportQuotedField(true)
+        let result = index.setDelimiter(';')
+            .setParseSubArray(true, '*', ',')
+            .setSupportQuotedField(true)
             .getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
 
         let first = result[0];
@@ -62,8 +64,8 @@ describe('API testing quoted fields', function () {
     });
 
     it('should not handle quoted fields with subarray', function (t) {
-        let result = index.fieldDelimiter(';')
-            .parseSubArray('*', ',')
+        let result = index.setDelimiter(';')
+            .setParseSubArray(true, '*', ',')
             .getJsonFromCsv('test/resource/input_quoted_fields_with_subarray.csv');
 
         let first = result[0];
