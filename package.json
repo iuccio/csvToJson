@@ -45,6 +45,7 @@
   "homepage": "https://github.com/iuccio/CSVtoJSON#readme",
   "devDependencies": {
     "@types/node": "^24.6.2",
+    "tinybench": "^5.0.1",
     "typescript": "^5.9.3"
   }
 }
