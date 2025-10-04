@@ -1,15 +1,15 @@
 "use strict";
 
-let csvToJson = require("./src/csvToJson.js");
+let csvToJson = new (require("./src/csv-to-json.js"))();
 
 const encodingOps = {
-    utf8: 'utf8',
-    ucs2: 'ucs2',
-    utf16le: 'utf16le',
-    latin1: 'latin1',
-    ascii: 'ascii',
-    base64: 'base64',
-    hex: 'hex'
+  utf8: 'utf8',
+  ucs2: 'ucs2',
+  utf16le: 'utf16le',
+  latin1: 'latin1',
+  ascii: 'ascii',
+  base64: 'base64',
+  hex: 'hex'
 };
 
 /**
@@ -24,14 +24,14 @@ exports.formatValueByType = function (active = true) {
  * If enabled, allows fields wrapped by quotation marks to be parsed correctly and not splitted 
  */
 exports.supportQuotedField = function (active = false) {
-  csvToJson.supportQuotedField(active);
+  csvToJson.setSupportQuotedField(active);
   return this;
 };
 /**
  * Defines the field delimiter which will be used to split the fields
  */
 exports.fieldDelimiter = function (delimiter) {
-  csvToJson.fieldDelimiter(delimiter);
+  csvToJson.setDelimiter(delimiter);
   return this;
 };
 
@@ -39,7 +39,7 @@ exports.fieldDelimiter = function (delimiter) {
  * If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
  */
 exports.trimHeaderFieldWhiteSpace = function (active = false) {
-  csvToJson.trimHeaderFieldWhiteSpace(active);
+  csvToJson.setShouldtrimHeaderFieldWhiteSpace(active);
   return this;
 };
 
@@ -47,7 +47,7 @@ exports.trimHeaderFieldWhiteSpace = function (active = false) {
  * Defines the index where the header is defined
  */
 exports.indexHeader = function (index) {
-  csvToJson.indexHeader(index);
+  csvToJson.setIndexHeader(index);
   return this;
 };
 
@@ -63,7 +63,7 @@ exports.parseSubArray = function (delimiter, separator) {
  * Defines a custom encoding to decode a file
  */
 exports.customEncoding = function (encoding) {
-  csvToJson.encoding = encoding;
+  csvToJson.setEncoding(encoding);
   return this;
 };
 
@@ -71,7 +71,7 @@ exports.customEncoding = function (encoding) {
  * Defines a custom encoding to decode a file
  */
 exports.utf8Encoding = function utf8Encoding() {
-  csvToJson.encoding = encodingOps.utf8;
+  csvToJson.setEncoding(utf8);
   return this;
 };
 
@@ -79,7 +79,7 @@ exports.utf8Encoding = function utf8Encoding() {
  * Defines ucs2 encoding to decode a file
  */
 exports.ucs2Encoding = function () {
-  csvToJson.encoding = encodingOps.ucs2;
+  csvToJson.setEncoding(ucs2);
   return this;
 };
 
@@ -87,7 +87,7 @@ exports.ucs2Encoding = function () {
  * Defines utf16le encoding to decode a file
  */
 exports.utf16leEncoding = function () {
-  csvToJson.encoding = encodingOps.utf16le;
+  csvToJson.setEncoding(utf16le);
   return this;
 };
 
@@ -95,7 +95,7 @@ exports.utf16leEncoding = function () {
  * Defines latin1 encoding to decode a file
  */
 exports.latin1Encoding = function () {
-  csvToJson.encoding = encodingOps.latin1;
+  csvToJson.setEncoding(encodingOps.latin1)
   return this;
 };
 
@@ -103,7 +103,7 @@ exports.latin1Encoding = function () {
  * Defines ascii encoding to decode a file
  */
 exports.asciiEncoding = function () {
-  csvToJson.encoding = encodingOps.ascii;
+  csvToJson.setEncoding(ascii);
   return this;
 };
 
@@ -129,7 +129,7 @@ exports.hexEncoding = function () {
  * @param {outputFileName} path/filename
  *
  */
-exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
+exports.generateJsonFileFromCsv = function (inputFileName, outputFileName) {
   if (!inputFileName) {
     throw new Error("inputFileName is not defined!!!");
   }
@@ -145,14 +145,14 @@ exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
  * @return {Array} Array of Object in json format
  *
  */
-exports.getJsonFromCsv = function(inputFileName) {
+exports.getJsonFromCsv = function (inputFileName) {
   if (!inputFileName) {
     throw new Error("inputFileName is not defined!!!");
   }
   return csvToJson.getJsonFromCsv(inputFileName);
 };
 
-exports.csvStringToJson = function(csvString) {
+exports.csvStringToJson = function (csvString) {
   return csvToJson.csvStringToJson(csvString);
 };
 
@@ -163,6 +163,6 @@ exports.csvStringToJson = function(csvString) {
  *
  * @deprecated Use generateJsonFileFromCsv()
  */
-exports.jsonToCsv = function(inputFileName, outputFileName) {
+exports.jsonToCsv = function (inputFileName, outputFileName) {
   csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };

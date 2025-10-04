@@ -56,6 +56,7 @@ describe('API testing', function () {
         it('should not remove empty spaces from header field', function (t) {
             let headers = ['first Name', 'last Name', 'email', 'gender', 'age', 'birth'];
 
+            //when
             let result = index.trimHeaderFieldWhiteSpace(false)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
@@ -67,6 +68,7 @@ describe('API testing', function () {
         it('should remove empty spaces from header field', function (t) {
             let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth'];
 
+            //when
             let result = index.trimHeaderFieldWhiteSpace(true)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
@@ -101,6 +103,7 @@ describe('API testing', function () {
                 sons: ['12', '10', '13']
             }];
 
+            //when
             let result = index.parseSubArray("*", ',').fieldDelimiter(";").getJsonFromCsv('test/resource/input_example_sub_array.csv');
 
             t.assert.strictEqual(result.length, 2);
@@ -126,9 +129,9 @@ describe('API testing', function () {
                 birth: '10.02.1965',
                 sons: [12, 10, 13]
             }];
-
+            //when            
             let result = index.parseSubArray("*", ',').fieldDelimiter(";").formatValueByType().getJsonFromCsv('test/resource/input_example_sub_array.csv');
-
+            //then
             t.assert.strictEqual(result.length, 2);
             t.assert.deepStrictEqual(result[0].sons, expectedResult[0].sons);
         });
