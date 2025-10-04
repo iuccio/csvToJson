@@ -436,6 +436,10 @@ class CsvToJson {
   }
 }
 
+// These JSDoc typedefs are at the end the file to avoid typescript to include
+// them in the generated .d.ts file. The corresponding types will be generated
+// nonetheless.
+
 /** @typedef {Array<string>} CSVHeaders */
 
 /**
