@@ -74,9 +74,9 @@ declare class CsvToJson {
     getJsonFromCsv(fileInputName: string): any[];
     /**
      * @param {string} csvString
-     * @returns {Array<object>}
+     * @returns {Array<Record<string, string|number|boolean|Array>>}
      */
-    csvStringToJson(csvString: string): Array<object>;
+    csvStringToJson(csvString: string): Array<Record<string, string | number | boolean | any[]>>;
     /**
      * @param {CSVHeaders} headers
      * @param {Array<string>} currentLine
@@ -126,6 +126,6 @@ type CsvToJsonOptions = {
     /**
      * If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
      */
-    trimHeaderFieldWhiteSpace?: boolean;
+    removeAllWhiteSpaceInHeaderField?: boolean;
 };
 declare const encodings: readonly ["utf8", "ucs2", "utf16le", "latin1", "ascii", "base64", "hex"];

@@ -110,7 +110,7 @@ class CsvToJson {
     this.#parseSubArrays = opts.parseSubArrays || false;
     this.#parseSubArrayDelimiter = opts.parseSubArrayDelimiter || '*';
     this.#parseSubArraySeparator = opts.parseSubArraySeparator || ',';
-    this.#shouldRemoveAllWhiteSpaceInHeaderField = opts.trimHeaderFieldWhiteSpace || false;
+    this.#shouldRemoveAllWhiteSpaceInHeaderField = opts.removeAllWhiteSpaceInHeaderField || false;
   }
 
   /**
@@ -241,7 +241,7 @@ class CsvToJson {
 
   /**
    * @param {string} csvString 
-   * @returns {Array<object>}
+   * @returns {Array<Record<string, string|number|boolean|Array>>}
    */
   csvStringToJson(csvString) {
     return this.#parse(csvString);
@@ -249,7 +249,7 @@ class CsvToJson {
 
   /**
    * @param {string} parsedCsv 
-   * @returns {Array<object>}
+   * @returns {Array<Record<string, string|number|boolean|Array>>}
    */
   #parse(parsedCsv) {
     this.#validateInputConfig();
@@ -258,7 +258,7 @@ class CsvToJson {
     let index = this.#indexHeader;
 
     /** @type {CSVHeaders} */
-    let headers = this.#split(lines[index]);
+    let headers = this.#parseLine(lines[index]);
 
     // Skip empty lines until we find a header
     while (!hasContent(headers) && index <= lines.length) {
@@ -273,7 +273,7 @@ class CsvToJson {
 
     let jsonResult = [];
     for (let i = (index + 1); i < lines.length; i++) {
-      const currentLine = this.#split(lines[i]);
+      const currentLine = this.#parseLine(lines[i]);
       if (hasContent(currentLine)) {
         jsonResult.push(this.buildJsonResult(headers, currentLine));
       }
@@ -378,7 +378,7 @@ class CsvToJson {
    * @returns {Array<string>}
    * @throws {SyntaxError} when the line contains mismatched quotes
    */
-  #split(line) {
+  #parseLine(line) {
     if (line.length === 0) {
       return [];
     }
@@ -452,7 +452,7 @@ class CsvToJson {
  * @property {boolean} [parseSubArrays=false] Whether to parse sub arrays
  * @property {string} [parseSubArrayDelimiter='*'] The delimiter to identify a sub array
  * @property {string} [parseSubArraySeparator=','] The separator to split values in a sub array
- * @property {boolean} [trimHeaderFieldWhiteSpace=false] If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
+ * @property {boolean} [removeAllWhiteSpaceInHeaderField=false] If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
  */
 
 module.exports = CsvToJson;

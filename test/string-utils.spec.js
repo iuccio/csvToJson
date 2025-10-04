@@ -12,7 +12,7 @@ describe('string operations testing', function () {
             let value = ' val ue \n bla ';
 
             //when
-            let result = Object.keys(new CsvToJson({ trimHeaderFieldWhiteSpace: true })
+            let result = Object.keys(new CsvToJson({ removeAllWhiteSpaceInHeaderField: true })
                 .csvStringToJson(value)[0])[0];
 
             //then
@@ -24,7 +24,7 @@ describe('string operations testing', function () {
             let value = ' val ue \n bla ';
 
             //when
-            let result = Object.keys(new CsvToJson({ trimHeaderFieldWhiteSpace: false })
+            let result = Object.keys(new CsvToJson({ removeAllWhiteSpaceInHeaderField: false })
                 .csvStringToJson(value)[0])[0];
 
             //then
