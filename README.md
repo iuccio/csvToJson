@@ -221,13 +221,49 @@ If the header is not on the first line you can define the header index like:
 Empty rows are ignored and not parsed.
 
 #### Format property value by type
-If you want that a number will be printed as a Number type, and values *true* or *false* is printed as a boolean Type, use:
-```js
- csvToJson.formatValueByType()
-            .getJsonFromCsv(fileInputName);
-```
-For example: 
+The `formatValueByType()` function intelligently converts string values to their appropriate types while preserving data integrity. To enable automatic type conversion:
 
+```js
+csvToJson.formatValueByType()
+         .getJsonFromCsv(fileInputName);
+```
+
+This conversion follows these rules:
+
+##### Numbers
+- Regular integers and decimals are converted to Number type
+- Numbers with leading zeros are preserved as strings (e.g., "0012" stays "0012")
+- Large integers outside JavaScript's safe range are preserved as strings
+- Valid decimal numbers are converted to Number type
+
+For example:
+```json
+{
+  "normalInteger": 42,           // Converted to number
+  "decimal": 3.14,              // Converted to number
+  "leadingZeros": "0012345",    // Kept as string to preserve leading zeros
+  "largeNumber": "9007199254740992"  // Kept as string to preserve precision
+}
+```
+
+##### Boolean
+Case-insensitive "true" or "false" strings are converted to boolean values:
+```json
+{
+  "registered": true,     // From "true" or "TRUE" or "True"
+  "active": false        // From "false" or "FALSE" or "False"
+}
+```
+
+##### Complete Example
+Input CSV:
+```csv
+first_name;last_name;email;gender;age;id;zip;registered
+Constantin;Langsdon;clangsdon0@hc360.com;Male;96;00123;123;true
+Norah;Raison;nraison1@wired.com;Female;32;987;00456;FALSE
+```
+
+Output JSON:
 ```json
 [
  {
@@ -236,8 +272,9 @@ For example:
   "email": "clangsdon0@hc360.com",
   "gender": "Male",
   "age": 96,
-  "zip": 123,
-  "registered": true
+  "id": "00123",        // Preserved leading zeros
+  "zip": 123,          // Converted to number
+  "registered": true   // Converted to boolean
  },
  {
   "first_name": "Norah",
@@ -245,29 +282,12 @@ For example:
   "email": "nraison1@wired.com",
   "gender": "Female",
   "age": 32,
-  "zip": "",
-  "registered": false
+  "id": "987",
+  "zip": "00456",      // Preserved leading zeros
+  "registered": false  // Case-insensitive boolean conversion
  }
 ]
 ```
-##### Number
-The property **age** is printed as 
-```json
- "age": 32
-```
-instead of
-```json
-  "age": "32"
- ```
-##### Boolean
-The property **registered** is printed as 
-```json
- "registered": true
-```
-instead of
-```json
-  "registered": "true"
- ```
 
 #### Encoding
 You can read and decode files with the following encoding:
