@@ -91,6 +91,11 @@ declare module 'convert-csv-to-json' {
      */
     getJsonFromCsv(inputFileName: string): any[];
 
+  /**
+   * Async version of getJsonFromCsv. When options.raw is true the input is treated as a CSV string
+   */
+  getJsonFromCsvAsync(inputFileNameOrCsv: string, options?: { raw?: boolean }): Promise<any[]>;
+
     csvStringToJson(csvString: string): any[];
 
     /**
