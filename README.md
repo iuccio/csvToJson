@@ -41,6 +41,7 @@ show your :heart: and support.
       - [Number](#number)
       - [Boolean](#boolean)
     + [Encoding](#encoding)
+    + [Working with CSV strings directly](#working-with-csv-strings-directly)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
 - [CI CD github action](#ci-cd-github-action)
@@ -305,6 +306,30 @@ You can read and decode files with the following encoding:
        csvToJson.hexEncoding()
                   .getJsonFromCsv(fileInputName);
       ```
+
+#### Working with CSV strings directly
+If you have CSV content as a string (for example, from an API response or test data), you can parse it directly without writing to a file:
+
+```js
+
+// Parse CSV string to array of objects
+let csvString = 'firstName;lastName\nJohn;Doe\nJane;Smith';
+let jsonArray = csvToJson.csvStringToJson(csvString);
+// Output: [{"firstName":"John","lastName":"Doe"},{"firstName":"Jane","lastName":"Smith"}]
+
+// Parse CSV string to JSON string (validated)
+let jsonString = csvToJson.csvStringToJsonStringified(csvString);
+// Output: "[\n {\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n },\n {\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\"\n }\n]"
+```
+
+Both methods support all configuration options through the chaining pattern:
+
+```js
+let jsonArray = csvToJson
+  .fieldDelimiter(',')
+  .formatValueByType()
+  .csvStringToJson(csvString);
+```
 
 ### Chaining Pattern
 
