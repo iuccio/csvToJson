@@ -386,50 +386,73 @@ class CsvToJson {
     const delimiter = this.#delimiter;
 
     if (this.#supportQuotedField && this.#hasQuotes(line)) {
-      const chars = line.split('');
-      const entry = [''];
-      let subIndex = 0;
-      let startQuote = false;
-      let isDouble = false;
-      let c = '';
+      const entries = [];
+      let start = 0;
+      let pos = 0;
+      let inQuotes = false;
+      const delimiterCode = delimiter.charCodeAt(0);
+      const quoteCode = 34; // '"'
 
-      for (let i = 0; i < chars.length; i++) {
-        c = chars[i];
-        if (isDouble) { //when run into double just pop it into current and move on
-          entry[subIndex] += c;
-          isDouble = false;
-          continue;
-        }
+      while (pos < line.length) {
+        const charCode = line.charCodeAt(pos);
 
-        if (c !== '"' && c !== delimiter) {
-          entry[subIndex] += c;
-        } else if (c === delimiter && startQuote) {
-          entry[subIndex] += c;
-        } else if (c === delimiter) {
-          subIndex++
-          entry[subIndex] = '';
-          continue;
-        } else {
-          if (chars[i + 1] === '"') {
-            //Double quote
-            isDouble = true;
-            //subSplits[subIndex] += c; //Skip because this is escaped quote
-          } else {
-            if (!startQuote) {
-              startQuote = true;
-              //subSplits[subIndex] += c; //Skip because we don't want quotes wrapping value
+        if (inQuotes) {
+          if (charCode === quoteCode) {
+            if (pos + 1 < line.length && line.charCodeAt(pos + 1) === quoteCode) {
+              pos += 2;
+              continue;
             } else {
-              //end
-              startQuote = false;
-              //subSplits[subIndex] += c; //Skip because we don't want quotes wrapping value
+              inQuotes = false;
             }
           }
+        } else {
+          if (charCode === quoteCode) {
+            inQuotes = true;
+          } else if (charCode === delimiterCode) {
+            let entry;
+            if (pos - start >= 2 && line.charCodeAt(start) === quoteCode && line.charCodeAt(pos - 1) === quoteCode) {
+              entry = '';
+              const entryEnd = pos - 1;
+              for (let i = start + 1; i < entryEnd; i++) {
+                if (line.charCodeAt(i) === quoteCode && i + 1 < entryEnd && line.charCodeAt(i + 1) === quoteCode) {
+                  entry += '"';
+                  i++;
+                } else {
+                  entry += line[i];
+                }
+              }
+            } else {
+              entry = line.substring(start, pos);
+            }
+            entries.push(entry);
+            start = pos + 1;
+          }
         }
+        pos++;
       }
-      if (startQuote) {
+
+      let entry;
+      if (pos - start >= 2 && line.charCodeAt(start) === quoteCode && line.charCodeAt(pos - 1) === quoteCode) {
+        entry = '';
+        const entryEnd = pos - 1;
+        for (let i = start + 1; i < entryEnd; i++) {
+          if (line.charCodeAt(i) === quoteCode && i + 1 < entryEnd && line.charCodeAt(i + 1) === quoteCode) {
+            entry += '"';
+            i++;
+          } else {
+            entry += line[i];
+          }
+        }
+      } else {
+        entry = line.substring(start, pos);
+      }
+      entries.push(entry);
+
+      if (inQuotes) {
         throw new SyntaxError('Row contains mismatched quotes!');
       }
-      return entry;
+
+      return entries;
     } else {
       return line.split(delimiter);
     }
