@@ -11,7 +11,7 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
-**This project is not dependent on others packages or libraries.**
+**This project is not dependent on others packages or libraries, and supports both synchronous and Promise-based asynchronous APIs.**
 
 This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@latest](https://img.shields.io/badge/GitHub_Action_-iuccio%2Fnpm--semantic--publish--action%40latest-2ea44f)](https://github.com/marketplace/actions/npm-semver-publish)
 
@@ -27,7 +27,7 @@ show your :heart: and support.
 - [Prerequisites](#prerequisites)
 - [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
   * [Install](#install)
-  * [Usage](#usage)
+  * [Sync API Usage](#sync-api-usage)
     + [Generate JSON file](#generate-json-file)
     + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
     + [Generate Object with sub array](#generate-object-with-sub-array)
@@ -42,6 +42,12 @@ show your :heart: and support.
       - [Boolean](#boolean)
     + [Encoding](#encoding)
     + [Working with CSV strings directly](#working-with-csv-strings-directly)
+  * [Async API Usage](#async-api-usage)
+    + [Basic Async Operations](#basic-async-operations)
+    + [Working with Raw CSV Data](#working-with-raw-csv-data)
+    + [Processing Large Files](#processing-large-files)
+    + [Error Handling and Retries](#error-handling-and-retries)
+    + [Batch Processing](#batch-processing)
   * [Chaining Pattern](#chaining-pattern)
 - [Development](#development)
 - [CI CD github action](#ci-cd-github-action)
@@ -51,7 +57,7 @@ show your :heart: and support.
 <!-- tocstop -->
 
 ## Description
-Converts *csv* files to *JSON* files with Node.js. 
+Converts *csv* files to *JSON* files with Node.js. Supports both synchronous operations and Promise-based asynchronous operations, allowing integration with modern async/await patterns.
 
 Give an input file like:
 
@@ -112,7 +118,7 @@ Install package on your machine
 $ npm install -g convert-csv-to-json
 ```
 
-### Usage
+### Sync API Usage
 
 #### Generate JSON file
 ```js
@@ -351,21 +357,417 @@ let jsonArray = csvToJson
   .csvStringToJson(csvString);
 ```
 
-### Chaining Pattern
+## Async API Usage
 
-The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be chained, e.g.:
+This library provides a Promise-based async API that's perfect for modern Node.js applications. For a detailed migration guide from sync to async API, see [MIGRATION.md](MIGRATION.md).
 
+### Basic Async Operations
+
+1. Convert CSV file to JSON:
 ```js
-let csvToJson = require('convert-csv-to-json');
+const csvToJson = require('convert-csv-to-json');
 
-csvToJson.fieldDelimiter(',')
-            .formatValueByType()
-            .parseSubArray("*",',')
-            .supportQuotedField(true)
-            .getJsonFromCsv('myInputFile.csv');
+// Using Promises
+csvToJson.getJsonFromCsvAsync('input.csv')
+  .then(json => console.log(json))
+  .catch(err => console.error('Error:', err));
 
+// Using async/await
+async function convertCsv() {
+  try {
+    const json = await csvToJson.getJsonFromCsvAsync('input.csv');
+    console.log(json);
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
 ```
 
+2. Generate JSON file from CSV:
+```js
+// Using async/await with chain configuration
+async function convertAndSave() {
+  await csvToJson
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .generateJsonFileFromCsvAsync('input.csv', 'output.json');
+}
+```
+
+### Working with Raw CSV Data
+
+Process CSV data from memory or network sources:
+
+```js
+// Example: Processing CSV from an API
+async function processCsvFromApi() {
+  const response = await fetch('https://api.example.com/data.csv');
+  const csvText = await response.text();
+  
+  const json = await csvToJson
+    .formatValueByType()
+    .getJsonFromCsvAsync(csvText, { raw: true });
+    
+  return json;
+}
+```
+
+### Processing Large Files
+
+For large files, use streaming to manage memory efficiently:
+
+```js
+const { createReadStream } = require('fs');
+const { createInterface } = require('readline');
+
+async function* processLargeFile(filePath) {
+  const fileStream = createReadStream(filePath);
+  const rl = createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  for await (const line of rl) {
+    yield await csvToJson.getJsonFromCsvAsync(line, { raw: true });
+  }
+}
+
+// Usage
+async function processData() {
+  for await (const record of processLargeFile('large.csv')) {
+    await saveToDatabase(record);
+  }
+}
+```
+
+### Error Handling and Retries
+
+Implement robust error handling with retries:
+
+```js
+async function processWithRetry(filePath, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const json = await csvToJson
+        .formatValueByType()
+        .getJsonFromCsvAsync(filePath);
+      
+      return json;
+    } catch (err) {
+      if (i === maxRetries - 1) throw err;
+      // Exponential backoff
+      await new Promise(resolve => 
+        setTimeout(resolve, Math.pow(2, i) * 1000)
+      );
+    }
+  }
+}
+```
+
+### Batch Processing
+
+Process multiple files efficiently:
+
+```js
+async function batchProcess(files, batchSize = 3) {
+  const results = new Map();
+  
+  for (let i = 0; i < files.length; i += batchSize) {
+    const batch = files.slice(i, i + batchSize);
+    const processed = await Promise.all(
+      batch.map(async file => {
+        const json = await csvToJson.getJsonFromCsvAsync(file);
+        return [file, json];
+      })
+    );
+    
+    processed.forEach(([file, json]) => results.set(file, json));
+  }
+  
+  return results;
+}
+
+// Usage
+const files = ['data1.csv', 'data2.csv', 'data3.csv', 'data4.csv'];
+const results = await batchProcess(files, 2);
+```
+
+## Chaining Pattern
+
+The exposed API is implemented with the [Method Chaining Pattern](https://en.wikipedia.org/wiki/Method_chaining), which means that multiple methods can be chained. This pattern works with both synchronous and asynchronous methods:
+
+### Synchronous Chaining
+
+```js
+const csvToJson = require('convert-csv-to-json');
+
+// Chain configuration methods with sync operation
+const json = csvToJson
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .parseSubArray("*", ',')
+    .supportQuotedField(true)
+    .getJsonFromCsv('myInputFile.csv');
+
+// Chain with file generation
+csvToJson
+    .fieldDelimiter(';')
+    .utf8Encoding()
+    .formatValueByType()
+    .generateJsonFileFromCsv('input.csv', 'output.json');
+
+// Chain with string parsing
+const jsonArray = csvToJson
+    .fieldDelimiter(',')
+    .trimHeaderFieldWhiteSpace(true)
+    .csvStringToJson('name,age\nJohn,30\nJane,25');
+```
+
+### Asynchronous Chaining
+
+```js
+const csvToJson = require('convert-csv-to-json');
+
+// Using async/await
+async function processCSV() {
+    // Chain configuration methods with async operation
+    const json = await csvToJson
+        .fieldDelimiter(',')
+        .formatValueByType()
+        .parseSubArray("*", ',')
+        .supportQuotedField(true)
+        .getJsonFromCsvAsync('myInputFile.csv');
+
+    // Chain with async file generation
+    await csvToJson
+        .fieldDelimiter(';')
+        .utf8Encoding()
+        .formatValueByType()
+        .generateJsonFileFromCsvAsync('input.csv', 'output.json');
+}
+
+// Using Promises
+csvToJson
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .getJsonFromCsvAsync('input.csv')
+    .then(json => console.log(json))
+    .catch(err => console.error('Error:', err));
+```
+
+All configuration methods can be chained in any order before calling the final operation method (like `getJsonFromCsv`, `getJsonFromCsvAsync`, etc.). The configuration will be applied in the order it is chained.
+
+## Common Use Cases
+
+Here are some common use cases and how to implement them:
+
+### 1. Processing CSV from HTTP Response
+```js
+const https = require('https');
+
+async function processRemoteCsv(url) {
+  const csvData = await new Promise((resolve, reject) => {
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve(data));
+      res.on('error', reject);
+    });
+  });
+
+  return csvToJson.getJsonFromCsvAsync(csvData, { raw: true });
+}
+```
+
+### 2. Batch Processing Multiple Files
+```js
+async function batchProcess(files) {
+  const results = new Map();
+  
+  // Process in chunks of 3 files at a time
+  for (let i = 0; i < files.length; i += 3) {
+    const chunk = files.slice(i, i + 3);
+    const processed = await Promise.all(
+      chunk.map(async file => {
+        const json = await csvToJson.getJsonFromCsvAsync(file);
+        return [file, json];
+      })
+    );
+    
+    processed.forEach(([file, json]) => results.set(file, json));
+  }
+  
+  return results;
+}
+```
+
+### 3. Data Transformation Pipeline
+```js
+async function transformData(csvFile) {
+  // Step 1: Parse CSV
+  const json = await csvToJson
+    .formatValueByType()
+    .getJsonFromCsvAsync(csvFile);
+    
+  // Step 2: Transform data
+  const transformed = json.map(record => ({
+    id: record.id,
+    fullName: `${record.firstName} ${record.lastName}`,
+    age: Number(record.age),
+    isAdult: Number(record.age) >= 18,
+    email: record.email.toLowerCase()
+  }));
+  
+  // Step 3: Filter invalid records
+  return transformed.filter(record => 
+    record.id && 
+    record.fullName.length > 0 &&
+    !isNaN(record.age)
+  );
+}
+```
+
+### 4. Error Recovery and Logging
+```js
+async function processWithLogging(file) {
+  const logger = {
+    info: (msg) => console.log(`[INFO] ${msg}`),
+    error: (msg, err) => console.error(`[ERROR] ${msg}`, err)
+  };
+
+  try {
+    logger.info(`Starting processing ${file}`);
+    const startTime = Date.now();
+    
+    const json = await csvToJson.getJsonFromCsvAsync(file);
+    
+    const duration = Date.now() - startTime;
+    logger.info(`Processed ${file} in ${duration}ms`);
+    
+    return json;
+  } catch (err) {
+    logger.error(`Failed to process ${file}`, err);
+    throw err;
+  }
+}
+```
+
+## Troubleshooting
+
+Here are solutions to common issues you might encounter:
+
+### Memory Issues with Large Files
+
+If you're processing large CSV files and encountering memory issues:
+
+```js
+// Instead of loading the entire file
+const json = await csvToJson.getJsonFromCsvAsync('large.csv'); // ❌
+
+// Use streaming with async iteration
+for await (const record of processLargeCsv('large.csv')) {  // ✅
+  // Process one record at a time
+  await processRecord(record);
+}
+```
+
+### Handling Different CSV Formats
+
+1. **Mixed Quote Types**:
+```js
+csvToJson
+  .supportQuotedField(true)     // Enable quoted field support
+  .getJsonFromCsvAsync(file);
+```
+
+2. **Custom Delimiters**:
+```js
+csvToJson
+  .fieldDelimiter(';')          // Change delimiter
+  .getJsonFromCsvAsync(file);
+```
+
+3. **UTF-8 with BOM**:
+```js
+csvToJson
+  .encoding('utf8')             // Specify encoding
+  .getJsonFromCsvAsync(file);
+```
+
+### Common Error Solutions
+
+1. **ENOENT: no such file or directory**
+   - Check if the file path is correct and absolute
+   - Verify file permissions
+   - Ensure the file exists in the specified location
+
+2. **Invalid CSV Structure**
+   - Verify CSV format matches expected structure
+   - Check for missing or extra delimiters
+   - Validate header row exists if expected
+
+3. **Memory Leaks**
+   - Use streaming for large files
+   - Process files in smaller chunks
+   - Implement proper cleanup in try/finally blocks
+
+4. **Encoding Issues**
+   - Specify correct encoding using .encoding()
+   - Check for BOM markers
+   - Verify source file encoding
+
+### Performance Optimization
+
+1. **Parallel Processing**:
+```js
+// Instead of sequential processing
+for (const file of files) {
+  await process(file);  // ❌
+}
+
+// Use parallel processing with limits
+async function processWithLimit(files, limit = 3) {
+  const results = [];
+  for (let i = 0; i < files.length; i += limit) {
+    const chunk = files.slice(i, i + limit);
+    const chunkResults = await Promise.all(
+      chunk.map(file => csvToJson.getJsonFromCsvAsync(file))
+    );
+    results.push(...chunkResults);
+  }
+  return results;
+}  // ✅
+```
+
+2. **Memory Usage**:
+```js
+// Clear references when done
+async function processWithCleanup(file) {
+  let json;
+  try {
+    json = await csvToJson.getJsonFromCsvAsync(file);
+    return await processData(json);
+  } finally {
+    json = null;  // Clear reference
+  }
+}
+```
+
+### TypeScript Support
+
+If you're using TypeScript and encounter type issues:
+
+```typescript
+// Define custom types for your CSV structure
+interface MyCsvRecord {
+  id: number;
+  name: string;
+  age?: number;
+}
+
+// Use type assertion
+const json = await csvToJson.getJsonFromCsvAsync<MyCsvRecord>('data.csv');
+```
 
 ## Development
 * Download all csvToJson dependencies:
