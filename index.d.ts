@@ -92,6 +92,14 @@ declare module 'convert-csv-to-json' {
     getJsonFromCsv(inputFileName: string): any[];
 
     csvStringToJson(csvString: string): any[];
+
+    /**
+    * Parses a csv string and returns a JSON string (validated)
+    * @param {csvString} csvString CSV content as string
+    * @return {string} JSON stringified result
+    */
+    csvStringToJsonStringified(csvString: string): string;
+    
     /**
      * Parses .csv file and put its content into a file in json format.
      * @param {inputFileName} path/filename

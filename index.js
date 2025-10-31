@@ -157,6 +157,18 @@ exports.csvStringToJson = function(csvString) {
 };
 
 /**
+ * Parses a csv string and returns a JSON string (validated)
+ * @param {csvString} csvString CSV content as string
+ * @return {string} JSON stringified result
+ */
+exports.csvStringToJsonStringified = function(csvString) {
+  if (csvString === undefined || csvString === null) {
+    throw new Error("csvString is not defined!!!");
+  }
+  return csvToJson.csvStringToJsonStringified(csvString);
+};
+
+/**
  * Parses .csv file and put its content into a file in json format.
  * @param {inputFileName} path/filename
  * @param {outputFileName} path/filename
