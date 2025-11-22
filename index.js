@@ -202,3 +202,9 @@ exports.csvStringToJsonStringified = function(csvString) {
 exports.jsonToCsv = function(inputFileName, outputFileName) {
   csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
+
+/**
+ * Browser API
+ * Provides parsing helpers suitable for browser environments (parsing strings and File/Blob objects)
+ */
+exports.browser = require('./src/browserApi');

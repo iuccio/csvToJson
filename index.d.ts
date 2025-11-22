@@ -116,4 +116,28 @@ declare module 'convert-csv-to-json' {
   }
   const converter: ConvertCsvToJson;
   export default converter;
+  
+  /**
+   * Browser API exposes parsing helpers for browser environments
+   */
+  export interface BrowserApi {
+    formatValueByType(active: boolean): this;
+    trimHeaderFieldWhiteSpace(active: boolean): this;
+    supportQuotedField(active: boolean): this;
+    fieldDelimiter(delimiter: string): this;
+    indexHeader(index: number): this;
+    parseSubArray(delimiter: string, separator: string): this;
+
+    csvStringToJson(csvString: string): any[];
+    csvStringToJsonStringified(csvString: string): string;
+    csvStringToJsonAsync(csvString: string): Promise<any[]>;
+    csvStringToJsonStringifiedAsync(csvString: string): Promise<string>;
+
+    /**
+     * Parse a File or Blob and return a Promise that resolves to the JSON array
+     */
+    parseFile(file: Blob | File, options?: { encoding?: string }): Promise<any[]>;
+  }
+
+  export const browser: BrowserApi;
 }
