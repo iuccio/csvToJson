@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["node", "jest"]
+  },
+  "baseUrl": ".",
+  "paths": {
+    "convert-csv-to-json": ["./index.d.ts", "./index.js"]
+  },
+  "include": ["test/**/*.ts"]
+}

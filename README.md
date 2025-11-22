@@ -8,8 +8,11 @@
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 [![NPM total downloads](https://img.shields.io/npm/dt/convert-csv-to-json.svg?style=flat)](https://npmjs.org/package/convert-csv-to-json)
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Browser Support](https://img.shields.io/badge/browser-supported-brightgreen.svg?style=for-the-badge&logo=google-chrome&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
 
 **This project is not dependent on others packages or libraries, and supports both synchronous and Promise-based asynchronous APIs.**
 
@@ -23,10 +26,9 @@ show your :heart: and support.
 <!-- toc -->
 
 - [Description](#description)
-- [Support for JS & TS](#support-for-js--ts)
+- [Support for NodeJS, Browser, JS, TS](#support-for-nodejs-browser-js-ts)
 - [Prerequisites](#prerequisites)
 - [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
-  * [Install](#install)
   * [Sync API Usage](#sync-api-usage)
     + [Generate JSON file](#generate-json-file)
     + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
@@ -38,17 +40,38 @@ show your :heart: and support.
     + [Index header](#index-header)
     + [Empty rows](#empty-rows)
     + [Format property value by type](#format-property-value-by-type)
-      - [Number](#number)
+      - [Numbers](#numbers)
       - [Boolean](#boolean)
+      - [Complete Example](#complete-example)
     + [Encoding](#encoding)
     + [Working with CSV strings directly](#working-with-csv-strings-directly)
-  * [Async API Usage](#async-api-usage)
-    + [Basic Async Operations](#basic-async-operations)
-    + [Working with Raw CSV Data](#working-with-raw-csv-data)
-    + [Processing Large Files](#processing-large-files)
-    + [Error Handling and Retries](#error-handling-and-retries)
-    + [Batch Processing](#batch-processing)
-  * [Chaining Pattern](#chaining-pattern)
+  * [Sync API (TypeScript)](#sync-api-typescript)
+- [Browser API Usage](#browser-api-usage)
+  * [Basic Browser Operations](#basic-browser-operations)
+  * [Parsing File/Blob](#parsing-fileblob)
+  * [Browser API Notes](#browser-api-notes)
+  * [Browser API (TypeScript)](#browser-api-typescript)
+- [Async API Usage](#async-api-usage)
+  * [Async API (TypeScript)](#async-api-typescript)
+  * [Basic Async Operations](#basic-async-operations)
+  * [Working with Raw CSV Data](#working-with-raw-csv-data)
+  * [Processing Large Files](#processing-large-files)
+  * [Error Handling and Retries](#error-handling-and-retries)
+  * [Batch Processing](#batch-processing)
+- [Chaining Pattern](#chaining-pattern)
+  * [Synchronous Chaining](#synchronous-chaining)
+  * [Asynchronous Chaining](#asynchronous-chaining)
+- [Common Use Cases](#common-use-cases)
+  * [1. Processing CSV from HTTP Response](#1-processing-csv-from-http-response)
+  * [2. Batch Processing Multiple Files](#2-batch-processing-multiple-files)
+  * [3. Data Transformation Pipeline](#3-data-transformation-pipeline)
+  * [4. Error Recovery and Logging](#4-error-recovery-and-logging)
+- [Troubleshooting](#troubleshooting)
+  * [Memory Issues with Large Files](#memory-issues-with-large-files)
+  * [Handling Different CSV Formats](#handling-different-csv-formats)
+  * [Common Error Solutions](#common-error-solutions)
+  * [Performance Optimization](#performance-optimization)
+  * [TypeScript Support](#typescript-support)
 - [Development](#development)
 - [CI CD github action](#ci-cd-github-action)
 - [License](#license)
@@ -98,9 +121,14 @@ will generate:
  }
 ]
 ```
-## Support for JS & TS
+## Support for NodeJS, Browser, JS, TS
 
-This package is compatible with ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) and ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white).
+This package is compatible with: 
+
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Browser Support](https://img.shields.io/badge/browser-supported-brightgreen.svg?style=for-the-badge&logo=google-chrome&logoColor=white) 
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
 
 ## Prerequisites
 **NPM** (see [Installing Npm](https://docs.npmjs.com/getting-started/installing-node)).
@@ -108,7 +136,6 @@ This package is compatible with ![JavaScript](https://img.shields.io/badge/javas
 ## Install npm *convert-csv-to-json package*
 Go to NPM package [convert-csv-to-json](https://www.npmjs.com/package/convert-csv-to-json).
 
-### Install
 Install package in your *package.json*
 ```bash
 $ npm install convert-csv-to-json --save
@@ -357,9 +384,137 @@ let jsonArray = csvToJson
   .csvStringToJson(csvString);
 ```
 
+### Sync API (TypeScript)
+
+TypeScript typings are available via the included `index.d.ts`. You can import the default converter or use named imports. Below are common patterns when using the synchronous API from TypeScript.
+
+```ts
+// Named import (recommended when using ES modules)
+import converter, { /* or */ } from 'convert-csv-to-json';
+// Access the default converter
+const csvToJson = require('convert-csv-to-json');
+
+// Define a type for your CSV records
+interface Person {
+  name: string;
+  age: number;
+}
+
+// Parse CSV string synchronously and assert the returned type
+const csv = 'name,age\nAlice,30';
+const parsed = csvToJson.csvStringToJson(csv) as Person[];
+
+// Chain configuration and call sync methods
+const result = csvToJson
+  .fieldDelimiter(',')
+  .formatValueByType()
+  .csvStringToJson('name,age\nBob,25') as Person[];
+```
+
+## Browser API Usage
+
+The package exposes a `browser` helper that reuses the library's parsing logic but provides browser-friendly helpers for parsing CSV strings and `File`/`Blob` objects. The API mirrors the synchronous and asynchronous Node APIs and supports method chaining for configuration.
+
+### Basic Browser Operations
+
+```js
+const convert = require('convert-csv-to-json');
+
+// Parse CSV string synchronously
+const arr = convert.browser
+  .supportQuotedField(true)
+  .fieldDelimiter(',')
+  .csvStringToJson('name,age\nAlice,30');
+
+// Parse CSV string asynchronously (returns Promise)
+const arrAsync = await convert.browser.csvStringToJsonAsync('name;age\nBob;25');
+
+// Get stringified JSON synchronously
+const jsonString = convert.browser.csvStringToJsonStringified('name;age\nEve;40');
+```
+
+### Parsing File/Blob
+
+`parseFile(file, options)` reads a `File` or `Blob` and returns a Promise that resolves with the parsed array of objects.
+
+```js
+// In a browser environment with an <input type="file">
+const file = document.querySelector('input[type=file]').files[0];
+convert.browser
+  .fieldDelimiter(',')
+  .formatValueByType()
+  .parseFile(file)
+  .then(json => console.log(json))
+  .catch(err => console.error(err));
+```
+
+`parseFile` accepts an optional `options` object with `encoding` (passed to `FileReader.readAsText`). If `FileReader` is not available, `parseFile` will reject.
+
+### Browser API Notes
+
+- The `browser` API proxies the same configuration methods as the Node API and follows the same behavior for quoted fields, sub-array parsing, trimming, and value formatting.
+- `parseFile` depends on the browser `FileReader` API; calling it in Node.js will reject with an informative error.
+
+### Browser API (TypeScript)
+
+TypeScript typings are provided via the included `index.d.ts`. You can import the default converter and access the `browser` helper, or import `browser` directly. Below are common usage patterns.
+
+```ts
+// Named import (recommended for direct use)
+import { browser } from 'convert-csv-to-json';
+
+// Or default import and access the browser helper
+import converter from 'convert-csv-to-json';
+const browserApi = converter.browser;
+
+// Define a type for your CSV records
+interface Person {
+  name: string;
+  age: number;
+}
+
+// Synchronous parse (assert the returned type)
+const csv = 'name,age\nAlice,30';
+const parsed = browser.csvStringToJson(csv) as Person[];
+
+// Async parse
+const parsedAsync = await browser.csvStringToJsonAsync(csv) as Person[];
+
+// Parse a File in the browser
+const inputEl = document.querySelector('input[type=file]') as HTMLInputElement;
+const file = inputEl.files![0];
+const data = await browser.parseFile(file) as Person[];
+```
+
+The `BrowserApi` interface in `index.d.ts` exposes typed method signatures for IDE autocompletion and compile-time checks.
+
 ## Async API Usage
 
 This library provides a Promise-based async API that's perfect for modern Node.js applications. For a detailed migration guide from sync to async API, see [MIGRATION.md](MIGRATION.md).
+
+### Async API (TypeScript)
+
+The async API also has TypeScript typings. Typical usage in TypeScript looks like this:
+
+```ts
+import csvToJson from 'convert-csv-to-json';
+
+interface Person {
+  name: string;
+  age: number;
+}
+
+// Using async/await
+async function load(): Promise<Person[]> {
+  const csv = 'name,age\nAlice,30';
+  const parsed = await csvToJson.getJsonFromCsvAsync(csv, { raw: true }) as Person[];
+  return parsed;
+}
+
+// Using the async helper that parses CSV strings
+const parsedDirect = await csvToJson.csvStringToJsonAsync('name;age\nBob;25') as Person[];
+```
+
 
 ### Basic Async Operations
 
