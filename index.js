@@ -152,8 +152,44 @@ exports.getJsonFromCsv = function(inputFileName) {
   return csvToJson.getJsonFromCsv(inputFileName);
 };
 
+/**
+ * Async version of getJsonFromCsv.
+ * @param {string} inputFileNameOrCsv path to file or CSV string
+ * @param {object} options { raw: boolean } when raw=true the first param is treated as CSV content
+ * @returns {Promise<Array>} resolves with the array of objects
+ */
+const csvToJsonAsync = require('./src/csvToJsonAsync');
+
+// Re-export all async API methods
+Object.assign(exports, {
+  getJsonFromCsvAsync: function(input, options) {
+    return csvToJsonAsync.getJsonFromCsvAsync(input, options);
+  },
+  csvStringToJsonAsync: function(input, options) {
+    return csvToJsonAsync.csvStringToJsonAsync(input, options);
+  },
+  csvStringToJsonStringifiedAsync: function(input) {
+    return csvToJsonAsync.csvStringToJsonStringifiedAsync(input);
+  },
+  generateJsonFileFromCsvAsync: function(input, output) {
+    return csvToJsonAsync.generateJsonFileFromCsv(input, output);
+  }
+});
+
 exports.csvStringToJson = function(csvString) {
   return csvToJson.csvStringToJson(csvString);
+};
+
+/**
+ * Parses a csv string and returns a JSON string (validated)
+ * @param {csvString} csvString CSV content as string
+ * @return {string} JSON stringified result
+ */
+exports.csvStringToJsonStringified = function(csvString) {
+  if (csvString === undefined || csvString === null) {
+    throw new Error("csvString is not defined!!!");
+  }
+  return csvToJson.csvStringToJsonStringified(csvString);
 };
 
 /**
@@ -166,3 +202,9 @@ exports.csvStringToJson = function(csvString) {
 exports.jsonToCsv = function(inputFileName, outputFileName) {
   csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
 };
+
+/**
+ * Browser API
+ * Provides parsing helpers suitable for browser environments (parsing strings and File/Blob objects)
+ */
+exports.browser = require('./src/browserApi');

@@ -69,6 +69,13 @@ class CsvToJson {
     return this.csvToJson(csvString);
   }
 
+  csvStringToJsonStringified(csvString) {
+    let json = this.csvStringToJson(csvString);
+    let jsonStringified = JSON.stringify(json, undefined, 1);
+    jsonUtils.validateJson(jsonStringified);
+    return jsonStringified;
+  }
+
   csvToJson(parsedCsv) {
   	this.validateInputConfig();
     let lines = parsedCsv.split(newLine);
