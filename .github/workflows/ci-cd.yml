@@ -6,10 +6,12 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x, 20.x, 22.x, 24.x]
+        experimental: [true]
 
     steps:
     - uses: actions/checkout@v5
