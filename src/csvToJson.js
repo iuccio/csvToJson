@@ -29,11 +29,11 @@ class CsvToJson {
     return this;
   }
 
-  indexHeader(indexHeader) {
-    if(isNaN(indexHeader)){
+  indexHeader(indexHeaderValue) {
+    if(isNaN(indexHeaderValue)){
         throw new Error('The index Header must be a Number!');
     }
-    this.indexHeader = indexHeader;
+    this.indexHeaderValue = indexHeaderValue;
     return this;
   }
 
@@ -118,8 +118,8 @@ class CsvToJson {
   }
 
   getIndexHeader(){
-    if(this.indexHeader !== null && !isNaN(this.indexHeader)){
-        return this.indexHeader;
+    if(this.indexHeaderValue !== null && !isNaN(this.indexHeaderValue)){
+        return this.indexHeaderValue;
     }
     return 0;
   }
