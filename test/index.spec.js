@@ -242,5 +242,77 @@ describe('API testing', function () {
 
 	});
 
+    describe('indexHeader() multiple files test', function () {
+        beforeEach(function () {
+            // Reset all configurations before each test using chaining pattern
+            index
+                .formatValueByType(false)
+                .fieldDelimiter(';')
+                .indexHeader(0)
+                .supportQuotedField(false)
+                .trimHeaderFieldWhiteSpace(false);
+        });
+
+        it('should handle multiple files with different indexHeader values without throwing error', function () {
+            //given
+            const files = [
+                { path: 'test/resource/input_header_row0.csv', headerIndex: 0, expectedLength: 2 },
+                { path: 'test/resource/input_header_row1.csv', headerIndex: 1, expectedLength: 2 },
+                { path: 'test/resource/input_header_row2.csv', headerIndex: 2, expectedLength: 2 }
+            ];
+
+            //when & then - process each file with different indexHeader
+            files.forEach(file => {
+                const result = index
+                    .fieldDelimiter(',')
+                    .indexHeader(file.headerIndex)
+                    .getJsonFromCsv(file.path);
+                
+                expect(result).toBeDefined();
+                expect(Array.isArray(result)).toBe(true);
+                expect(result.length).toEqual(file.expectedLength);
+                
+                // Reset state after each file to ensure clean state using chaining pattern
+                index
+                    .fieldDelimiter(';')
+                    .indexHeader(0);
+            });
+        });
+
+        it('should process same file multiple times with different indexHeader values', function () {
+            //given
+            const file = 'test/resource/input_header_row0.csv';
+            
+            //when & then - process same file multiple times using chaining pattern
+            const result1 = index
+                .fieldDelimiter(',')
+                .indexHeader(0)
+                .getJsonFromCsv(file);
+            
+            expect(result1.length).toEqual(2);
+            expect(result1[0]).toHaveProperty('name');
+            expect(result1[0]).toHaveProperty('age');
+            expect(result1[0]).toHaveProperty('city');
+
+            // Reset and process the same file again - this should not throw an error using chaining pattern
+            const result2 = index
+                .fieldDelimiter(',')
+                .indexHeader(0)
+                .getJsonFromCsv(file);
+            
+            expect(result2.length).toEqual(2);
+            expect(result2[0]).toHaveProperty('name');
+        });
+
+        afterEach(function () {
+            // Reset all configurations after each test using chaining pattern
+            index
+                .formatValueByType(false)
+                .fieldDelimiter(';')
+                .indexHeader(0)
+                .supportQuotedField(false)
+                .trimHeaderFieldWhiteSpace(false);
+        });
+    });
 
 });
