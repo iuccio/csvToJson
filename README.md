@@ -29,22 +29,22 @@ show your :heart: and support.
 - [Support for NodeJS, Browser, JS, TS](#support-for-nodejs-browser-js-ts)
 - [Prerequisites](#prerequisites)
 - [Install npm *convert-csv-to-json package*](#install-npm-convert-csv-to-json-package)
-  * [Sync API Usage](#sync-api-usage)
-    + [Generate JSON file](#generate-json-file)
-    + [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
-    + [Generate Object with sub array](#generate-object-with-sub-array)
-    + [Define field delimiter](#define-field-delimiter)
-    + [Trim header field](#trim-header-field)
-    + [Trim header field with whitespaces](#trim-header-field-with-whitespaces)
-    + [Support Quoted Fields](#support-quoted-fields)
-    + [Index header](#index-header)
-    + [Empty rows](#empty-rows)
-    + [Format property value by type](#format-property-value-by-type)
-      - [Numbers](#numbers)
-      - [Boolean](#boolean)
-      - [Complete Example](#complete-example)
-    + [Encoding](#encoding)
-    + [Working with CSV strings directly](#working-with-csv-strings-directly)
+- [Sync API Usage](#sync-api-usage)
+  * [Generate JSON file](#generate-json-file)
+  * [Generate Array of Object in JSON format](#generate-array-of-object-in-json-format)
+  * [Generate Object with sub array](#generate-object-with-sub-array)
+  * [Define field delimiter](#define-field-delimiter)
+  * [Trim header field](#trim-header-field)
+  * [Trim header field with whitespaces](#trim-header-field-with-whitespaces)
+  * [Support Quoted Fields](#support-quoted-fields)
+  * [Index header](#index-header)
+  * [Empty rows](#empty-rows)
+  * [Format property value by type](#format-property-value-by-type)
+    + [Numbers](#numbers)
+    + [Boolean](#boolean)
+    + [Complete Example](#complete-example)
+  * [Encoding](#encoding)
+  * [Working with CSV strings directly](#working-with-csv-strings-directly)
   * [Sync API (TypeScript)](#sync-api-typescript)
 - [Browser API Usage](#browser-api-usage)
   * [Basic Browser Operations](#basic-browser-operations)
@@ -145,9 +145,9 @@ Install package on your machine
 $ npm install -g convert-csv-to-json
 ```
 
-### Sync API Usage
+## Sync API Usage
 
-#### Generate JSON file
+### Generate JSON file
 ```js
 let csvToJson = require('convert-csv-to-json');
 
@@ -156,7 +156,7 @@ let fileOutputName = 'myOutputFile.json';
 
 csvToJson.generateJsonFileFromCsv(fileInputName,fileOutputName);
 ```
-#### Generate Array of Object in JSON format
+### Generate Array of Object in JSON format
 ```js
 let csvToJson = require('convert-csv-to-json');
 
@@ -166,7 +166,7 @@ for(let i=0; i<json.length;i++){
 }
 ```
 
-#### Generate Object with sub array 
+### Generate Object with sub array 
 ```
 firstName;lastName;email;gender;age;birth;sons
 Constantin;Langsdon;clangsdon0@hc360.com;Male;96;10.02.1965;*diego,marek,dries*
@@ -193,7 +193,7 @@ The result will be:
 ]
 ``` 
 
-#### Define field delimiter
+### Define field delimiter
 A field delimiter is needed to split the parsed values. As default the field delimiter is the **semicolon** (**;**), this means that during the parsing when a **semicolon (;)** is matched a new JSON entry is created.
 In case your CSV file has defined another field delimiter you have to call the function ```fieldDelimiter(myDelimiter)``` and pass it as parameter the field delimiter.
 
@@ -204,11 +204,11 @@ E.g. if your field delimiter is the comma **,** then:
             .getJsonFromCsv(fileInputName);
 ```
 
-#### Trim header field
+### Trim header field
 
 The content of the field header is cut off at the beginning and end of the string. E.g. " Last Name " -> "Last Name".
 
-#### Trim header field with whitespaces
+### Trim header field with whitespaces
 
 Use the method *trimHeaderFieldWhiteSpace(true)* to remove the whitespaces in an header field (E.g. " Last Name " -> "LastName"): 
 
@@ -217,7 +217,7 @@ Use the method *trimHeaderFieldWhiteSpace(true)* to remove the whitespaces in an
             .getJsonFromCsv(fileInputName);
 ```
 
-#### Support Quoted Fields
+### Support Quoted Fields
 To be able to parse correctly fields wrapped in quote, like the **last_name** in the first row in the following example:
 
 |first_name|         last_name          |email|
@@ -242,7 +242,7 @@ The result will be:
 ]
 ``` 
 
-#### Index header
+### Index header
 If the header is not on the first line you can define the header index like: 
 
 ```js
@@ -250,10 +250,10 @@ If the header is not on the first line you can define the header index like:
             .getJsonFromCsv(fileInputName);
 ```
 
-#### Empty rows
+### Empty rows
 Empty rows are ignored and not parsed.
 
-#### Format property value by type
+### Format property value by type
 The `formatValueByType()` function intelligently converts string values to their appropriate types while preserving data integrity. To enable automatic type conversion:
 
 ```js
@@ -263,7 +263,7 @@ csvToJson.formatValueByType()
 
 This conversion follows these rules:
 
-##### Numbers
+#### Numbers
 - Regular integers and decimals are converted to Number type
 - Numbers with leading zeros are preserved as strings (e.g., "0012" stays "0012")
 - Large integers outside JavaScript's safe range are preserved as strings
@@ -279,7 +279,7 @@ For example:
 }
 ```
 
-##### Boolean
+#### Boolean
 Case-insensitive "true" or "false" strings are converted to boolean values:
 ```json
 {
@@ -288,7 +288,7 @@ Case-insensitive "true" or "false" strings are converted to boolean values:
 }
 ```
 
-##### Complete Example
+#### Complete Example
 Input CSV:
 ```csv
 first_name;last_name;email;gender;age;id;zip;registered
@@ -322,7 +322,7 @@ Output JSON:
 ]
 ```
 
-#### Encoding
+### Encoding
 You can read and decode files with the following encoding:
  * utf8: 
     ```js
@@ -360,7 +360,7 @@ You can read and decode files with the following encoding:
                   .getJsonFromCsv(fileInputName);
       ```
 
-#### Working with CSV strings directly
+### Working with CSV strings directly
 If you have CSV content as a string (for example, from an API response or test data), you can parse it directly without writing to a file:
 
 ```js
