@@ -192,16 +192,7 @@ exports.csvStringToJsonStringified = function(csvString) {
   return csvToJson.csvStringToJsonStringified(csvString);
 };
 
-/**
- * Parses .csv file and put its content into a file in json format.
- * @param {inputFileName} path/filename
- * @param {outputFileName} path/filename
- *
- * @deprecated Use generateJsonFileFromCsv()
- */
-exports.jsonToCsv = function(inputFileName, outputFileName) {
-  csvToJson.generateJsonFileFromCsv(inputFileName, outputFileName);
-};
+
 
 /**
  * Browser API

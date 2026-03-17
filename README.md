@@ -16,6 +16,13 @@
 
 **This project is not dependent on others packages or libraries, and supports both synchronous and Promise-based asynchronous APIs.**
 
+**RFC 4180 Compliant**: This library is fully compliant with [RFC 4180](https://tools.ietf.org/html/rfc4180), the standard format for CSV files. It supports:
+- Comma-delimited fields by default (RFC 4180 standard)
+- Quoted fields with proper handling of embedded delimiters, newlines, and escaped quotes
+- Multi-line records where quoted fields can span multiple lines
+- Proper quote escaping using double quotes (`""` represents a single quote)
+- Both LF and CRLF line endings
+
 This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@latest](https://img.shields.io/badge/GitHub_Action_-iuccio%2Fnpm--semantic--publish--action%40latest-2ea44f)](https://github.com/marketplace/actions/npm-semver-publish)
 
 Follow [me](https://github.com/iuccio), and consider starring the project to
