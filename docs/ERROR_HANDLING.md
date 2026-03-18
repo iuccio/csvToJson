@@ -362,6 +362,6 @@ If you encounter an error:
 ## See Also
 
 - [RFC 4180 CSV Standard](https://tools.ietf.org/html/rfc4180)
-- [SYNC.md](./docs/SYNC.md) - Synchronous API reference
-- [ASYNC.md](./docs/ASYNC.md) - Asynchronous API reference
-- [BROWSER.md](./docs/BROWSER.md) - Browser API reference
+- [SYNC.md](./SYNC.md) - Synchronous API reference
+- [ASYNC.md](./ASYNC.md) - Asynchronous API reference
+- [BROWSER.md](./BROWSER.md) - Browser API reference

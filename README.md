@@ -35,7 +35,7 @@ Transform CSV data into JSON with a simple, chainable API. Choose your implement
 ✅ **Flexible Configuration** - Custom delimiters, encoding, trimming, and more  
 ✅ **Method Chaining** - Fluent API for readable code  
 ✅ **Large File Support** - Stream processing for memory-efficient handling  
-✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [ERROR_HANDLING.md](ERROR_HANDLING.md))
+✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md))
 
 ## RFC 4180 Standard
 
@@ -231,7 +231,7 @@ async function processCSV() {
 
 - **RFC 4180 Breaking Changes** - See [RFC4180_MIGRATION_GUIDE.md](RFC4180_MIGRATION_GUIDE.md)
 - **Sync to Async Migration** - See [MIGRATION.md](MIGRATION.md)
-- **Error Handling** - See [ERROR_HANDLING.md](ERROR_HANDLING.md) for comprehensive error documentation
+- **Error Handling** - See [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md) for comprehensive error documentation
 
 ## Development
 
