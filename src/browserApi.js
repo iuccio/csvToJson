@@ -1,6 +1,7 @@
 "use strict";
 
 const csvToJson = require('./csvToJson');
+const { InputValidationError, BrowserApiError } = require('./util/errors');
 
 class BrowserApi {
   constructor() {
@@ -42,14 +43,24 @@ class BrowserApi {
   // Synchronous parse from CSV string (browser friendly)
   csvStringToJson(csvString) {
     if (csvString === undefined || csvString === null) {
-      throw new Error('csvString is not defined!!!');
+      throw new InputValidationError(
+        'csvString',
+        'string',
+        `${typeof csvString}`,
+        'Provide valid CSV content as a string to parse.'
+      );
     }
     return this.csvToJson.csvToJson(csvString);
   }
 
   csvStringToJsonStringified(csvString) {
     if (csvString === undefined || csvString === null) {
-      throw new Error('csvString is not defined!!!');
+      throw new InputValidationError(
+        'csvString',
+        'string',
+        `${typeof csvString}`,
+        'Provide valid CSV content as a string to parse.'
+      );
     }
     return this.csvToJson.csvStringToJsonStringified(csvString);
   }
@@ -71,24 +82,31 @@ class BrowserApi {
    */
   parseFile(file, options = {}) {
     if (!file) {
-      return Promise.reject(new Error('file is not defined!!!'));
+      return Promise.reject(new InputValidationError(
+        'file',
+        'File or Blob object',
+        `${typeof file}`,
+        'Provide a valid File or Blob object to parse.'
+      ));
     }
 
     return new Promise((resolve, reject) => {
       if (typeof FileReader === 'undefined') {
-        reject(new Error('FileReader is not available in this environment'));
+        reject(BrowserApiError.fileReaderNotAvailable());
         return;
       }
 
       const reader = new FileReader();
-      reader.onerror = () => reject(reader.error || new Error('Failed to read file'));
+      reader.onerror = () => reject(BrowserApiError.parseFileError(
+        reader.error || new Error('Unknown file reading error')
+      ));
       reader.onload = () => {
         try {
           const text = reader.result;
           const result = this.csvToJson.csvToJson(String(text));
           resolve(result);
         } catch (err) {
-          reject(err);
+          reject(BrowserApiError.parseFileError(err));
         }
       };
 

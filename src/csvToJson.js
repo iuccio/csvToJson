@@ -1,8 +1,13 @@
 "use strict";
 
-let fileUtils = require("././util/fileUtils");
-let stringUtils = require("././util/stringUtils");
-let jsonUtils = require("././util/jsonUtils");
+const fileUtils = require('./util/fileUtils');
+const stringUtils = require('./util/stringUtils');
+const jsonUtils = require('./util/jsonUtils');
+const {
+    ConfigurationError,
+    CsvFormatError,
+    JsonValidationError
+} = require('./util/errors');
 
 const newLine = /\r?\n/;
 const defaultFieldDelimiter = ",";
@@ -34,8 +39,8 @@ class CsvToJson {
   }
 
   indexHeader(indexHeaderValue) {
-    if(isNaN(indexHeaderValue)){
-        throw new Error('The index Header must be a Number!');
+    if (isNaN(indexHeaderValue)) {
+      throw ConfigurationError.invalidHeaderIndex(indexHeaderValue);
     }
     this.indexHeaderValue = indexHeaderValue;
     return this;
@@ -105,7 +110,7 @@ class CsvToJson {
     }
     
     if (!headers) {
-      throw new Error('No header row found in CSV');
+      throw CsvFormatError.missingHeader();
     }
 
     let jsonResult = [];
@@ -177,7 +182,7 @@ class CsvToJson {
     
     // Validate matching quotes
     if (insideQuotes) {
-      throw new Error('CSV contains mismatched quotes!');
+      throw CsvFormatError.mismatchedQuotes('CSV');
     }
     
     return records;
@@ -260,17 +265,17 @@ class CsvToJson {
   }
 
   validateInputConfig(){
-  	if(this.isSupportQuotedField) {
-  	 	if(this.getFieldDelimiter() === '"'){
-  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field delimiter as quote -> ["]');
-  	 	}
-  	 	if(this.parseSubArraySeparator === '"'){
-  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field parseSubArraySeparator as quote -> ["]');
-  	 	}
-  	 	if(this.parseSubArrayDelimiter === '"'){
-  	 		throw new Error('When SupportQuotedFields is enabled you cannot defined the field parseSubArrayDelimiter as quote -> ["]');
-  	 	}
-  	}
+    if(this.isSupportQuotedField) {
+      if(this.getFieldDelimiter() === '"'){
+        throw ConfigurationError.quotedFieldConflict('fieldDelimiter', '"');
+      }
+      if(this.parseSubArraySeparator === '"'){
+        throw ConfigurationError.quotedFieldConflict('parseSubArraySeparator', '"');
+      }
+      if(this.parseSubArrayDelimiter === '"'){
+        throw ConfigurationError.quotedFieldConflict('parseSubArrayDelimiter', '"');
+      }
+    }
   }
 
   hasQuotes(line) {
@@ -327,7 +332,7 @@ class CsvToJson {
     
     // Validate matching quotes
     if (insideQuotes) {
-      throw new Error('Row contains mismatched quotes!');
+      throw CsvFormatError.mismatchedQuotes('row');
     }
     
     return fields;

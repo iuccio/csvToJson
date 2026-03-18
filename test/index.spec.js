@@ -213,7 +213,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.fieldDelimiter('"')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field delimiter as quote -> ["]');
+            }).toThrow(/Configuration conflict.*fieldDelimiter/);
 
         });
 		it('should throw error when parseSubArrayDelimiter active and fieldDelimiter is equal to "', function () {
@@ -224,7 +224,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.parseSubArray('"', ',')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field parseSubArrayDelimiter as quote -> ["]');
+            }).toThrow(/Configuration conflict.*parseSubArrayDelimiter/);
 
         });
 
@@ -236,7 +236,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.parseSubArray('*', '"')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field parseSubArraySeparator as quote -> ["]');
+            }).toThrow(/Configuration conflict.*parseSubArraySeparator/);
 
         });
 

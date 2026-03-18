@@ -69,7 +69,7 @@ describe('Browser API', () => {
     const original = global.FileReader;
     if (original !== undefined) delete global.FileReader;
 
-    await expect(browser.parseFile({ text: 'a;b\n1;2' })).rejects.toThrow('FileReader is not available');
+    await expect(browser.parseFile({ text: 'a;b\n1;2' })).rejects.toThrow(/FileReader.*not available/);
 
     if (original !== undefined) global.FileReader = original;
   });
