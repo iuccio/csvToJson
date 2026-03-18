@@ -99,9 +99,9 @@ Give an input file like:
 
 e.g. :
 ~~~
-first_name;last_name;email;gender;age;zip;registered
-Constantin;Langsdon;clangsdon0@hc360.com;Male;96;123;true
-Norah;Raison;nraison1@wired.com;Female;32;;false
+first_name,last_name,email,gender,age,zip,registered
+Constantin,Langsdon,clangsdon0@hc360.com,Male,96,123,true
+Norah,Raison,nraison1@wired.com,Female,32,,false
 ~~~
 
 will generate:
@@ -202,13 +202,21 @@ The result will be:
 ``` 
 
 ### Define field delimiter
-A field delimiter is needed to split the parsed values. As default the field delimiter is the **semicolon** (**;**), this means that during the parsing when a **semicolon (;)** is matched a new JSON entry is created.
-In case your CSV file has defined another field delimiter you have to call the function ```fieldDelimiter(myDelimiter)``` and pass it as parameter the field delimiter.
+Comma (`,`) is the default field delimiter per RFC 4180 standard. When parsing CSV content, fields are split by the comma character. If your CSV file uses a different field delimiter, call the function `fieldDelimiter(myDelimiter)` and pass your custom delimiter as a parameter.
 
-E.g. if your field delimiter is the comma **,** then:
+For example, if your field delimiter is a semicolon (**;**), pipe (**|**), or tab (**\t**):
 
 ```js
- csvToJson.fieldDelimiter(',')
+ // For semicolon-delimited files
+ csvToJson.fieldDelimiter(';')
+            .getJsonFromCsv(fileInputName);
+
+ // For pipe-delimited files
+ csvToJson.fieldDelimiter('|')
+            .getJsonFromCsv(fileInputName);
+
+ // For tab-delimited files
+ csvToJson.fieldDelimiter('\t')
             .getJsonFromCsv(fileInputName);
 ```
 
@@ -299,9 +307,9 @@ Case-insensitive "true" or "false" strings are converted to boolean values:
 #### Complete Example
 Input CSV:
 ```csv
-first_name;last_name;email;gender;age;id;zip;registered
-Constantin;Langsdon;clangsdon0@hc360.com;Male;96;00123;123;true
-Norah;Raison;nraison1@wired.com;Female;32;987;00456;FALSE
+first_name,last_name,email,gender,age,id,zip,registered
+Constantin,Langsdon,clangsdon0@hc360.com,Male,96,00123,123,true
+Norah,Raison,nraison1@wired.com,Female,32,987,00456,FALSE
 ```
 
 Output JSON:
@@ -374,7 +382,7 @@ If you have CSV content as a string (for example, from an API response or test d
 ```js
 
 // Parse CSV string to array of objects
-let csvString = 'firstName;lastName\nJohn;Doe\nJane;Smith';
+let csvString = 'firstName,lastName\nJohn,Doe\nJane,Smith';
 let jsonArray = csvToJson.csvStringToJson(csvString);
 // Output: [{"firstName":"John","lastName":"Doe"},{"firstName":"Jane","lastName":"Smith"}]
 
@@ -435,10 +443,10 @@ const arr = convert.browser
   .csvStringToJson('name,age\nAlice,30');
 
 // Parse CSV string asynchronously (returns Promise)
-const arrAsync = await convert.browser.csvStringToJsonAsync('name;age\nBob;25');
+const arrAsync = await convert.browser.csvStringToJsonAsync('name,age\nBob,25');
 
 // Get stringified JSON synchronously
-const jsonString = convert.browser.csvStringToJsonStringified('name;age\nEve;40');
+const jsonString = convert.browser.csvStringToJsonStringified('name,age\nEve,40');
 ```
 
 ### Parsing File/Blob
@@ -498,7 +506,7 @@ The `BrowserApi` interface in `index.d.ts` exposes typed method signatures for I
 
 ## Async API Usage
 
-This library provides a Promise-based async API that's perfect for modern Node.js applications. For a detailed migration guide from sync to async API, see [MIGRATION.md](MIGRATION.md).
+This library provides a Promise-based async API that's perfect for modern Node.js applications. For a detailed migration guide from sync to async API, see [MIGRATION_TO_ASYNC.md](MIGRATION.md).
 
 ### Async API (TypeScript)
 
@@ -520,7 +528,7 @@ async function load(): Promise<Person[]> {
 }
 
 // Using the async helper that parses CSV strings
-const parsedDirect = await csvToJson.csvStringToJsonAsync('name;age\nBob;25') as Person[];
+const parsedDirect = await csvToJson.csvStringToJsonAsync('name,age\nBob,25') as Person[];
 ```
 
 
