@@ -21,6 +21,7 @@ This repository uses [![GitHub Action  - iuccio/npm-semantic-publish-action@late
 Follow [me](https://github.com/iuccio), and consider starring the project to
 show your :heart: and support.
 
+
 ## Table of Contents
 
 <!-- toc -->
