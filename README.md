@@ -35,6 +35,7 @@ Transform CSV data into JSON with a simple, chainable API. Choose your implement
 ✅ **Flexible Configuration** - Custom delimiters, encoding, trimming, and more  
 ✅ **Method Chaining** - Fluent API for readable code  
 ✅ **Large File Support** - Stream processing for memory-efficient handling  
+✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [ERROR_HANDLING.md](ERROR_HANDLING.md))
 
 ## RFC 4180 Standard
 
