@@ -35,7 +35,7 @@ Transform CSV data into JSON with a simple, chainable API. Choose your implement
 ✅ **Flexible Configuration** - Custom delimiters, encoding, trimming, and more  
 ✅ **Method Chaining** - Fluent API for readable code  
 ✅ **Large File Support** - Stream processing for memory-efficient handling  
-✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md))
+✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [ERROR_HANDLING.md](docs/ERROR_HANDLING.md))
 
 ## RFC 4180 Standard
 
@@ -143,6 +143,7 @@ All APIs (Sync, Async and Browser) support the same configuration methods:
 - `indexHeader(num)` - Specify header row (default: 0)
 - `trimHeaderFieldWhiteSpace(bool)` - Remove spaces from headers
 - `parseSubArray(delim, sep)` - Parse delimited arrays
+- `mapRows(fn)` - Transform, filter, or enrich each row
 - `utf8Encoding()`, `latin1Encoding()`, etc. - Set file encoding
 
 ### Examples
@@ -195,6 +196,24 @@ csvToJson.trimHeaderFieldWhiteSpace(true).getJsonFromCsv('data.csv');
 csvToJson.parseSubArray('*', ',').getJsonFromCsv('data.csv');
 // Output: { name: 'John', tags: ['javascript', 'nodejs', 'typescript'] }
 ```
+
+#### `mapRows(fn)` - Transform, filter, or enrich each row
+
+```js
+// Filter out rows that don't match a condition
+const result = csvToJson
+  .fieldDelimiter(',')
+  .mapRows((row) => {
+    // Only keep rows where age >= 30
+    if (parseInt(row.age) >= 30) {
+      return row;
+    }
+    return null; // Filters out this row
+  })
+  .getJsonFromCsv('input.csv');
+```
+
+See [mapRows Feature - Usage Guide](docs/MAPROWS.md).
 
 #### `utf8Encoding()`, `latin1Encoding()`, etc. - Set file encoding
 ```js

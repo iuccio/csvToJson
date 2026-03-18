@@ -40,6 +40,11 @@ class BrowserApi {
     return this;
   }
 
+  mapRows(mapperFn) {
+    this.csvToJson.mapRows(mapperFn);
+    return this;
+  }
+
   // Synchronous parse from CSV string (browser friendly)
   csvStringToJson(csvString) {
     if (csvString === undefined || csvString === null) {

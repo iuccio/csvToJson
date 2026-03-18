@@ -10,6 +10,7 @@ Promise-based async/await API for modern Node.js applications. Perfect for handl
 - [Batch Processing](#batch-processing)
 - [Error Handling](#error-handling)
 - [Method Chaining](#method-chaining)
+- [Row Mapping and Transformation](#row-mapping-and-transformation)
 - [TypeScript Support](#typescript-support)
 
 ## Basic Usage
@@ -272,6 +273,123 @@ await csvToJson
 ```
 
 All configuration methods from the [Sync API](SYNC.md) are available with async operations.
+
+## Row Mapping and Transformation
+
+The `mapRows()` method allows you to transform, filter, or enrich each row after parsing. The mapping function is applied within the async operation, making it perfect for data transformation pipelines.
+
+### Basic Row Transformation
+
+```js
+async function transformRows() {
+  const json = await csvToJson
+    .fieldDelimiter(',')
+    .mapRows((row, index) => {
+      // Add computed fields
+      row.id = index + 1;
+      row.email = row.email.toLowerCase();
+      return row;
+    })
+    .csvStringToJsonAsync('firstName,lastName,email\nJohn,Doe,John.Doe@example.com');
+  
+  console.log(json);
+  // Output: [{ id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com' }]
+}
+```
+
+### Filtering Rows
+
+```js
+async function filterRows() {
+  const json = await csvToJson
+    .fieldDelimiter(',')
+    .mapRows((row) => {
+      // Only keep rows where status is 'active'
+      if (row.status === 'active') {
+        return row;
+      }
+      return null; // Filter out inactive rows
+    })
+    .getJsonFromCsvAsync('data.csv');
+  
+  return json; // Contains only active records
+}
+```
+
+### Data Enrichment
+
+```js
+async function enrichData() {
+  const json = await csvToJson
+    .fieldDelimiter(';')
+    .mapRows((row, index) => {
+      // Add metadata and computed properties
+      const age = parseInt(row.age);
+      return {
+        ...row,
+        rowId: index,
+        ageGroup: age < 18 ? 'minor' : age < 65 ? 'adult' : 'senior',
+        processed: new Date().toISOString()
+      };
+    })
+    .getJsonFromCsvAsync('people.csv');
+  
+  return json;
+}
+```
+
+### Complex Transformations
+
+```js
+async function complexTransformation() {
+  const sales = await csvToJson
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .mapRows((row, index) => {
+      const amount = typeof row.amount === 'number' ? row.amount : parseFloat(row.amount);
+      const quantity = typeof row.quantity === 'number' ? row.quantity : parseInt(row.quantity);
+      
+      return {
+        transactionId: `TXN-${String(index + 1).padStart(6, '0')}`,
+        customer: row.customer_name,
+        product: row.product_id,
+        quantity: quantity,
+        unitPrice: amount / quantity,
+        totalAmount: amount,
+        taxable: amount > 100,
+        timestamp: new Date().toISOString()
+      };
+    })
+    .getJsonFromCsvAsync('sales.csv');
+  
+  return sales;
+}
+```
+
+### Validation and Filtering Pipeline
+
+```js
+async function validateAndFilter() {
+  const json = await csvToJson
+    .fieldDelimiter(',')
+    .mapRows((row) => {
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(row.email)) {
+        return null; // Skip invalid rows
+      }
+      
+      // Trim whitespace
+      row.name = row.name.trim();
+      row.email = row.email.trim();
+      
+      return row;
+    })
+    .getJsonFromCsvAsync('contacts.csv');
+  
+  return json;
+}
+```
 
 ## TypeScript Support
 

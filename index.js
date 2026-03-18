@@ -124,6 +124,18 @@ exports.hexEncoding = function () {
 };
 
 /**
+ * Sets a mapper function to transform each row after conversion.
+ * The mapper function receives (row, index) where row is the JSON object 
+ * and index is the 0-based row number. Return null/undefined to filter out rows.
+ * @param {Function} mapperFn - Function to transform each row
+ * @return {object} this for chaining
+ */
+exports.mapRows = function (mapperFn) {
+  csvToJson.mapRows(mapperFn);
+  return this;
+};
+
+/**
  * Parses .csv file and put its content into a file in json format.
  * @param {inputFileName} path/filename
  * @param {outputFileName} path/filename

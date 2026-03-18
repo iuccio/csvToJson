@@ -9,8 +9,8 @@ const {
     JsonValidationError
 } = require('./util/errors');
 
-const newLine = /\r?\n/;
-const defaultFieldDelimiter = ",";
+const NEW_LINE = /\r?\n/;
+const DEFAULT_FIELD_DELIMITER = ",";
 const QUOTE_CHAR = '"';
 const CRLF = '\r\n';
 const LF = '\n';
@@ -54,6 +54,19 @@ class CsvToJson {
 
   encoding(encoding){
     this.encoding = encoding;
+    return this;
+  }
+
+  /**
+   * Sets a mapper function to transform each row after conversion
+   * @param {Function} mapperFn - Function that receives (row, index) and returns transformed row or null to filter out
+   * @returns {this} - For method chaining
+   */
+  mapRows(mapperFn) {
+    if (typeof mapperFn !== 'function') {
+      throw new TypeError('mapperFn must be a function');
+    }
+    this.rowMapper = mapperFn;
     return this;
   }
 
@@ -123,7 +136,18 @@ class CsvToJson {
         }
         
         if (stringUtils.hasContent(currentLine)) {
-            jsonResult.push(this.buildJsonResult(headers, currentLine));
+            let row = this.buildJsonResult(headers, currentLine);
+            
+            // Apply row mapper if defined
+            if (this.rowMapper) {
+              row = this.rowMapper(row, i - (index + 1)); // Pass row and 0-based row index
+              // If mapper returns null/undefined, skip this row (allows filtering)
+              if (row != null) {
+                jsonResult.push(row);
+              }
+            } else {
+              jsonResult.push(row);
+            }
         }
     }
     return jsonResult;
@@ -211,7 +235,7 @@ class CsvToJson {
     if (this.delimiter) {
       return this.delimiter;
     }
-    return defaultFieldDelimiter;
+    return DEFAULT_FIELD_DELIMITER;
   }
 
   getIndexHeader(){

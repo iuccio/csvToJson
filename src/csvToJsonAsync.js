@@ -59,6 +59,14 @@ class CsvToJsonAsync {
     }
 
     /**
+     * Set row mapper function to transform each row
+     */
+    mapRows(mapperFn) {
+        this.csvToJson.mapRows(mapperFn);
+        return this;
+    }
+
+    /**
      * Set encoding
      */
     encoding(encoding) {
