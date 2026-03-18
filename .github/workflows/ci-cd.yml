@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x, 25.x]
+        node-version: [18.x, 20.x, 22.x, 24.x, 25.x, 26.x]
         experimental: [true]
 
     steps:
@@ -49,7 +49,7 @@ jobs:
       uses: iuccio/npm-semver-publish-action@v1.11.0
       with:
         target-branch: 'master'
-        provenance: true
+        provenance: false
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
