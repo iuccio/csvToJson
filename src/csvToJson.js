@@ -9,7 +9,6 @@ const {
     JsonValidationError
 } = require('./util/errors');
 
-const NEW_LINE = /\r?\n/;
 const DEFAULT_FIELD_DELIMITER = ",";
 const QUOTE_CHAR = '"';
 const CRLF = '\r\n';
