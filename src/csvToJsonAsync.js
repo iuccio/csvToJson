@@ -2,6 +2,7 @@
 
 const fileUtils = require('./util/fileUtils');
 const csvToJson = require('./csvToJson');
+const { InputValidationError } = require('./util/errors');
 
 class CsvToJsonAsync {
     constructor() {
@@ -58,6 +59,14 @@ class CsvToJsonAsync {
     }
 
     /**
+     * Set row mapper function to transform each row
+     */
+    mapRows(mapperFn) {
+        this.csvToJson.mapRows(mapperFn);
+        return this;
+    }
+
+    /**
      * Set encoding
      */
     encoding(encoding) {
@@ -87,7 +96,12 @@ class CsvToJsonAsync {
      */
     async getJsonFromCsvAsync(inputFileNameOrCsv, options = {}) {
         if (inputFileNameOrCsv === null || inputFileNameOrCsv === undefined) {
-            throw new Error('inputFileNameOrCsv is not defined!!!');
+            throw new InputValidationError(
+                'inputFileNameOrCsv',
+                'string (file path) or CSV string content',
+                `${typeof inputFileNameOrCsv}`,
+                'Either provide a valid file path or CSV content as a string.'
+            );
         }
 
         if (options.raw) {

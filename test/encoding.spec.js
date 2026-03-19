@@ -5,7 +5,7 @@ describe('Encoding testing', function () {
 
     it('should return an object with latin1 encode decoded', function () {
         //when
-        let result = index.latin1Encoding().getJsonFromCsv('test/resource/input_latin1_encode.csv');
+        let result = index.fieldDelimiter(";").latin1Encoding().getJsonFromCsv('test/resource/input_latin1_encode.csv');
 
         //then
         expect(result).not.toBeNull()

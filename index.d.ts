@@ -73,6 +73,14 @@ declare module 'convert-csv-to-json' {
     hexEncoding(): this;
 
     /**
+     * Sets a mapper function to transform each row after conversion.
+     * The mapper function receives (row, index) where row is the JSON object 
+     * and index is the 0-based row number. Return null/undefined to filter out rows.
+     * @param mapperFn Function that receives (row: any, index: number) => any | null
+     */
+    mapRows(mapperFn: (row: any, index: number) => any | null): this;
+
+    /**
      * Parses .csv file and put its content into a file in json format.
      * @param {inputFileName} path/filename
      * @param {outputFileName} path/filename
@@ -105,14 +113,7 @@ declare module 'convert-csv-to-json' {
     */
     csvStringToJsonStringified(csvString: string): string;
     
-    /**
-     * Parses .csv file and put its content into a file in json format.
-     * @param {inputFileName} path/filename
-     * @param {outputFileName} path/filename
-     *
-     * @deprecated Use generateJsonFileFromCsv()
-     */
-    jsonToCsv(inputFileName: string, outputFileName: string): void;
+
   }
   const converter: ConvertCsvToJson;
   export default converter;
@@ -127,6 +128,7 @@ declare module 'convert-csv-to-json' {
     fieldDelimiter(delimiter: string): this;
     indexHeader(index: number): this;
     parseSubArray(delimiter: string, separator: string): this;
+    mapRows(mapperFn: (row: any, index: number) => any | null): this;
 
     csvStringToJson(csvString: string): any[];
     csvStringToJsonStringified(csvString: string): string;

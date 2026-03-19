@@ -34,7 +34,7 @@ describe('API testing', function () {
             //given
 
             //when
-            let result = index.getJsonFromCsv(fileInputName);
+            let result = index.fieldDelimiter(";").getJsonFromCsv(fileInputName);
 
             //then
             expect(result.length).toEqual(expectedJson.length);
@@ -51,7 +51,7 @@ describe('API testing', function () {
             let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth','zip','registered'];
 
             //when
-            let result = index.getJsonFromCsv(fileInputName);
+            let result = index.fieldDelimiter(";").getJsonFromCsv(fileInputName);
 
             //then
             const resultHeaders = Object.keys(result[0]);
@@ -65,7 +65,7 @@ describe('API testing', function () {
             let headers = ['first Name', 'last Name', 'email', 'gender', 'age', 'birth'];
             
             //when
-            let result = index.trimHeaderFieldWhiteSpace(false)
+            let result = index.fieldDelimiter(";").trimHeaderFieldWhiteSpace(false)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
 
@@ -81,7 +81,7 @@ describe('API testing', function () {
             let headers = ['firstName', 'lastName', 'email', 'gender', 'age', 'birth'];
             
             //when
-            let result = index.trimHeaderFieldWhiteSpace(true)
+            let result = index.fieldDelimiter(";").trimHeaderFieldWhiteSpace(true)
                 .getJsonFromCsv('test/resource/input_header_with_empty_spaces.csv');
 
             const resultHeaders = Object.keys(result[0]);
@@ -213,7 +213,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.fieldDelimiter('"')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field delimiter as quote -> ["]');
+            }).toThrow(/Configuration conflict.*fieldDelimiter/);
 
         });
 		it('should throw error when parseSubArrayDelimiter active and fieldDelimiter is equal to "', function () {
@@ -224,7 +224,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.parseSubArray('"', ',')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field parseSubArrayDelimiter as quote -> ["]');
+            }).toThrow(/Configuration conflict.*parseSubArrayDelimiter/);
 
         });
 
@@ -236,7 +236,7 @@ describe('API testing', function () {
                 index.supportQuotedField(true)
                 		.parseSubArray('*', '"')
                     	.getJsonFromCsv(fileInputName);
-            }).toThrow('When SupportQuotedFields is enabled you cannot defined the field parseSubArraySeparator as quote -> ["]');
+            }).toThrow(/Configuration conflict.*parseSubArraySeparator/);
 
         });
 
