@@ -43,7 +43,6 @@ jobs:
     - name: Use Node.js 24.x
       uses: actions/setup-node@v6
       with:
-        token: ${{ secrets.ACTION_TOKEN }}
         node-version: 24.x
         registry-url: 'https://registry.npmjs.org'
     - name: npm-semver-publish
