@@ -36,8 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6 
-      with:
-        token: ${{ secrets.ACTION_TOKEN }}
     - uses: fregante/setup-git-user@v2      
     - run: git config --global user.name "dependabot"
     - name: Use Node.js 22.x
@@ -46,8 +44,6 @@ jobs:
         node-version: 22.x
         registry-url: 'https://registry.npmjs.org'
     - name: npm-semver-publish
-      uses: iuccio/npm-semver-publish-action@v1.11.0
-      with:
-        target-branch: 'master'
-        provenance: false
+      run: |
+        npm run release
       

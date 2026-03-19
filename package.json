@@ -51,6 +51,7 @@
     "@types/jest": "^30.0.0"
   },
   "publishConfig": {
+    "provenance": true,
     "access": "public"
   }
 }
