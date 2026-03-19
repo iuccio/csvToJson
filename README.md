@@ -248,8 +248,8 @@ async function processCSV() {
 
 ## Migration Guides
 
-- **RFC 4180 Breaking Changes** - See [RFC4180_MIGRATION_GUIDE.md](RFC4180_MIGRATION_GUIDE.md)
-- **Sync to Async Migration** - See [MIGRATION.md](MIGRATION.md)
+- **RFC 4180 Breaking Changes** - See [RFC4180_MIGRATION_GUIDE.md](migration/RFC4180_MIGRATION_GUIDE.md)
+- **Sync to Async Migration** - See [MIGRATION.md](migration/MIGRATION_TO_ASYNC.md)
 - **Error Handling** - See [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md) for comprehensive error documentation
 
 ## Development

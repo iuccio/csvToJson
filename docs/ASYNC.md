@@ -482,4 +482,4 @@ async function processMultipleWithLogging(files) {
 - [Main README](../README.md) - Overview and installation
 - [Sync API](SYNC.md) - Synchronous operations
 - [Browser API](BROWSER.md) - Client-side CSV parsing
-- [MIGRATION.md](../MIGRATION.md) - Guide for migrating from Sync to Async
+- [MIGRATION.md](../migration/MIGRATION_TO_ASYNC.md) - Guide for migrating from Sync to Async
