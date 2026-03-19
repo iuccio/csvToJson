@@ -8,7 +8,7 @@
 ![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=18.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 [![NPM total downloads](https://img.shields.io/npm/dt/convert-csv-to-json.svg?style=flat)](https://npmjs.org/package/convert-csv-to-json)
-[![Socket Badge](https://badge.socket.dev/npm/package/convert-csv-to-json/3.20.0)](https://badge.socket.dev/npm/package/convert-csv-to-json/3.20.0)
+[![Socket Badge](https://badge.socket.dev/npm/package/convert-csv-to-json/3.20.0)](https://socket.dev/npm/package/convert-csv-to-json)
 
 
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
@@ -271,8 +271,9 @@ npm run test-debug
 
 ## CI/CD GitHub Action
 
-This repository uses [GitHub Action - iuccio/npm-semantic-publish-action](https://github.com/marketplace/actions/npm-semver-publish) for automated npm publishing.
+See [CI/CD GitHub Action](.github/workflows/ci-cd.yml).
 
+### Release
 When pushing to the `master` branch:
 - Include `[MAJOR]` in commit message for major release (e.g., v1.0.0 → v2.0.0)
 - Include `[PATCH]` in commit message for patch release (e.g., v1.0.0 → v1.0.1)
