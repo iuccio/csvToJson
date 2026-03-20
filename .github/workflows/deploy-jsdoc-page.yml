@@ -1,0 +1,39 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  pages:
+    needs: release
+    if: github.ref == 'refs/heads/master'
+    name: deploy docs to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    permissions: 
+      pages: write
+      id-token: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v6
+    - name: Use Node.js 24.x
+      uses: actions/setup-node@v6
+      with:
+        node-version: 24.x
+    - name: Install dependencies
+      run: npm ci
+    - name: Generate API docs
+      run: npm run docs:api
+    - name: Configure GitHub Pages
+      uses: actions/configure-pages@v4
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/api
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v4
+      with:
+        artifact_name: github-pages
+        
+
