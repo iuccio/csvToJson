@@ -51,7 +51,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "eslint": "^8.57.0",
-    "eslint-plugin-jsdoc": "^44.1.0",
+    "eslint-plugin-jsdoc": "^62.8.0",
     "jest": "^30.2.0",
     "jsdoc": "^4.0.5",
     "ts-jest": "^29.4.5",
