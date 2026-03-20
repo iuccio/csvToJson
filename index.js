@@ -3,6 +3,8 @@
  * Main entry point providing chainable API for CSV parsing with multiple configuration options
  */
 
+/* globals FileOperationError, CsvFormatError, JsonValidationError, InputValidationError */
+
 "use strict";
 
 let csvToJson = require("./src/csvToJson.js");
@@ -201,7 +203,7 @@ exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
 /**
  * Parse CSV file and return parsed data as JSON array of objects (synchronous)
  * @param {string} inputFileName - Path to input CSV file
- * @returns {Array<Object>} Array of objects representing CSV rows
+ * @returns {Array<object>} Array of objects representing CSV rows
  * @throws {Error} If inputFileName is not defined
  * @throws {FileOperationError} If file read fails
  * @throws {CsvFormatError} If CSV is malformed
@@ -220,9 +222,9 @@ exports.getJsonFromCsv = function(inputFileName) {
 /**
  * Parse CSV file asynchronously and return parsed data as JSON array
  * @param {string} inputFileNameOrCsv - Path to file or CSV string
- * @param {Object} options - Configuration options
+ * @param {object} options - Configuration options
  * @param {boolean} options.raw - If true, treats first param as CSV content; if false, reads from file
- * @returns {Promise<Array<Object>>} Promise resolving to array of objects
+ * @returns {Promise<Array<object>>} Promise resolving to array of objects
  * @throws {InputValidationError} If input is invalid
  * @throws {FileOperationError} If file read fails
  * @throws {CsvFormatError} If CSV is malformed
@@ -252,7 +254,7 @@ Object.assign(exports, {
 /**
  * Parse a CSV string and return as JSON array of objects (synchronous)
  * @param {string} csvString - CSV content as string
- * @returns {Array<Object>} Array of objects representing CSV rows
+ * @returns {Array<object>} Array of objects representing CSV rows
  * @throws {InputValidationError} If csvString is invalid
  * @throws {CsvFormatError} If CSV is malformed
  * @example

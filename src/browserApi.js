@@ -1,3 +1,5 @@
+/* globals CsvFormatError */
+
 "use strict";
 
 const csvToJson = require('./csvToJson');
@@ -91,7 +93,7 @@ class BrowserApi {
   /**
    * Parse a CSV string and return as JSON array of objects
    * @param {string} csvString - CSV content as string
-   * @returns {Array<Object>} Array of objects representing CSV rows
+   * @returns {Array<object>} Array of objects representing CSV rows
    * @throws {InputValidationError} If csvString is invalid
    * @throws {CsvFormatError} If CSV is malformed
    * @example
@@ -137,7 +139,7 @@ class BrowserApi {
   /**
    * Parse a CSV string asynchronously (returns resolved Promise)
    * @param {string} csvString - CSV content as string
-   * @returns {Promise<Array<Object>>} Promise resolving to array of objects
+   * @returns {Promise<Array<object>>} Promise resolving to array of objects
    * @throws {InputValidationError} If csvString is invalid
    * @throws {CsvFormatError} If CSV is malformed
    * @example
@@ -168,7 +170,7 @@ class BrowserApi {
    * Parse a browser File or Blob object to JSON array.
    * @param {File|Blob} file - File or Blob to read as text
    * @param {object} options - options: { encoding?: string }
-   * @returns {Promise<any[]>}
+   * @returns {Promise<any[]>} Promise resolving to parsed JSON rows
    * @example
    * const csvToJson = require('convert-csv-to-json');
    * const fileInput = document.querySelector('#csvfile').files[0];

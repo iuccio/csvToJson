@@ -1,3 +1,4 @@
+/* globals CsvFormatError, FileOperationError */
 'use strict';
 
 const fileUtils = require('./util/fileUtils');
@@ -127,9 +128,9 @@ class CsvToJsonAsync {
      * Main async API method for reading CSV and returning parsed JSON
      * Supports reading from file path or parsing CSV string content
      * @param {string} inputFileNameOrCsv - File path or CSV string content
-     * @param {Object} options - Configuration options
+     * @param {object} options - Configuration options
      * @param {boolean} options.raw - If true, treats input as CSV string; if false, reads from file
-     * @returns {Promise<Array<Object>>} Array of objects representing CSV rows
+     * @returns {Promise<Array<object>>} Array of objects representing CSV rows
      * @throws {InputValidationError} If input is invalid
      * @throws {FileOperationError} If file read fails
      * @throws {CsvFormatError} If CSV is malformed
@@ -162,8 +163,8 @@ class CsvToJsonAsync {
     /**
      * Parse CSV string to JSON array (async)
      * @param {string} csvString - CSV content as string
-     * @param {Object} options - Configuration options (default: { raw: true })
-     * @returns {Promise<Array<Object>>} Array of objects representing CSV rows
+     * @param {object} options - Configuration options (default: { raw: true })
+     * @returns {Promise<Array<object>>} Array of objects representing CSV rows
      * @throws {CsvFormatError} If CSV is malformed
      * @example
      * const csvToJson = require('convert-csv-to-json');

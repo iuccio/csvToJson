@@ -14,7 +14,7 @@ class CsvParsingError extends Error {
      * Create a CSV parsing error
      * @param {string} message - Error message
      * @param {string} code - Error code for identification
-     * @param {Object} context - Additional context information (default: {})
+     * @param {object} context - Additional context information (default: {})
      */
     constructor(message, code, context = {}) {
         super(message);
@@ -91,7 +91,7 @@ class ConfigurationError extends CsvParsingError {
     /**
      * Create a configuration error
      * @param {string} message - Error message
-     * @param {Object} conflictingOptions - Configuration options in conflict (optional)
+     * @param {object} conflictingOptions - Configuration options in conflict (optional)
      */
     constructor(message, conflictingOptions = {}) {
         super(message, 'CONFIGURATION_ERROR', conflictingOptions);
@@ -106,7 +106,6 @@ class ConfigurationError extends CsvParsingError {
      * @returns {ConfigurationError} Configured error instance
      * @static
      */
-
     static quotedFieldConflict(optionName, value) {
         return new ConfigurationError(
             `Configuration conflict: supportQuotedField() is enabled, but ${optionName} is set to '${value}'.\n` +
@@ -147,7 +146,7 @@ class CsvFormatError extends CsvParsingError {
     /**
      * Create a CSV format error
      * @param {string} message - Error message
-     * @param {Object} context - Additional context information (optional)
+     * @param {object} context - Additional context information (optional)
      */
     constructor(message, context = {}) {
         super(message, 'CSV_FORMAT_ERROR', context);
@@ -160,7 +159,6 @@ class CsvFormatError extends CsvParsingError {
      * @returns {CsvFormatError} Configured error instance
      * @static
      */
-
     static missingHeader() {
         return new CsvFormatError(
             `CSV parsing error: No header row found.\n` +
@@ -269,7 +267,7 @@ class BrowserApiError extends CsvParsingError {
     /**
      * Create a browser API error
      * @param {string} message - Error message
-     * @param {Object} context - Additional context information (optional)
+     * @param {object} context - Additional context information (optional)
      */
     constructor(message, context = {}) {
         super(message, 'BROWSER_API_ERROR', context);
@@ -282,7 +280,6 @@ class BrowserApiError extends CsvParsingError {
      * @returns {BrowserApiError} Configured error instance
      * @static
      */
-
     static fileReaderNotAvailable() {
         return new BrowserApiError(
             `Browser compatibility error: FileReader API is not available.\n` +
