@@ -15,28 +15,60 @@ const CRLF = '\r\n';
 const LF = '\n';
 const CR = '\r';
 
+/**
+ * Main CSV to JSON converter class
+ * Provides chainable API for configuring and converting CSV data
+ */
 class CsvToJson {
 
+  /**
+   * Enable or disable automatic type formatting for values
+   * When enabled, numeric strings are converted to numbers, 'true'/'false' to booleans
+   * @param {boolean} active - Whether to format values by type
+   * @returns {this} For method chaining
+   */
   formatValueByType(active) {
     this.printValueFormatByType = active;
     return this;
   }
 
+  /**
+   * Enable or disable support for RFC 4180 quoted fields
+   * When enabled, fields wrapped in double quotes can contain delimiters and newlines
+   * @param {boolean} active - Whether to support quoted fields
+   * @returns {this} For method chaining
+   */
   supportQuotedField(active) {
     this.isSupportQuotedField = active;
     return this;
   }
 
+  /**
+   * Set the field delimiter character
+   * @param {string} delimiter - Character(s) to use as field separator (default: ',')
+   * @returns {this} For method chaining
+   */
   fieldDelimiter(delimiter) {
     this.delimiter = delimiter;
     return this;
   }
 
+  /**
+   * Configure whitespace handling in header field names
+   * @param {boolean} active - If true, removes all whitespace from header names; if false, only trims edges
+   * @returns {this} For method chaining
+   */
   trimHeaderFieldWhiteSpace(active) {
     this.isTrimHeaderFieldWhiteSpace = active;
     return this;
   }
 
+  /**
+   * Set the row index where CSV headers are located
+   * @param {number} indexHeaderValue - Zero-based row index containing headers
+   * @returns {this} For method chaining
+   * @throws {ConfigurationError} If not a valid number
+   */
   indexHeader(indexHeaderValue) {
     if (isNaN(indexHeaderValue)) {
       throw ConfigurationError.invalidHeaderIndex(indexHeaderValue);
@@ -46,11 +78,28 @@ class CsvToJson {
   }
 
 
+  /**
+   * Configure sub-array parsing for special field values
+   * Fields bracketed by delimiter and containing separator are parsed into arrays
+   * @param {string} delimiter - Bracket character (default: '*')
+   * @param {string} separator - Item separator within brackets (default: ',')
+   * @returns {this} For method chaining
+   * @example
+   * // Input: "*val1,val2,val3*"  
+   * // Output: ["val1", "val2", "val3"]
+   * .parseSubArray('*', ',')
+   */
   parseSubArray(delimiter = '*',separator = ',') {
     this.parseSubArrayDelimiter = delimiter;
     this.parseSubArraySeparator = separator;
+    return this;
   }
 
+  /**
+   * Set file encoding for reading CSV files
+   * @param {string} encoding - Node.js supported encoding (e.g., 'utf8', 'latin1', 'ascii')
+   * @returns {this} For method chaining
+   */
   encoding(encoding){
     this.encoding = encoding;
     return this;
@@ -69,11 +118,30 @@ class CsvToJson {
     return this;
   }
 
+  /**
+   * Read a CSV file and write the parsed JSON to an output file
+   * @param {string} fileInputName - Path to input CSV file
+   * @param {string} fileOutputName - Path to output JSON file
+   * @throws {FileOperationError} If file read or write fails
+   * @throws {CsvFormatError} If CSV is malformed
+   */
   generateJsonFileFromCsv(fileInputName, fileOutputName) {
     let jsonStringified = this.getJsonFromCsvStringified(fileInputName);
     fileUtils.writeFile(jsonStringified, fileOutputName);
   }
 
+  /**
+   * Read a CSV file and return parsed data as stringified JSON
+   * @param {string} fileInputName - Path to input CSV file
+   * @returns {string} JSON stringified array of objects
+   * @throws {FileOperationError} If file read fails
+   * @throws {CsvFormatError} If CSV is malformed
+   * @throws {JsonValidationError} If JSON generation fails
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const jsonString = csvToJson.getJsonFromCsvStringified('resource/input.csv');
+   * console.log(jsonString);
+   */
   getJsonFromCsvStringified(fileInputName) {
     let json = this.getJsonFromCsv(fileInputName);
     let jsonStringified = JSON.stringify(json, undefined, 1);
@@ -81,15 +149,47 @@ class CsvToJson {
     return jsonStringified;
   }
 
+  /**
+   * Read a CSV file and return parsed data as JSON array of objects
+   * @param {string} fileInputName - Path to input CSV file
+   * @returns {Array<Object>} Array of objects representing CSV rows
+   * @throws {FileOperationError} If file read fails
+   * @throws {CsvFormatError} If CSV is malformed
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const rows = csvToJson.getJsonFromCsv('resource/input.csv');
+   * console.log(rows);
+   */
   getJsonFromCsv(fileInputName) {
     let parsedCsv = fileUtils.readFile(fileInputName, this.encoding);
     return this.csvToJson(parsedCsv);
   }
 
+  /**
+   * Parse CSV string content and return as JSON array of objects
+   * @param {string} csvString - CSV content as string
+   * @returns {Array<Object>} Array of objects representing CSV rows
+   * @throws {CsvFormatError} If CSV is malformed
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const rows = csvToJson.csvStringToJson('name,age\nAlice,30');
+   * console.log(rows); // [{ name: 'Alice', age: '30' }]
+   */
   csvStringToJson(csvString) {
     return this.csvToJson(csvString);
   }
 
+  /**
+   * Parse CSV string content and return as stringified JSON
+   * @param {string} csvString - CSV content as string
+   * @returns {string} JSON stringified array of objects
+   * @throws {CsvFormatError} If CSV is malformed
+   * @throws {JsonValidationError} If JSON generation fails
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const jsonString = csvToJson.csvStringToJsonStringified('name,age\nAlice,30');
+   * console.log(jsonString);
+   */
   csvStringToJsonStringified(csvString) {
     let json = this.csvStringToJson(csvString);
     let jsonStringified = JSON.stringify(json, undefined, 1);
@@ -97,6 +197,14 @@ class CsvToJson {
     return jsonStringified;
   }
 
+  /**
+   * Core CSV parsing logic - converts CSV string to JSON array
+   * Handles quoted fields per RFC 4180 when configured
+   * Applies row mapping and filtering when configured
+   * @param {string} parsedCsv - Raw CSV content as string
+   * @returns {Array<Object>} Array of objects with CSV data
+   * @private
+   */
   csvToJson(parsedCsv) {
   	this.validateInputConfig();
     
@@ -230,6 +338,11 @@ class CsvToJson {
     return 0;
   }
 
+  /**
+   * Get the configured field delimiter, or default if not set
+   * @returns {string} Field delimiter character
+   * @private
+   */
   getFieldDelimiter() {
     if (this.delimiter) {
       return this.delimiter;
@@ -237,6 +350,11 @@ class CsvToJson {
     return DEFAULT_FIELD_DELIMITER;
   }
 
+  /**
+   * Get the configured header row index, or default (0) if not set
+   * @returns {number} Header row index
+   * @private
+   */
   getIndexHeader(){
     if(this.indexHeaderValue !== null && !isNaN(this.indexHeaderValue)){
         return this.indexHeaderValue;
@@ -244,6 +362,14 @@ class CsvToJson {
     return 0;
   }
 
+  /**
+   * Build a JSON object from headers and field values
+   * Applies type formatting and sub-array parsing as configured
+   * @param {string[]} headers - Array of header field names
+   * @param {string[]} currentLine - Array of field values
+   * @returns {Object} JSON object with header names as keys
+   * @private
+   */
   buildJsonResult(headers, currentLine) {
     let jsonObject = {};
     for (let j = 0; j < headers.length; j++) {
@@ -263,6 +389,12 @@ class CsvToJson {
     return jsonObject;
   }
 
+  /**
+   * Parse a field value into a sub-array using configured delimiter and separator
+   * @param {string} value - Field value to parse
+   * @returns {Array<string|number|boolean>} Array of parsed values
+   * @private
+   */
   buildJsonSubArray(value) {
     let extractedValues = value.substring(
         value.indexOf(this.parseSubArrayDelimiter) + 1,
@@ -278,6 +410,12 @@ class CsvToJson {
     return value;
   }
 
+  /**
+   * Check if a field value should be parsed as a sub-array
+   * @param {string} value - Field value to check
+   * @returns {boolean} True if value is bracketed with sub-array delimiter
+   * @private
+   */
   isParseSubArray(value){
     if(this.parseSubArrayDelimiter){
       if (value && (value.indexOf(this.parseSubArrayDelimiter) === 0 && value.lastIndexOf(this.parseSubArrayDelimiter) === (value.length - 1))) {
@@ -287,6 +425,11 @@ class CsvToJson {
     return false;
   }
 
+  /**
+   * Validate configuration for conflicts and incompatibilities
+   * @throws {ConfigurationError} If incompatible options are set
+   * @private
+   */
   validateInputConfig(){
     if(this.isSupportQuotedField) {
       if(this.getFieldDelimiter() === '"'){
@@ -301,6 +444,12 @@ class CsvToJson {
     }
   }
 
+  /**
+   * Check if a line contains quote characters
+   * @param {string} line - Line to check
+   * @returns {boolean} True if line contains quotes
+   * @private
+   */
   hasQuotes(line) {
     return line.includes('"');
   }
@@ -363,7 +512,12 @@ class CsvToJson {
 
   /**
    * Check if character at index is an escaped quote (double quote)
-   * @returns {boolean}
+   * Escaped quotes appear as "" within quoted fields per RFC 4180
+   * @param {string} line - Line being parsed
+   * @param {number} index - Character index to check
+   * @param {boolean} insideQuoted - Whether currently inside a quoted field
+   * @returns {boolean} True if character is an escaped quote
+   * @private
    */
   isEscapedQuote(line, index, insideQuoted) {
     return insideQuoted && 
@@ -373,7 +527,13 @@ class CsvToJson {
 
   /**
    * Check if this is an empty quoted field: "" before delimiter or end of line
-   * @returns {boolean}
+   * @param {string} line - Line being parsed
+   * @param {number} index - Character index to check
+   * @param {boolean} insideQuoted - Whether currently inside a quoted field
+   * @param {string} currentField - Current field accumulation
+   * @param {string} delimiter - Field delimiter character
+   * @returns {boolean} True if this represents an empty quoted field
+   * @private
    */
   isEmptyQuotedField(line, index, insideQuoted, currentField, delimiter) {
     if (insideQuoted || currentField !== '' || index + 1 >= line.length) {

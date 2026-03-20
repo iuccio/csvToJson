@@ -1,3 +1,8 @@
+/**
+ * CsvToJson - CSV to JSON converter library
+ * Main entry point providing chainable API for CSV parsing with multiple configuration options
+ */
+
 "use strict";
 
 let csvToJson = require("./src/csvToJson.js");
@@ -13,7 +18,10 @@ const encodingOps = {
 };
 
 /**
- * Prints a digit as Number type (for example 32 instead of '32')
+ * Enable or disable automatic type formatting for values
+ * Converts numeric strings to numbers, 'true'/'false' to booleans
+ * @param {boolean} active - Whether to format values by type (default: true)
+ * @returns {object} Module context for method chaining
  */
 exports.formatValueByType = function (active = true) {
   csvToJson.formatValueByType(active);
@@ -21,14 +29,19 @@ exports.formatValueByType = function (active = true) {
 };
 
 /**
- * If enabled, allows fields wrapped by quotation marks to be parsed correctly and not splitted 
+ * Enable or disable support for RFC 4180 quoted fields
+ * When enabled, fields wrapped in double quotes can contain delimiters and newlines
+ * @param {boolean} active - Whether to support quoted fields (default: false)
+ * @returns {object} Module context for method chaining
  */
 exports.supportQuotedField = function (active = false) {
   csvToJson.supportQuotedField(active);
   return this;
 };
 /**
- * Defines the field delimiter which will be used to split the fields
+ * Set the field delimiter character used to separate CSV fields
+ * @param {string} delimiter - Character(s) to use as field separator (default: ',')
+ * @returns {object} Module context for method chaining
  */
 exports.fieldDelimiter = function (delimiter) {
   csvToJson.fieldDelimiter(delimiter);
@@ -36,7 +49,11 @@ exports.fieldDelimiter = function (delimiter) {
 };
 
 /**
- * If active the content of the Header Fields is trimmed including the white spaces, e.g. "My Name" -> "MyName"
+ * Configure whitespace handling in CSV header field names
+ * When active, removes all whitespace from header names (e.g., "My Name" → "MyName")
+ * When inactive, only trims leading and trailing whitespace
+ * @param {boolean} active - Whether to remove all whitespace from headers (default: false)
+ * @returns {object} Module context for method chaining
  */
 exports.trimHeaderFieldWhiteSpace = function (active = false) {
   csvToJson.trimHeaderFieldWhiteSpace(active);
@@ -44,7 +61,10 @@ exports.trimHeaderFieldWhiteSpace = function (active = false) {
 };
 
 /**
- * Defines the index where the header is defined
+ * Set the row index where CSV headers are located
+ * Use this if headers are not on the first line (row 0)
+ * @param {number} index - Zero-based row index containing headers
+ * @returns {object} Module context for method chaining
  */
 exports.indexHeader = function (index) {
   csvToJson.indexHeader(index);
@@ -52,7 +72,15 @@ exports.indexHeader = function (index) {
 };
 
 /**
- * Defines how to match and parse a sub array
+ * Configure sub-array parsing for special field values
+ * Fields bracketed by delimiter and containing separator are parsed into arrays
+ * @param {string} delimiter - Bracket character (default: '*')
+ * @param {string} separator - Item separator within brackets (default: ',')
+ * @returns {object} Module context for method chaining
+ * @example
+ * // Input field: "*val1,val2,val3*"
+ * // Output array: ["val1", "val2", "val3"]
+ * csvToJson.parseSubArray('*', ',')
  */
 exports.parseSubArray = function (delimiter, separator) {
   csvToJson.parseSubArray(delimiter, separator);
@@ -60,7 +88,10 @@ exports.parseSubArray = function (delimiter, separator) {
 };
 
 /**
- * Defines a custom encoding to decode a file
+ * Set custom file encoding for reading CSV files
+ * Useful for non-UTF8 encoded files
+ * @param {string} encoding - Node.js supported encoding (e.g., 'utf8', 'latin1', 'ascii')
+ * @returns {object} Module context for method chaining
  */
 exports.customEncoding = function (encoding) {
   csvToJson.encoding = encoding;
@@ -68,7 +99,8 @@ exports.customEncoding = function (encoding) {
 };
 
 /**
- * Defines a custom encoding to decode a file
+ * Set UTF-8 encoding (default encoding)
+ * @returns {object} Module context for method chaining
  */
 exports.utf8Encoding = function utf8Encoding() {
   csvToJson.encoding = encodingOps.utf8;
@@ -76,7 +108,8 @@ exports.utf8Encoding = function utf8Encoding() {
 };
 
 /**
- * Defines ucs2 encoding to decode a file
+ * Set UCS-2 encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.ucs2Encoding = function () {
   csvToJson.encoding = encodingOps.ucs2;
@@ -84,7 +117,8 @@ exports.ucs2Encoding = function () {
 };
 
 /**
- * Defines utf16le encoding to decode a file
+ * Set UTF-16 LE encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.utf16leEncoding = function () {
   csvToJson.encoding = encodingOps.utf16le;
@@ -92,7 +126,8 @@ exports.utf16leEncoding = function () {
 };
 
 /**
- * Defines latin1 encoding to decode a file
+ * Set Latin-1 (ISO-8859-1) encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.latin1Encoding = function () {
   csvToJson.encoding = encodingOps.latin1;
@@ -100,7 +135,8 @@ exports.latin1Encoding = function () {
 };
 
 /**
- * Defines ascii encoding to decode a file
+ * Set ASCII encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.asciiEncoding = function () {
   csvToJson.encoding = encodingOps.ascii;
@@ -108,7 +144,8 @@ exports.asciiEncoding = function () {
 };
 
 /**
- * Defines base64 encoding to decode a file
+ * Set Base64 encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.base64Encoding = function () {
   this.csvToJson = encodingOps.base64;
@@ -116,7 +153,8 @@ exports.base64Encoding = function () {
 };
 
 /**
- * Defines hex encoding to decode a file
+ * Set Hex encoding for reading files
+ * @returns {object} Module context for method chaining
  */
 exports.hexEncoding = function () {
   this.csvToJson = encodingOps.hex;
@@ -124,11 +162,15 @@ exports.hexEncoding = function () {
 };
 
 /**
- * Sets a mapper function to transform each row after conversion.
+ * Set a mapper function to transform each row after conversion
  * The mapper function receives (row, index) where row is the JSON object 
  * and index is the 0-based row number. Return null/undefined to filter out rows.
- * @param {Function} mapperFn - Function to transform each row
- * @return {object} this for chaining
+ * @param {Function} mapperFn - Function to transform each row: `(row, index) => transformedRow | null`
+ * @returns {object} Module context for method chaining
+ * @example
+ * csvToJson
+ *   .mapRows((row, idx) => idx % 2 === 0 ? row : null) // Keep every other row
+ *   .getJsonFromCsv('input.csv')
  */
 exports.mapRows = function (mapperFn) {
   csvToJson.mapRows(mapperFn);
@@ -136,10 +178,15 @@ exports.mapRows = function (mapperFn) {
 };
 
 /**
- * Parses .csv file and put its content into a file in json format.
- * @param {inputFileName} path/filename
- * @param {outputFileName} path/filename
- *
+ * Parse CSV file and write the parsed JSON to an output file (synchronous)
+ * @param {string} inputFileName - Path to input CSV file
+ * @param {string} outputFileName - Path to output JSON file
+ * @throws {Error} If inputFileName or outputFileName is not defined
+ * @throws {FileOperationError} If file operations fail
+ * @throws {CsvFormatError} If CSV is malformed
+ * @example
+ * const csvToJson = require('convert-csv-to-json');
+ * csvToJson.generateJsonFileFromCsv('input.csv', 'output.json');
  */
 exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
   if (!inputFileName) {
@@ -152,10 +199,16 @@ exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
 };
 
 /**
- * Parses .csv file and put its content into an Array of Object in json format.
- * @param {inputFileName} path/filename
- * @return {Array} Array of Object in json format
- *
+ * Parse CSV file and return parsed data as JSON array of objects (synchronous)
+ * @param {string} inputFileName - Path to input CSV file
+ * @returns {Array<Object>} Array of objects representing CSV rows
+ * @throws {Error} If inputFileName is not defined
+ * @throws {FileOperationError} If file read fails
+ * @throws {CsvFormatError} If CSV is malformed
+ * @example
+ * const csvToJson = require('convert-csv-to-json');
+ * const rows = csvToJson.getJsonFromCsv('resource/input.csv');
+ * console.log(rows);
  */
 exports.getJsonFromCsv = function(inputFileName) {
   if (!inputFileName) {
@@ -165,10 +218,18 @@ exports.getJsonFromCsv = function(inputFileName) {
 };
 
 /**
- * Async version of getJsonFromCsv.
- * @param {string} inputFileNameOrCsv path to file or CSV string
- * @param {object} options { raw: boolean } when raw=true the first param is treated as CSV content
- * @returns {Promise<Array>} resolves with the array of objects
+ * Parse CSV file asynchronously and return parsed data as JSON array
+ * @param {string} inputFileNameOrCsv - Path to file or CSV string
+ * @param {Object} options - Configuration options
+ * @param {boolean} options.raw - If true, treats first param as CSV content; if false, reads from file
+ * @returns {Promise<Array<Object>>} Promise resolving to array of objects
+ * @throws {InputValidationError} If input is invalid
+ * @throws {FileOperationError} If file read fails
+ * @throws {CsvFormatError} If CSV is malformed
+ * @example
+ * const csvToJson = require('convert-csv-to-json');
+ * const data = await csvToJson.getJsonFromCsvAsync('resource/input.csv');
+ * console.log(data);
  */
 const csvToJsonAsync = require('./src/csvToJsonAsync');
 
@@ -188,14 +249,28 @@ Object.assign(exports, {
   }
 });
 
+/**
+ * Parse a CSV string and return as JSON array of objects (synchronous)
+ * @param {string} csvString - CSV content as string
+ * @returns {Array<Object>} Array of objects representing CSV rows
+ * @throws {InputValidationError} If csvString is invalid
+ * @throws {CsvFormatError} If CSV is malformed
+ * @example
+ * const csvToJson = require('convert-csv-to-json');
+ * const rows = csvToJson.csvStringToJson('name,age\nAlice,30');
+ * console.log(rows); // [{ name: 'Alice', age: '30' }]
+ */
 exports.csvStringToJson = function(csvString) {
   return csvToJson.csvStringToJson(csvString);
 };
 
 /**
- * Parses a csv string and returns a JSON string (validated)
- * @param {csvString} csvString CSV content as string
- * @return {string} JSON stringified result
+ * Parse CSV string and return as stringified JSON (synchronous)
+ * @param {string} csvString - CSV content as string
+ * @returns {string} JSON stringified array of objects
+ * @throws {InputValidationError} If csvString is invalid
+ * @throws {CsvFormatError} If CSV is malformed
+ * @throws {JsonValidationError} If JSON generation fails
  */
 exports.csvStringToJsonStringified = function(csvString) {
   if (csvString === undefined || csvString === null) {

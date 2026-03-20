@@ -2,8 +2,16 @@
 
 const { JsonValidationError } = require('./errors');
 
+/**
+ * JSON validation utilities
+ */
 class JsonUtil {
 
+    /**
+     * Validate that a string is valid JSON
+     * @param {string} json - JSON string to validate
+     * @throws {JsonValidationError} If JSON is invalid
+     */
     validateJson(json) {
         try {
             JSON.parse(json);
