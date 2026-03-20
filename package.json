@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles",
+    "lint": "eslint .",
     "docs": "jsdoc -c jsdoc.json",
     "docs:api": "jsdoc -c jsdoc.json -d docs/api",
     "prepublishOnly": "npm run docs:api",
@@ -49,6 +50,8 @@
   "homepage": "https://github.com/iuccio/CSVtoJSON#readme",
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jsdoc": "^44.1.0",
     "jest": "^30.2.0",
     "jsdoc": "^4.0.5",
     "ts-jest": "^29.4.5",

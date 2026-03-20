@@ -1,3 +1,4 @@
+/* globals FileOperationError */
 "use strict";
 
 const fileUtils = require('./util/fileUtils');
@@ -152,7 +153,7 @@ class CsvToJson {
   /**
    * Read a CSV file and return parsed data as JSON array of objects
    * @param {string} fileInputName - Path to input CSV file
-   * @returns {Array<Object>} Array of objects representing CSV rows
+   * @returns {Array<object>} Array of objects representing CSV rows
    * @throws {FileOperationError} If file read fails
    * @throws {CsvFormatError} If CSV is malformed
    * @example
@@ -168,7 +169,7 @@ class CsvToJson {
   /**
    * Parse CSV string content and return as JSON array of objects
    * @param {string} csvString - CSV content as string
-   * @returns {Array<Object>} Array of objects representing CSV rows
+   * @returns {Array<object>} Array of objects representing CSV rows
    * @throws {CsvFormatError} If CSV is malformed
    * @example
    * const csvToJson = require('convert-csv-to-json');
@@ -202,7 +203,7 @@ class CsvToJson {
    * Handles quoted fields per RFC 4180 when configured
    * Applies row mapping and filtering when configured
    * @param {string} parsedCsv - Raw CSV content as string
-   * @returns {Array<Object>} Array of objects with CSV data
+   * @returns {Array<object>} Array of objects with CSV data
    * @private
    */
   csvToJson(parsedCsv) {
@@ -367,7 +368,7 @@ class CsvToJson {
    * Applies type formatting and sub-array parsing as configured
    * @param {string[]} headers - Array of header field names
    * @param {string[]} currentLine - Array of field values
-   * @returns {Object} JSON object with header names as keys
+   * @returns {object} JSON object with header names as keys
    * @private
    */
   buildJsonResult(headers, currentLine) {
