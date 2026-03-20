@@ -69,7 +69,7 @@ jobs:
     - name: Configure GitHub Pages
       uses: actions/configure-pages@v4
     - name: Upload pages artifact
-      uses: actions/upload-pages-artifact@v13
+      uses: actions/upload-pages-artifact@v3
       with:
         path: docs/api
     - name: Deploy to GitHub Pages
