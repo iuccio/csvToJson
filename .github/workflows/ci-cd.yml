@@ -57,7 +57,9 @@ jobs:
     name: deploy docs to GitHub Pages
     runs-on: ubuntu-latest
     permissions: 
+      pages: write
       id-token: write
+      contents: read
     steps:
     - uses: actions/checkout@v6
     - name: Use Node.js 24.x
