@@ -19,12 +19,14 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install, lint, build, test, and docs
-      run: |
-        npm ci
-        npm run lint
-        npm test
-        npm run docs:api
+    - name: Install dependencies
+      run: npm ci
+    - name: Lint source code
+      run: npm run lint
+    - name: Run tests
+      run: npm test
+    - name: Generate API docs
+      run: npm run docs:api
       env:
         CI: true
   
@@ -46,10 +48,10 @@ jobs:
       with:
         node-version: 24.x
         registry-url: 'https://registry.npmjs.org'
-    - name: npm-semver-publish
-      run: |
-        npm ci
-        npm run release
+    - name: Install dependencies
+      run: npm ci
+    - name: Run release script
+      run: npm run release
 
   pages:
     needs: release
