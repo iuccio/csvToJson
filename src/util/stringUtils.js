@@ -64,34 +64,79 @@ class StringUtils {
     }
 
     // Private helper methods for type checking and conversion
+    /**
+     * Check if a value is empty (undefined or empty string)
+     * @param {*} value - Value to check
+     * @returns {boolean} True if value is undefined or empty string
+     * @private
+     */
     isEmpty(value) {
         return value === undefined || value === '';
     }
 
+    /**
+     * Check if a value is a boolean string ('true' or 'false', case-insensitive)
+     * @param {string} value - Value to check
+     * @returns {boolean} True if value is 'true' or 'false'
+     * @private
+     */
     isBoolean(value) {
         const normalizedValue = value.toLowerCase();
         return normalizedValue === StringUtils.BOOLEAN_VALUES.TRUE || 
                normalizedValue === StringUtils.BOOLEAN_VALUES.FALSE;
     }
 
+    /**
+     * Check if a value is an integer string (with optional leading minus sign)
+     * @param {string} value - Value to check
+     * @returns {boolean} True if value matches integer pattern
+     * @private
+     */
     isInteger(value) {
         return StringUtils.PATTERNS.INTEGER.test(value);
     }
 
+    /**
+     * Check if a value is a float string (decimal number with optional leading minus sign)
+     * @param {string} value - Value to check
+     * @returns {boolean} True if value matches float pattern
+     * @private
+     */
     isFloat(value) {
         return StringUtils.PATTERNS.FLOAT.test(value);
     }
 
+    /**
+     * Check if a numeric string has a leading zero (e.g., '01' or '-01')
+     * Leading zeros indicate the value should be kept as a string to preserve formatting
+     * @param {string} value - Numeric string value to check
+     * @returns {boolean} True if value has a leading zero
+     * @private
+     */
     hasLeadingZero(value) {
         const isPositiveWithLeadingZero = value.length > 1 && value[0] === '0';
         const isNegativeWithLeadingZero = value.length > 2 && value[0] === '-' && value[1] === '0';
         return isPositiveWithLeadingZero || isNegativeWithLeadingZero;
     }
 
+    /**
+     * Convert a boolean string to native boolean value
+     * Safely converts 'true' to true and 'false' to false
+     * @param {string} value - Boolean string ('true' or 'false')
+     * @returns {boolean} Native boolean value
+     * @private
+     */
     convertToBoolean(value) {
         return JSON.parse(value.toLowerCase());
     }
 
+    /**
+     * Convert an integer string to number or keep as string if it has leading zeros
+     * Preserves leading zeros in strings (e.g., '007' stays as string)
+     * @param {string} value - Integer string to convert
+     * @returns {number|string} Number if safe, otherwise string value
+     * @private
+     */
     convertInteger(value) {
         if (this.hasLeadingZero(value)) {
             return String(value);
@@ -101,6 +146,12 @@ class StringUtils {
         return Number.isSafeInteger(num) ? num : String(value);
     }
 
+    /**
+     * Convert a float string to number or keep as string if conversion is unsafe
+     * @param {string} value - Float string to convert
+     * @returns {number|string} Number if finite and valid, otherwise string value
+     * @private
+     */
     convertFloat(value) {
         const num = Number(value);
         return Number.isFinite(num) ? num : String(value);

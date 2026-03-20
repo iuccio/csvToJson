@@ -10,6 +10,12 @@
  * Provides consistent error formatting and context
  */
 class CsvParsingError extends Error {
+    /**
+     * Create a CSV parsing error
+     * @param {string} message - Error message
+     * @param {string} code - Error code for identification
+     * @param {object} context - Additional context information (default: {})
+     */
     constructor(message, code, context = {}) {
         super(message);
         this.name = 'CsvParsingError';
@@ -18,6 +24,10 @@ class CsvParsingError extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 
+    /**
+     * Convert error to formatted string with context information
+     * @returns {string} Formatted error message including context
+     */
     toString() {
         let output = `${this.name}: ${this.message}`;
         
@@ -31,6 +41,12 @@ class CsvParsingError extends Error {
         return output;
     }
 
+    /**
+     * Format a context value for display in error message
+     * @param {*} value - Value to format
+     * @returns {string} Formatted value string
+     * @private
+     */
     formatValue(value) {
         if (value === null) return 'null';
         if (value === undefined) return 'undefined';
@@ -42,8 +58,16 @@ class CsvParsingError extends Error {
 
 /**
  * Input validation errors
+ * Thrown when function parameters don't meet expected type or value requirements
  */
 class InputValidationError extends CsvParsingError {
+    /**
+     * Create an input validation error
+     * @param {string} paramName - Name of the invalid parameter
+     * @param {string} expectedType - Expected type description
+     * @param {string} receivedType - Actual type received
+     * @param {string} details - Additional error details (optional)
+     */
     constructor(paramName, expectedType, receivedType, details = '') {
         const message = 
             `Invalid input: Parameter '${paramName}' is required.\n` +
@@ -61,13 +85,27 @@ class InputValidationError extends CsvParsingError {
 
 /**
  * Configuration-related errors
+ * Thrown when configuration options conflict or are invalid
  */
 class ConfigurationError extends CsvParsingError {
+    /**
+     * Create a configuration error
+     * @param {string} message - Error message
+     * @param {object} conflictingOptions - Configuration options in conflict (optional)
+     */
     constructor(message, conflictingOptions = {}) {
         super(message, 'CONFIGURATION_ERROR', conflictingOptions);
         this.name = 'ConfigurationError';
     }
 
+    /**
+     * Create error for quoted field configuration conflict
+     * Occurs when quote character is used as delimiter while quoted fields are enabled
+     * @param {string} optionName - Name of the conflicting option
+     * @param {string} value - Value that causes the conflict
+     * @returns {ConfigurationError} Configured error instance
+     * @static
+     */
     static quotedFieldConflict(optionName, value) {
         return new ConfigurationError(
             `Configuration conflict: supportQuotedField() is enabled, but ${optionName} is set to '${value}'.\n` +
@@ -80,6 +118,13 @@ class ConfigurationError extends CsvParsingError {
         );
     }
 
+    /**
+     * Create error for invalid header index
+     * Occurs when indexHeader() receives non-numeric value
+     * @param {*} value - Invalid header index value
+     * @returns {ConfigurationError} Configured error instance
+     * @static
+     */
     static invalidHeaderIndex(value) {
         return new ConfigurationError(
             `Invalid configuration: indexHeader() expects a numeric value.\n` +
@@ -95,13 +140,25 @@ class ConfigurationError extends CsvParsingError {
 
 /**
  * CSV parsing errors with detailed context
+ * Thrown when CSV format is invalid or malformed
  */
 class CsvFormatError extends CsvParsingError {
+    /**
+     * Create a CSV format error
+     * @param {string} message - Error message
+     * @param {object} context - Additional context information (optional)
+     */
     constructor(message, context = {}) {
         super(message, 'CSV_FORMAT_ERROR', context);
         this.name = 'CsvFormatError';
     }
 
+    /**
+     * Create error for missing CSV header row
+     * Occurs when no valid header row is found in CSV
+     * @returns {CsvFormatError} Configured error instance
+     * @static
+     */
     static missingHeader() {
         return new CsvFormatError(
             `CSV parsing error: No header row found.\n` +
@@ -114,6 +171,13 @@ class CsvFormatError extends CsvParsingError {
         );
     }
 
+    /**
+     * Create error for mismatched quotes in CSV
+     * Occurs when quoted fields are not properly closed
+     * @param {string} location - Where the error occurred (default: 'CSV')
+     * @returns {CsvFormatError} Configured error instance
+     * @static
+     */
     static mismatchedQuotes(location = 'CSV') {
         return new CsvFormatError(
             `CSV parsing error: Mismatched quotes detected in ${location}.\n` +
@@ -135,8 +199,15 @@ class CsvFormatError extends CsvParsingError {
 
 /**
  * File operation errors
+ * Thrown when file read or write operations fail
  */
 class FileOperationError extends CsvParsingError {
+    /**
+     * Create a file operation error
+     * @param {string} operation - Type of operation that failed (e.g., 'read', 'write')
+     * @param {string} filePath - Path to the file where operation failed
+     * @param {Error} originalError - The underlying error object from Node.js
+     */
     constructor(operation, filePath, originalError) {
         const message = 
             `File operation error: Failed to ${operation} file.\n` +
@@ -160,8 +231,14 @@ class FileOperationError extends CsvParsingError {
 
 /**
  * JSON validation errors
+ * Thrown when parsed CSV data cannot be converted to valid JSON
  */
 class JsonValidationError extends CsvParsingError {
+    /**
+     * Create a JSON validation error
+     * @param {string} csvData - The CSV data that failed validation
+     * @param {Error} originalError - The underlying JSON parsing error
+     */
     constructor(csvData, originalError) {
         const message = 
             `JSON validation error: The parsed CSV data generated invalid JSON.\n` +
@@ -184,13 +261,25 @@ class JsonValidationError extends CsvParsingError {
 
 /**
  * Browser-specific errors
+ * Thrown when browser API operations fail
  */
 class BrowserApiError extends CsvParsingError {
+    /**
+     * Create a browser API error
+     * @param {string} message - Error message
+     * @param {object} context - Additional context information (optional)
+     */
     constructor(message, context = {}) {
         super(message, 'BROWSER_API_ERROR', context);
         this.name = 'BrowserApiError';
     }
 
+    /**
+     * Create error for unavailable FileReader API
+     * Occurs when browser doesn't support FileReader
+     * @returns {BrowserApiError} Configured error instance
+     * @static
+     */
     static fileReaderNotAvailable() {
         return new BrowserApiError(
             `Browser compatibility error: FileReader API is not available.\n` +
@@ -202,6 +291,13 @@ class BrowserApiError extends CsvParsingError {
         );
     }
 
+    /**
+     * Create error for file parsing failure in browser
+     * Occurs when file read or CSV parse fails
+     * @param {Error} originalError - The underlying error that occurred
+     * @returns {BrowserApiError} Configured error instance
+     * @static
+     */
     static parseFileError(originalError) {
         return new BrowserApiError(
             `Browser file parsing error: Failed to read and parse the file.\n` +
