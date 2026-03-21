@@ -5,4 +5,5 @@ coverage/
 *.iml
 node_modules
 .DS_Store
+docs/jsdoc/
 docs/api/

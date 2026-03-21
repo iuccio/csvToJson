@@ -5,13 +5,38 @@
     "excludePattern": "(^|/)node_modules(/|$)"
   },
   "opts": {
-    "destination": "./docs/jsdoc",
+    "destination": "./docs/api",
     "recurse": true,
-    "readme": "./README.md"
+    "readme": "./README.md",
+    "template": "./node_modules/better-docs"
   },
-  "plugins": ["plugins/markdown"],
+  "plugins": ["plugins/markdown", "node_modules/better-docs/category"],
+  "tags": {
+    "allowUnknownTags": ["category"]
+  },
   "templates": {
     "cleverLinks": false,
-    "monospaceLinks": false
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "useLongNameInNav": true
+    },
+    "better-docs": {
+      "name": "Convert CSV to JSON",
+      "logo": "https://raw.githubusercontent.com/iuccio/CSVtoJSON/master/CSVtoJSON.png",
+      "css": "./node_modules/better-docs/css/better-docs.css",
+      "hideGenerator": false,
+      "trackingCode": "",
+      "navLinks": [
+        {
+          "label": "GitHub",
+          "href": "https://github.com/iuccio/CSVtoJSON"
+        },
+        {
+          "label": "NPM",
+          "href": "https://www.npmjs.com/package/convert-csv-to-json"
+        }
+      ]
+    }
   }
 }

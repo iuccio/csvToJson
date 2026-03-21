@@ -3,11 +3,13 @@
 /**
  * Custom error classes following clean code principles
  * Provides clear, actionable error messages with context
+ * @category Error Classes
  */
 
 /**
  * Base class for all CSV parsing errors
  * Provides consistent error formatting and context
+ * @category Error Classes
  */
 class CsvParsingError extends Error {
     /**
@@ -43,7 +45,7 @@ class CsvParsingError extends Error {
 
     /**
      * Format a context value for display in error message
-     * @param {*} value - Value to format
+     * @param {unknown} value - Value to format
      * @returns {string} Formatted value string
      * @private
      */
@@ -59,6 +61,7 @@ class CsvParsingError extends Error {
 /**
  * Input validation errors
  * Thrown when function parameters don't meet expected type or value requirements
+ * @category Error Classes
  */
 class InputValidationError extends CsvParsingError {
     /**
@@ -86,6 +89,7 @@ class InputValidationError extends CsvParsingError {
 /**
  * Configuration-related errors
  * Thrown when configuration options conflict or are invalid
+ * @category Error Classes
  */
 class ConfigurationError extends CsvParsingError {
     /**
@@ -121,7 +125,7 @@ class ConfigurationError extends CsvParsingError {
     /**
      * Create error for invalid header index
      * Occurs when indexHeader() receives non-numeric value
-     * @param {*} value - Invalid header index value
+     * @param {unknown} value - Invalid header index value
      * @returns {ConfigurationError} Configured error instance
      * @static
      */
@@ -141,6 +145,7 @@ class ConfigurationError extends CsvParsingError {
 /**
  * CSV parsing errors with detailed context
  * Thrown when CSV format is invalid or malformed
+ * @category Error Classes
  */
 class CsvFormatError extends CsvParsingError {
     /**
@@ -200,6 +205,7 @@ class CsvFormatError extends CsvParsingError {
 /**
  * File operation errors
  * Thrown when file read or write operations fail
+ * @category Error Classes
  */
 class FileOperationError extends CsvParsingError {
     /**
@@ -232,6 +238,7 @@ class FileOperationError extends CsvParsingError {
 /**
  * JSON validation errors
  * Thrown when parsed CSV data cannot be converted to valid JSON
+ * @category Error Classes
  */
 class JsonValidationError extends CsvParsingError {
     /**
@@ -262,6 +269,7 @@ class JsonValidationError extends CsvParsingError {
 /**
  * Browser-specific errors
  * Thrown when browser API operations fail
+ * @category Error Classes
  */
 class BrowserApiError extends CsvParsingError {
     /**
