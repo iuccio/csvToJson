@@ -6,114 +6,65 @@
     <title>CSV to JSON Demo</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
+            color: #333;
         }
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        h1 {
-            color: #333;
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
             text-align: center;
         }
-        .input-section, .output-section {
-            margin-bottom: 20px;
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
         }
-        textarea, input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
+        .content {
+            padding: 30px;
         }
-        textarea {
-            height: 200px;
-            resize: vertical;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .options {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-        }
-        .option-group {
-            display: inline-block;
-            margin-right: 20px;
-            margin-bottom: 10px;
-        }
-        .option-group label {
-            display: inline;
-            margin-right: 5px;
-        }
-        .output {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .error {
-            color: #dc3545;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        .success {
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
+        .input-section {
+            margin-bottom: 30px;
         }
         .tabs {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
         }
         .tab {
-            padding: 10px 20px;
-            background-color: #e9ecef;
+            padding: 12px 24px;
+            background: none;
             border: none;
             cursor: pointer;
-            border-radius: 4px 4px 0 0;
+            font-size: 16px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            color: #495057;
+        }
+        .tab:hover {
+            background-color: #f8f9fa;
+            color: #212529;
         }
         .tab.active {
-            background-color: white;
-            border-bottom: 2px solid #007bff;
+            border-bottom-color: #007bff;
+            color: #007bff;
+            font-weight: 500;
         }
         .tab-content {
             display: none;
@@ -121,145 +72,305 @@
         .tab-content.active {
             display: block;
         }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            transition: border-color 0.3s;
+        }
+        textarea:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        .file-info {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+        .samples {
+            margin-top: 15px;
+        }
+        .sample-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .sample-btn:hover {
+            background: #5a6268;
+        }
+        .options {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+        .options h3 {
+            margin-top: 0;
+            color: #495057;
+            font-size: 1.2em;
+        }
+        .option-group {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 15px;
+        }
+        .option-group label {
+            display: inline;
+            margin-right: 8px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        input[type="checkbox"], input[type="number"], input[type="text"] {
+            margin-right: 5px;
+        }
+        .buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .output {
+            display: block;
+        }
+        .output.hidden {
+            display: none;
+        }
+        .output-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .output-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .output-tab:hover {
+            background-color: #f8f9fa;
+        }
+        .output-tab.active {
+            border-bottom-color: #28a745;
+            color: #28a745;
+            font-weight: 500;
+        }
+        .output-content {
+            display: none;
+        }
+        .output-content.active {
+            display: block;
+        }
+        .json-output, .table-output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .table-output table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        .table-output th, .table-output td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table-output th {
+            background-color: #e9ecef;
+            font-weight: 600;
+        }
+        .stats-output {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .stats-output p {
+            margin: 0;
+            font-weight: 500;
+        }
+        .error-output {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 20px;
+        }
+        .error-output:not(.hidden) {
+            display: block;
+        }
+        .download-btn {
+            background: #28a745;
+            margin-left: 10px;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .hidden {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            .option-group {
+                display: block;
+                margin-right: 0;
+            }
+            .stats-output {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>CSV to JSON Converter Demo</h1>
-
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('text')">Paste CSV Text</button>
-            <button class="tab" onclick="showTab('file')">Upload CSV File</button>
+        <div class="header">
+            <h1>CSV to JSON Converter</h1>
+            <p>Parse CSV data with powerful options and see results instantly</p>
         </div>
 
-        <div id="text-tab" class="tab-content active">
-            <div class="input-section">
-                <label for="csv-input">CSV Input:</label>
-                <textarea id="csv-input" placeholder="Paste your CSV data here..."></textarea>
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" data-tab="text">Paste CSV</button>
+                <button class="tab" data-tab="file">Upload File</button>
             </div>
-        </div>
 
-        <div id="file-tab" class="tab-content">
-            <div class="input-section">
-                <label for="csv-file">CSV File:</label>
-                <input type="file" id="csv-file" accept=".csv,text/csv">
-            </div>
-        </div>
+            <div id="text-tab" class="tab-content active">
+                <div class="input-section">
+                    <label for="csv-input">CSV Input:</label>
+                    <textarea id="csv-input" placeholder="Paste your CSV data here...
 
-        <div class="options">
-            <div class="option-group">
-                <label for="format-values">Format Values by Type:</label>
-                <input type="checkbox" id="format-values" checked>
+Example:
+name,age,city
+John,25,New York
+Jane,30,London"></textarea>
+                    <div class="samples">
+                        <label>Try a sample:</label><br>
+                        <button class="sample-btn" data-sample="basic">Basic CSV</button>
+                        <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
+                        <button class="sample-btn" data-sample="numbers">Numbers</button>
+                        <button class="sample-btn" data-sample="dates">Dates</button>
+                    </div>
+                </div>
             </div>
-            <div class="option-group">
-                <label for="quoted-fields">Support Quoted Fields:</label>
-                <input type="checkbox" id="quoted-fields">
-            </div>
-            <div class="option-group">
-                <label for="delimiter">Field Delimiter:</label>
-                <input type="text" id="delimiter" value="," size="1">
-            </div>
-            <div class="option-group">
-                <label for="header-index">Header Row Index:</label>
-                <input type="number" id="header-index" value="0" min="0" size="2">
-            </div>
-        </div>
 
-        <button id="convert-btn" onclick="convert()">Convert to JSON</button>
-        <button onclick="clearAll()">Clear</button>
+            <div id="file-tab" class="tab-content">
+                <div class="input-section">
+                    <label for="csv-file">CSV File:</label>
+                    <input type="file" id="csv-file" accept=".csv,text/csv">
+                    <div id="file-info" class="file-info"></div>
+                </div>
+            </div>
 
-        <div class="output-section">
-            <label>JSON Output:</label>
-            <div id="output" class="output"></div>
+            <div class="options">
+                <h3>Parsing Options</h3>
+                <div class="option-group">
+                    <input type="checkbox" id="format-values" checked>
+                    <label for="format-values">Format values by type</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="quoted-fields">
+                    <label for="quoted-fields">Support quoted fields</label>
+                </div>
+                <div class="option-group">
+                    <label for="delimiter">Field Delimiter:</label>
+                    <input type="text" id="delimiter" value="," size="1">
+                </div>
+                <div class="option-group">
+                    <label for="header-index">Header Row Index:</label>
+                    <input type="number" id="header-index" value="0" min="0" size="2">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="convert-btn">Convert to JSON</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+
+            <div id="output" class="output hidden">
+                <div id="error-output" class="error-output hidden"></div>
+
+                <div class="stats-output" id="stats-output"></div>
+
+                <div class="output-tabs">
+                    <button class="output-tab active" data-output="table">Table View</button>
+                    <button class="output-tab" data-output="json">JSON View</button>
+                </div>
+
+                <div id="table-content" class="output-content active">
+                    <div class="table-output" id="table-output"></div>
+                </div>
+
+                <div id="json-content" class="output-content">
+                    <div class="json-output" id="json-output"></div>
+                    <button class="download-btn" onclick="downloadJSON()">Download JSON</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="csvToJson.browser.js"></script>
-    <script>
-        let csvToJson;
-
-        // Initialize the library
-        window.addEventListener('load', function() {
-            csvToJson = window.csvToJson;
-        });
-
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        async function convert() {
-            const output = document.getElementById('output');
-            const convertBtn = document.getElementById('convert-btn');
-
-            // Clear previous output
-            output.innerHTML = '';
-            output.className = 'output';
-
-            // Disable button during conversion
-            convertBtn.disabled = true;
-            convertBtn.textContent = 'Converting...';
-
-            try {
-                // Configure options
-                const formatValues = document.getElementById('format-values').checked;
-                const quotedFields = document.getElementById('quoted-fields').checked;
-                const delimiter = document.getElementById('delimiter').value;
-                const headerIndex = parseInt(document.getElementById('header-index').value);
-
-                csvToJson.formatValueByType(formatValues);
-                csvToJson.supportQuotedField(quotedFields);
-                csvToJson.fieldDelimiter(delimiter);
-                csvToJson.indexHeader(headerIndex);
-
-                let result;
-
-                // Check which tab is active
-                if (document.getElementById('text-tab').classList.contains('active')) {
-                    // Text input
-                    const csvText = document.getElementById('csv-input').value;
-                    if (!csvText.trim()) {
-                        throw new Error('Please enter CSV text');
-                    }
-                    result = csvToJson.csvStringToJson(csvText);
-                } else {
-                    // File input
-                    const fileInput = document.getElementById('csv-file');
-                    if (!fileInput.files[0]) {
-                        throw new Error('Please select a CSV file');
-                    }
-                    result = await csvToJson.parseFile(fileInput.files[0]);
-                }
-
-                // Display result
-                output.textContent = JSON.stringify(result, null, 2);
-                output.classList.add('success');
-
-            } catch (error) {
-                output.textContent = 'Error: ' + error.message;
-                output.classList.add('error');
-            } finally {
-                // Re-enable button
-                convertBtn.disabled = false;
-                convertBtn.textContent = 'Convert to JSON';
-            }
-        }
-
-        function clearAll() {
-            document.getElementById('csv-input').value = '';
-            document.getElementById('csv-file').value = '';
-            document.getElementById('output').innerHTML = '';
-            document.getElementById('output').className = 'output';
-        }
-    </script>
+    <script src="demo.bundle.js"></script>
 </body>
 </html>
