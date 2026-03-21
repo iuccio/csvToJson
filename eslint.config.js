@@ -60,7 +60,7 @@ const sharedGlobals = {
 
 module.exports = [
   {
-    ignores: ['node_modules', 'coverage', 'docs', '.eslintignore'],
+    ignores: ['node_modules', 'coverage', 'docs', '.eslintignore', 'demo'],
   },
   {
     files: ['**/*.js'],
