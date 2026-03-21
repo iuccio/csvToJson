@@ -167,7 +167,7 @@ exports.hexEncoding = function () {
  * Set a mapper function to transform each row after conversion
  * The mapper function receives (row, index) where row is the JSON object 
  * and index is the 0-based row number. Return null/undefined to filter out rows.
- * @param {Function} mapperFn - Function to transform each row: `(row, index) => transformedRow | null`
+ * @param {function(object, number): (object|null)} mapperFn - Function to transform each row
  * @returns {object} Module context for method chaining
  * @example
  * csvToJson

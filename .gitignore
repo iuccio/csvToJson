@@ -6,3 +6,4 @@ coverage/
 node_modules
 .DS_Store
 docs/api/
+docs/jsdoc/

@@ -81,7 +81,7 @@ class CsvToJsonAsync {
 
     /**
      * Set a mapper function to transform each row after conversion
-     * @param {Function} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
+     * @param {function(object, number): (object|null)} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
      * @returns {this} For method chaining
      */
     mapRows(mapperFn) {

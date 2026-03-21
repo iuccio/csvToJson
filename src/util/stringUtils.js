@@ -66,7 +66,7 @@ class StringUtils {
     // Private helper methods for type checking and conversion
     /**
      * Check if a value is empty (undefined or empty string)
-     * @param {*} value - Value to check
+     * @param {unknown} value - Value to check
      * @returns {boolean} True if value is undefined or empty string
      * @private
      */

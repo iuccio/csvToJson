@@ -108,8 +108,8 @@ class CsvToJson {
 
   /**
    * Sets a mapper function to transform each row after conversion
-   * @param {Function} mapperFn - Function that receives (row, index) and returns transformed row or null to filter out
-   * @returns {this} - For method chaining
+   * @param {function(object, number): (object|null)} mapperFn - Function that receives (row, index) and returns transformed row or null to filter out
+   * @returns {this} For method chaining
    */
   mapRows(mapperFn) {
     if (typeof mapperFn !== 'function') {

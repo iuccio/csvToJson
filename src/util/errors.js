@@ -43,7 +43,7 @@ class CsvParsingError extends Error {
 
     /**
      * Format a context value for display in error message
-     * @param {*} value - Value to format
+     * @param {unknown} value - Value to format
      * @returns {string} Formatted value string
      * @private
      */
@@ -121,7 +121,7 @@ class ConfigurationError extends CsvParsingError {
     /**
      * Create error for invalid header index
      * Occurs when indexHeader() receives non-numeric value
-     * @param {*} value - Invalid header index value
+     * @param {unknown} value - Invalid header index value
      * @returns {ConfigurationError} Configured error instance
      * @static
      */

@@ -82,7 +82,7 @@ class BrowserApi {
 
   /**
    * Set a mapper function to transform each row after conversion
-   * @param {Function} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
+   * @param {function(object, number): (object|null)} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
    * @returns {this} For method chaining
    */
   mapRows(mapperFn) {
@@ -169,8 +169,8 @@ class BrowserApi {
   /**
    * Parse a browser File or Blob object to JSON array.
    * @param {File|Blob} file - File or Blob to read as text
-   * @param {object} options - options: { encoding?: string }
-   * @returns {Promise<any[]>} Promise resolving to parsed JSON rows
+   * @param {object} [options] - options: { encoding?: string }
+   * @returns {Promise<object[]>} Promise resolving to parsed JSON rows
    * @example
    * const csvToJson = require('convert-csv-to-json');
    * const fileInput = document.querySelector('#csvfile').files[0];
