@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .input-section, .output-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .options {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .option-group {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        .option-group label {
+            display: inline;
+            margin-right: 5px;
+        }
+        .output {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 2px solid #007bff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV to JSON Converter Demo</h1>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('text')">Paste CSV Text</button>
+            <button class="tab" onclick="showTab('file')">Upload CSV File</button>
+        </div>
+
+        <div id="text-tab" class="tab-content active">
+            <div class="input-section">
+                <label for="csv-input">CSV Input:</label>
+                <textarea id="csv-input" placeholder="Paste your CSV data here..."></textarea>
+            </div>
+        </div>
+
+        <div id="file-tab" class="tab-content">
+            <div class="input-section">
+                <label for="csv-file">CSV File:</label>
+                <input type="file" id="csv-file" accept=".csv,text/csv">
+            </div>
+        </div>
+
+        <div class="options">
+            <div class="option-group">
+                <label for="format-values">Format Values by Type:</label>
+                <input type="checkbox" id="format-values" checked>
+            </div>
+            <div class="option-group">
+                <label for="quoted-fields">Support Quoted Fields:</label>
+                <input type="checkbox" id="quoted-fields">
+            </div>
+            <div class="option-group">
+                <label for="delimiter">Field Delimiter:</label>
+                <input type="text" id="delimiter" value="," size="1">
+            </div>
+            <div class="option-group">
+                <label for="header-index">Header Row Index:</label>
+                <input type="number" id="header-index" value="0" min="0" size="2">
+            </div>
+        </div>
+
+        <button id="convert-btn" onclick="convert()">Convert to JSON</button>
+        <button onclick="clearAll()">Clear</button>
+
+        <div class="output-section">
+            <label>JSON Output:</label>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+
+    <script src="csvToJson.browser.js"></script>
+    <script>
+        let csvToJson;
+
+        // Initialize the library
+        window.addEventListener('load', function() {
+            csvToJson = window.csvToJson;
+        });
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function convert() {
+            const output = document.getElementById('output');
+            const convertBtn = document.getElementById('convert-btn');
+
+            // Clear previous output
+            output.innerHTML = '';
+            output.className = 'output';
+
+            // Disable button during conversion
+            convertBtn.disabled = true;
+            convertBtn.textContent = 'Converting...';
+
+            try {
+                // Configure options
+                const formatValues = document.getElementById('format-values').checked;
+                const quotedFields = document.getElementById('quoted-fields').checked;
+                const delimiter = document.getElementById('delimiter').value;
+                const headerIndex = parseInt(document.getElementById('header-index').value);
+
+                csvToJson.formatValueByType(formatValues);
+                csvToJson.supportQuotedField(quotedFields);
+                csvToJson.fieldDelimiter(delimiter);
+                csvToJson.indexHeader(headerIndex);
+
+                let result;
+
+                // Check which tab is active
+                if (document.getElementById('text-tab').classList.contains('active')) {
+                    // Text input
+                    const csvText = document.getElementById('csv-input').value;
+                    if (!csvText.trim()) {
+                        throw new Error('Please enter CSV text');
+                    }
+                    result = csvToJson.csvStringToJson(csvText);
+                } else {
+                    // File input
+                    const fileInput = document.getElementById('csv-file');
+                    if (!fileInput.files[0]) {
+                        throw new Error('Please select a CSV file');
+                    }
+                    result = await csvToJson.parseFile(fileInput.files[0]);
+                }
+
+                // Display result
+                output.textContent = JSON.stringify(result, null, 2);
+                output.classList.add('success');
+
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+                output.classList.add('error');
+            } finally {
+                // Re-enable button
+                convertBtn.disabled = false;
+                convertBtn.textContent = 'Convert to JSON';
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('csv-input').value = '';
+            document.getElementById('csv-file').value = '';
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('output').className = 'output';
+        }
+    </script>
+</body>
+</html>
