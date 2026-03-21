@@ -22,6 +22,7 @@ const encodingOps = {
 /**
  * Enable or disable automatic type formatting for values
  * Converts numeric strings to numbers, 'true'/'false' to booleans
+ * @category 1-Core API
  * @param {boolean} active - Whether to format values by type (default: true)
  * @returns {object} Module context for method chaining
  */
@@ -33,6 +34,7 @@ exports.formatValueByType = function (active = true) {
 /**
  * Enable or disable support for RFC 4180 quoted fields
  * When enabled, fields wrapped in double quotes can contain delimiters and newlines
+ * @category 1-Core API
  * @param {boolean} active - Whether to support quoted fields (default: false)
  * @returns {object} Module context for method chaining
  */
@@ -42,6 +44,7 @@ exports.supportQuotedField = function (active = false) {
 };
 /**
  * Set the field delimiter character used to separate CSV fields
+ * @category 1-Core API
  * @param {string} delimiter - Character(s) to use as field separator (default: ',')
  * @returns {object} Module context for method chaining
  */
@@ -54,6 +57,7 @@ exports.fieldDelimiter = function (delimiter) {
  * Configure whitespace handling in CSV header field names
  * When active, removes all whitespace from header names (e.g., "My Name" → "MyName")
  * When inactive, only trims leading and trailing whitespace
+ * @category 1-Core API
  * @param {boolean} active - Whether to remove all whitespace from headers (default: false)
  * @returns {object} Module context for method chaining
  */
@@ -65,6 +69,7 @@ exports.trimHeaderFieldWhiteSpace = function (active = false) {
 /**
  * Set the row index where CSV headers are located
  * Use this if headers are not on the first line (row 0)
+ * @category 1-Core API
  * @param {number} index - Zero-based row index containing headers
  * @returns {object} Module context for method chaining
  */
@@ -76,6 +81,7 @@ exports.indexHeader = function (index) {
 /**
  * Configure sub-array parsing for special field values
  * Fields bracketed by delimiter and containing separator are parsed into arrays
+ * @category 1-Core API
  * @param {string} delimiter - Bracket character (default: '*')
  * @param {string} separator - Item separator within brackets (default: ',')
  * @returns {object} Module context for method chaining
@@ -92,6 +98,7 @@ exports.parseSubArray = function (delimiter, separator) {
 /**
  * Set custom file encoding for reading CSV files
  * Useful for non-UTF8 encoded files
+ * @category 1-Core API
  * @param {string} encoding - Node.js supported encoding (e.g., 'utf8', 'latin1', 'ascii')
  * @returns {object} Module context for method chaining
  */
@@ -102,6 +109,7 @@ exports.customEncoding = function (encoding) {
 
 /**
  * Set UTF-8 encoding (default encoding)
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.utf8Encoding = function utf8Encoding() {
@@ -111,6 +119,7 @@ exports.utf8Encoding = function utf8Encoding() {
 
 /**
  * Set UCS-2 encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.ucs2Encoding = function () {
@@ -120,6 +129,7 @@ exports.ucs2Encoding = function () {
 
 /**
  * Set UTF-16 LE encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.utf16leEncoding = function () {
@@ -129,6 +139,7 @@ exports.utf16leEncoding = function () {
 
 /**
  * Set Latin-1 (ISO-8859-1) encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.latin1Encoding = function () {
@@ -138,6 +149,7 @@ exports.latin1Encoding = function () {
 
 /**
  * Set ASCII encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.asciiEncoding = function () {
@@ -147,6 +159,7 @@ exports.asciiEncoding = function () {
 
 /**
  * Set Base64 encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.base64Encoding = function () {
@@ -156,6 +169,7 @@ exports.base64Encoding = function () {
 
 /**
  * Set Hex encoding for reading files
+ * @category 1-Core API
  * @returns {object} Module context for method chaining
  */
 exports.hexEncoding = function () {
@@ -167,6 +181,7 @@ exports.hexEncoding = function () {
  * Set a mapper function to transform each row after conversion
  * The mapper function receives (row, index) where row is the JSON object 
  * and index is the 0-based row number. Return null/undefined to filter out rows.
+ * @category 1-Core API
  * @param {function(object, number): (object|null)} mapperFn - Function to transform each row
  * @returns {object} Module context for method chaining
  * @example
@@ -186,6 +201,7 @@ exports.mapRows = function (mapperFn) {
  * @throws {Error} If inputFileName or outputFileName is not defined
  * @throws {FileOperationError} If file operations fail
  * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
  * @example
  * const csvToJson = require('convert-csv-to-json');
  * csvToJson.generateJsonFileFromCsv('input.csv', 'output.json');
@@ -207,6 +223,7 @@ exports.generateJsonFileFromCsv = function(inputFileName, outputFileName) {
  * @throws {Error} If inputFileName is not defined
  * @throws {FileOperationError} If file read fails
  * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
  * @example
  * const csvToJson = require('convert-csv-to-json');
  * const rows = csvToJson.getJsonFromCsv('resource/input.csv');
@@ -228,6 +245,7 @@ exports.getJsonFromCsv = function(inputFileName) {
  * @throws {InputValidationError} If input is invalid
  * @throws {FileOperationError} If file read fails
  * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
  * @example
  * const csvToJson = require('convert-csv-to-json');
  * const data = await csvToJson.getJsonFromCsvAsync('resource/input.csv');
@@ -257,6 +275,7 @@ Object.assign(exports, {
  * @returns {Array<object>} Array of objects representing CSV rows
  * @throws {InputValidationError} If csvString is invalid
  * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
  * @example
  * const csvToJson = require('convert-csv-to-json');
  * const rows = csvToJson.csvStringToJson('name,age\nAlice,30');
@@ -273,6 +292,7 @@ exports.csvStringToJson = function(csvString) {
  * @throws {InputValidationError} If csvString is invalid
  * @throws {CsvFormatError} If CSV is malformed
  * @throws {JsonValidationError} If JSON generation fails
+ * @category 1-Core API
  */
 exports.csvStringToJsonStringified = function(csvString) {
   if (csvString === undefined || csvString === null) {
@@ -283,8 +303,4 @@ exports.csvStringToJsonStringified = function(csvString) {
 
 
 
-/**
- * Browser API
- * Provides parsing helpers suitable for browser environments (parsing strings and File/Blob objects)
- */
 exports.browser = require('./src/browserApi');

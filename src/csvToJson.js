@@ -19,6 +19,7 @@ const CR = '\r';
 /**
  * Main CSV to JSON converter class
  * Provides chainable API for configuring and converting CSV data
+ * @category 2-Sync 
  */
 class CsvToJson {
 

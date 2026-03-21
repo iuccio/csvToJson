@@ -6,6 +6,7 @@ const { FileOperationError } = require('./errors');
 /**
  * File I/O utilities for reading and writing CSV/JSON files
  * Provides both synchronous and asynchronous file operations
+ * @category Utilities
  */
 class FileUtils {
 

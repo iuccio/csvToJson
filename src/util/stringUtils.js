@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * String processing utilities for CSV parsing
+ * @category Utilities
+ */
 class StringUtils {
     // Regular expressions as constants for better maintainability
     static PATTERNS = {

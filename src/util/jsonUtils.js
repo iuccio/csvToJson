@@ -4,6 +4,7 @@ const { JsonValidationError } = require('./errors');
 
 /**
  * JSON validation utilities
+ * @category Utilities
  */
 class JsonUtil {
 

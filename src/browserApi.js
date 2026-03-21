@@ -9,6 +9,7 @@ const { InputValidationError, BrowserApiError } = require('./util/errors');
  * Browser-friendly CSV to JSON API
  * Provides methods for parsing CSV strings and File/Blob objects in browser environments
  * Proxies configuration to sync csvToJson instance
+ * @category 4-Browser
  */
 class BrowserApi {
   /**

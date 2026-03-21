@@ -8,6 +8,7 @@ const { InputValidationError } = require('./util/errors');
 /**
  * Asynchronous CSV to JSON converter
  * Proxies configuration to sync instance but provides async file I/O methods
+ * @category 3-Async
  */
 class CsvToJsonAsync {
     /**

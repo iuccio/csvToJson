@@ -72,6 +72,13 @@ module.exports = [
     plugins: {
       jsdoc: jsdocPlugin,
     },
+    settings: {
+      jsdoc: {
+        tagNamePreference: {
+          category: 'category'
+        }
+      }
+    },
     rules: {
       ...js.configs.recommended.rules,
       ...jsdocPlugin.configs.recommended.rules,
