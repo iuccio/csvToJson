@@ -3,3 +3,6 @@ docs/api/
 demo/
 docs/**.js
 docs/**.html
+docs/**.ico
+.devcontainer/
+.vscode/
