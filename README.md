@@ -27,6 +27,12 @@ Transform CSV data into JSON with a simple, chainable API. Choose your implement
 - **[Asynchronous API](docs/ASYNC.md)** - Promise-based for modern async/await patterns
 - **[Browser API](docs/BROWSER.md)** - Client-side CSV parsing for web applications
 
+## Demo and JSDoc
+
+* [Demo](https://iuccio.github.io/csvToJson/)
+* [JSDoc](https://iuccio.github.io/csvToJson/api/index.html)
+
+
 ## Features
 
 ✅ **RFC 4180 Compliant** - Proper handling of quoted fields, delimiters, newlines, and escape sequences  
