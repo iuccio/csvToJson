@@ -1,3 +1,5 @@
 test
 docs/api/
 demo/
+docs/**.js
+docs/**.html
