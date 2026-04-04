@@ -318,6 +318,24 @@ class BrowserApiError extends CsvParsingError {
             { originalError: originalError.message }
         );
     }
+
+    /**
+     * Create error for unsupported streaming API in browser
+     * Occurs when browser doesn't support ReadableStream
+     * @returns {BrowserApiError} Configured error instance
+     * @static
+     */
+    static streamingNotSupported() {
+        return new BrowserApiError(
+            `Browser compatibility error: ReadableStream API is not available.\n` +
+            `Your browser does not support the ReadableStream API required for streaming.\n\n` +
+            `Solutions:\n` +
+            `  1. Use a modern browser that supports ReadableStream (Chrome 43+, Firefox 65+, Safari 10.1+)\n` +
+            `  2. Use getJsonFromFileStreamingAsync() which falls back to regular file parsing\n` +
+            `  3. Consider using parseFile() for non-streaming file parsing\n` +
+            `  4. Implement a polyfill for ReadableStream support`
+        );
+    }
 }
 
 module.exports = {

@@ -6,6 +6,7 @@ Client-side CSV parsing for web browsers. Supports parsing CSV strings and file/
 - [Basic Usage](#basic-usage)
 - [Parsing CSV Strings](#parsing-csv-strings)
 - [Parsing Files and Blobs](#parsing-files-and-blobs)
+- [Streaming Large Files](#streaming-large-files)
 - [Configuration Options](#configuration-options)
 - [File Upload Examples](#file-upload-examples)
 - [TypeScript Support](#typescript-support)
@@ -121,6 +122,57 @@ async function parseWithEncoding(file) {
   return json;
 }
 ```
+
+## Streaming Large Files
+
+For memory-efficient processing of large CSV files in browsers, use the streaming API which processes data in chunks without loading the entire file into memory.
+
+### Stream from ReadableStream
+
+```js
+const convert = require('convert-csv-to-json');
+
+async function processStream(stream) {
+  const jsonData = await convert.browser
+    .fieldDelimiter(';')
+    .supportQuotedField(true)
+    .getJsonFromStreamAsync(stream);
+    
+  console.log(`Processed ${jsonData.length} records`);
+  return jsonData;
+}
+
+// Usage with fetch
+const response = await fetch('large-dataset.csv');
+const stream = response.body;
+const data = await processStream(stream);
+```
+
+### Stream from File Object
+
+```js
+const convert = require('convert-csv-to-json');
+
+async function processLargeFile(file) {
+  const jsonData = await convert.browser
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .getJsonFromFileStreamingAsync(file);
+    
+  console.log(`Streamed and processed ${jsonData.length} records`);
+  return jsonData;
+}
+
+// Usage with file input
+const fileInput = document.querySelector('#csvfile');
+fileInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  const data = await processLargeFile(file);
+  console.log(data);
+});
+```
+
+**Note:** Streaming requires modern browsers that support the `ReadableStream` API (Chrome 43+, Firefox 65+, Safari 10.1+). For older browsers, the method falls back to regular file parsing.
 
 ## Configuration Options
 

@@ -216,6 +216,177 @@ class BrowserApi {
       }
     });
   }
+
+  /**
+   * Parse CSV from a browser ReadableStream and return parsed data as JSON array
+   * Processes data in chunks for memory-efficient handling of large streams
+   * @param {object} stream - Browser ReadableStream containing CSV data
+   * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
+   * @throws {InputValidationError} If stream is invalid
+   * @throws {BrowserApiError} If streaming is not supported or parsing fails
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const response = await fetch('large-dataset.csv');
+   * const stream = response.body;
+   * const data = await csvToJson.browser.getJsonFromStreamAsync(stream);
+   * console.log(data);
+   */
+  async getJsonFromStreamAsync(stream) {
+    if (typeof ReadableStream === 'undefined') {
+      throw BrowserApiError.streamingNotSupported();
+    }
+
+    if (!stream || typeof stream.getReader !== 'function') {
+      throw new InputValidationError(
+        'stream',
+        'ReadableStream',
+        typeof stream,
+        'Provide a valid browser ReadableStream.'
+      );
+    }
+
+    return new Promise((resolve, reject) => {
+      const reader = stream.getReader();
+      let buffer = '';
+      let headers = null;
+      const parsedRecords = [];
+      let currentRecordIndex = 0;
+      const headerRowIndex = this.csvToJson.getIndexHeader();
+
+      const processChunk = async () => {
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+              // Process any remaining buffer
+              if (buffer.length > 0) {
+                const result = this._processBrowserRecord(buffer, headers, parsedRecords, currentRecordIndex, headerRowIndex);
+                headers = result.headers;
+              }
+              resolve(parsedRecords);
+              return;
+            }
+
+            // Convert chunk to string and add to buffer
+            buffer += (typeof value === 'string') ? value : 
+                     (typeof globalThis.TextDecoder !== 'undefined' ? new globalThis.TextDecoder().decode(value) : 
+                      String.fromCharCode.apply(null, new Uint8Array(value)));
+
+            // Process complete records from buffer
+            const bufferResult = this._processBrowserBuffer(buffer, headers, parsedRecords, currentRecordIndex, headerRowIndex);
+            buffer = bufferResult.buffer;
+            headers = bufferResult.headers;
+            currentRecordIndex++;
+          }
+        } catch (error) {
+          reject(BrowserApiError.parseFileError(error));
+        }
+      };
+
+      processChunk();
+    });
+  }
+
+  /**
+   * Parse CSV from a File object using streaming for memory-efficient processing
+   * @param {File} file - File object containing CSV data
+   * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
+   * @throws {InputValidationError} If file is invalid
+   * @throws {BrowserApiError} If streaming is not supported or parsing fails
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const fileInput = document.querySelector('#csvfile').files[0];
+   * const data = await csvToJson.browser.getJsonFromFileStreamingAsync(fileInput);
+   * console.log(data);
+   */
+  async getJsonFromFileStreamingAsync(file) {
+    if (!file || !(file instanceof File)) {
+      throw new InputValidationError(
+        'file',
+        'File object',
+        typeof file,
+        'Provide a valid File object.'
+      );
+    }
+
+    // Check if the file supports streaming
+    if (typeof file.stream === 'function' && file.hasOwnProperty('stream')) {
+      // Use native streaming if available
+      const stream = file.stream();
+      return this.getJsonFromStreamAsync(stream);
+    } else {
+      // Fallback to regular file parsing for older browsers
+      return this.parseFile(file);
+    }
+  }
+
+  /**
+   * Process buffer to extract complete records (browser implementation)
+   * @param {string} buffer - Current buffer content
+   * @param {Array<string>|null} headers - CSV headers
+   * @param {Array<object>} parsedRecords - Output array for parsed records
+   * @param {number} currentRecordIndex - Current record index
+   * @param {number} headerRowIndex - Index of header row
+   * @returns {object} Object with buffer and updated headers
+   * @private
+   */
+  _processBrowserBuffer(buffer, headers, parsedRecords, currentRecordIndex, headerRowIndex) {
+    const lines = buffer.split('\n');
+    const completeLines = lines.slice(0, -1); // All lines except the last (potentially incomplete)
+    const remainingBuffer = lines[lines.length - 1];
+
+    for (const line of completeLines) {
+      if (line.trim()) { // Skip empty lines
+        const result = this._processBrowserRecord(line, headers, parsedRecords, currentRecordIndex, headerRowIndex);
+        headers = result.headers;
+        currentRecordIndex++;
+      }
+    }
+
+    return { buffer: remainingBuffer, headers };
+  }
+
+  /**
+   * Process a single CSV record (browser implementation)
+   * @param {string} record - CSV record to process
+   * @param {Array<string>|null} headers - CSV headers
+   * @param {Array<object>} parsedRecords - Output array for parsed records
+   * @param {number} currentRecordIndex - Current record index
+   * @param {number} headerRowIndex - Index of header row
+   * @returns {object} Object with updated headers
+   * @private
+   */
+  _processBrowserRecord(record, headers, parsedRecords, currentRecordIndex, headerRowIndex) {
+    if (headers === null && currentRecordIndex === headerRowIndex) {
+      // Process header record
+      const headerFields = this._splitBrowserRecord(record);
+      if (headerFields.length > 0) {
+        headers = headerFields;
+      }
+    } else if (headers !== null) {
+      // Process data record
+      const dataFields = this._splitBrowserRecord(record);
+      if (dataFields.length > 0) {
+        const row = this.csvToJson.buildJsonResult(headers, dataFields);
+        parsedRecords.push(row);
+      }
+    }
+    return { headers };
+  }
+
+  /**
+   * Split a CSV record into fields (browser implementation)
+   * @param {string} record - Record to split
+   * @returns {string[]} Array of field values
+   * @private
+   */
+  _splitBrowserRecord(record) {
+    if (this.csvToJson.isSupportQuotedField) {
+      return this.csvToJson.split(record);
+    }
+    return record.split(this.csvToJson.delimiter || ',');
+  }
 }
 
 module.exports = new BrowserApi();
