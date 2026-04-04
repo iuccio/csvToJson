@@ -150,6 +150,17 @@ declare module 'convert-csv-to-json' {
      * Parse a File or Blob and return a Promise that resolves to the JSON array
      */
     parseFile(file: Blob | File, options?: { encoding?: string }): Promise<any[]>;
+
+    /**
+     * Parse CSV from a ReadableStream and return parsed data as JSON array
+     */
+    getJsonFromStreamAsync(stream: ReadableStream): Promise<any[]>;
+
+    /**
+     * Parse CSV from a File object using streaming for memory-efficient processing
+     */
+    getJsonFromFileStreamingAsync(file: File): Promise<any[]>;
+  }
   }
 
   export const browser: BrowserApi;
