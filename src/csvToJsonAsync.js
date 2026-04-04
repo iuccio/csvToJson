@@ -2,14 +2,9 @@
 'use strict';
 
 const fileUtils = require('./util/fileUtils');
-const stringUtils = require('./util/stringUtils');
 const csvToJson = require('./csvToJson');
-const { InputValidationError, CsvFormatError } = require('./util/errors');
-
-const QUOTE_CHAR = '"';
-const CRLF = '\r\n';
-const LF = '\n';
-const CR = '\r';
+const { InputValidationError } = require('./util/errors');
+const StreamProcessor = require('./streamProcessor');
 
 /**
  * Asynchronous CSV to JSON converter
@@ -185,7 +180,7 @@ class CsvToJsonAsync {
     /**
      * Parse CSV from a Readable stream and return parsed data as JSON array
      * Processes data in chunks for memory-efficient handling of large files
-     * @param {Readable} stream - Node.js Readable stream containing CSV data
+     * @param {object} stream - Node.js Readable stream containing CSV data
      * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
      * @throws {InputValidationError} If stream is invalid
      * @throws {CsvFormatError} If CSV is malformed
@@ -197,126 +192,24 @@ class CsvToJsonAsync {
      * console.log(data);
      */
     async getJsonFromStreamAsync(stream) {
-        if (!stream || typeof stream.pipe !== 'function') {
-            throw new InputValidationError(
-                'stream',
-                'Readable stream',
-                typeof stream,
-                'Provide a valid Node.js Readable stream.'
-            );
-        }
+        this._validateStream(stream);
 
         return new Promise((resolve, reject) => {
-            const chunks = [];
-            let buffer = '';
-            let insideQuotes = false;
-            let headers = null;
-            let headerIndex = this.csvToJson.getIndexHeader();
-            let jsonResult = [];
-            let recordIndex = 0;
+            const streamProcessor = new StreamProcessor(this.csvToJson);
 
             stream.on('data', (chunk) => {
-                buffer += chunk.toString();
-                
-                // Process complete records from buffer
-                const records = this._parseRecordsFromBuffer(buffer, insideQuotes);
-                buffer = records.remainingBuffer;
-                insideQuotes = records.insideQuotes;
-
-                // Process each complete record
-                for (const record of records.completeRecords) {
-                    try {
-                        if (headers === null) {
-                            // Try to find headers
-                            const fields = this.csvToJson.isSupportQuotedField 
-                                ? this.csvToJson.split(record)
-                                : record.split(this.csvToJson.delimiter || ',');
-                            
-                            if (stringUtils.hasContent(fields)) {
-                                headers = fields;
-                                continue;
-                            }
-                        } else {
-                            // Parse data row
-                            const fields = this.csvToJson.isSupportQuotedField 
-                                ? this.csvToJson.split(record)
-                                : record.split(this.csvToJson.delimiter || ',');
-                            
-                            if (stringUtils.hasContent(fields)) {
-                                let row = this.csvToJson.buildJsonResult(headers, fields);
-                                
-                                // Apply row mapper if defined
-                                if (this.csvToJson.rowMapper) {
-                                    row = this.csvToJson.rowMapper(row, recordIndex);
-                                    recordIndex++;
-                                    if (row != null) {
-                                        jsonResult.push(row);
-                                    }
-                                } else {
-                                    jsonResult.push(row);
-                                    recordIndex++;
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        reject(error);
-                        return;
-                    }
+                try {
+                    streamProcessor.processChunk(chunk);
+                } catch (error) {
+                    reject(error);
                 }
             });
 
             stream.on('end', () => {
                 try {
-                    // Process any remaining buffer
-                    if (buffer.length > 0) {
-                        if (insideQuotes) {
-                            throw CsvFormatError.mismatchedQuotes('CSV stream');
-                        }
-                        
-                        const records = this._parseRecordsFromBuffer(buffer + '\n', false);
-                        for (const record of records.completeRecords) {
-                            if (headers === null) {
-                                const fields = this.csvToJson.isSupportQuotedField 
-                                    ? this.csvToJson.split(record)
-                                    : record.split(this.csvToJson.delimiter || ',');
-                                
-                                if (stringUtils.hasContent(fields)) {
-                                    headers = fields;
-                                }
-                            } else {
-                                const fields = this.csvToJson.isSupportQuotedField 
-                                    ? this.csvToJson.split(record)
-                                    : record.split(this.csvToJson.delimiter || ',');
-                                
-                                if (stringUtils.hasContent(fields)) {
-                                    let row = this.csvToJson.buildJsonResult(headers, fields);
-                                    
-                                    if (this.csvToJson.rowMapper) {
-                                        row = this.csvToJson.rowMapper(row, recordIndex);
-                                        recordIndex++;
-                                        if (row != null) {
-                                            jsonResult.push(row);
-                                        }
-                                    } else {
-                                        jsonResult.push(row);
-                                        recordIndex++;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // If no headers found and no data, return empty array (empty stream)
-                    if (!headers && jsonResult.length === 0) {
-                        resolve([]);
-                        return;
-                    }
-
-                    if (!headers) {
-                        throw CsvFormatError.missingHeader();
-                    }
-
-                    resolve(jsonResult);
+                    streamProcessor.finalizeProcessing();
+                    const result = streamProcessor.getResult();
+                    resolve(result);
                 } catch (error) {
                     reject(error);
                 }
@@ -329,76 +222,20 @@ class CsvToJsonAsync {
     }
 
     /**
-     * Parse complete records from buffer, handling quoted fields across chunks
-     * @param {string} buffer - Current buffer content
-     * @param {boolean} insideQuotes - Whether we're currently inside quotes from previous chunk
-     * @returns {object} Object with completeRecords array and remaining buffer/quote state
+     * Validate that the provided stream is a valid Readable stream
+     * @param {object} stream - The stream to validate
+     * @throws {InputValidationError} If stream is invalid
      * @private
      */
-    _parseRecordsFromBuffer(buffer, insideQuotes) {
-        const completeRecords = [];
-        let currentRecord = '';
-        let i = 0;
-
-        while (i < buffer.length) {
-            const char = buffer[i];
-
-            // Handle quote characters
-            if (char === QUOTE_CHAR) {
-                if (insideQuotes && i + 1 < buffer.length && buffer[i + 1] === QUOTE_CHAR) {
-                    // Escaped quote: two consecutive quotes = single quote representation
-                    currentRecord += QUOTE_CHAR + QUOTE_CHAR;
-                    i += 2;
-                } else {
-                    // Toggle quote state
-                    insideQuotes = !insideQuotes;
-                    currentRecord += char;
-                    i++;
-                }
-                continue;
-            }
-
-            // Handle line endings (only outside quoted fields)
-            if (!insideQuotes) {
-                let lineEndingLength = this._getLineEndingLength(buffer, i);
-                if (lineEndingLength > 0) {
-                    completeRecords.push(currentRecord);
-                    currentRecord = '';
-                    i += lineEndingLength;
-                    continue;
-                }
-            }
-
-            // Regular character
-            currentRecord += char;
-            i++;
+    _validateStream(stream) {
+        if (!stream || typeof stream.pipe !== 'function') {
+            throw new InputValidationError(
+                'stream',
+                'Readable stream',
+                typeof stream,
+                'Provide a valid Node.js Readable stream.'
+            );
         }
-
-        return {
-            completeRecords,
-            remainingBuffer: currentRecord,
-            insideQuotes
-        };
-    }
-
-    /**
-     * Get the length of line ending at current position
-     * @param {string} content - Content to check
-     * @param {number} index - Current index
-     * @returns {number} Length of line ending
-     * @private
-     */
-    _getLineEndingLength(content, index) {
-        if (content.slice(index, index + 2) === CRLF) {
-            return 2;
-        }
-        if (content[index] === LF) {
-            return 1;
-        }
-        if (content[index] === CR && content[index + 1] !== LF) {
-            return 1;
-        }
-        return 0;
     }
 
     /**

@@ -200,6 +200,27 @@ async function processConfiguredStream(filePath) {
 }
 ```
 
+### File Streaming with getJsonFromFileStreamingAsync
+
+For simplified file streaming without manually creating streams, use `getJsonFromFileStreamingAsync`:
+
+```js
+const csvToJson = require('convert-csv-to-json');
+
+async function processLargeCSV(filePath) {
+  const jsonData = await csvToJson
+    .fieldDelimiter(';')
+    .supportQuotedField(true)
+    .getJsonFromFileStreamingAsync(filePath);
+    
+  console.log(`Processed ${jsonData.length} records efficiently`);
+  return jsonData;
+}
+
+// Usage - processes large files without loading them entirely into memory
+const data = await processLargeCSV('large-dataset.csv');
+```
+
 ### Stream from Other Sources
 
 ```js
