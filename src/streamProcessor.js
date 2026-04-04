@@ -1,4 +1,8 @@
 /* globals CsvFormatError */
+/**
+ * @typedef {import('stream').Readable} Readable
+ * @typedef {ReadableStream} ReadableStream
+ */
 'use strict';
 
 const stringUtils = require('./util/stringUtils');
@@ -11,15 +15,19 @@ const CR = '\r';
 /**
  * Handles the processing of CSV data from a stream
  * Encapsulates all stream processing logic following single responsibility principle
+ * Works with both Node.js streams and browser ReadableStream
  * @private
  */
 class StreamProcessor {
     /**
      * Initialize the stream processor with CSV configuration
      * @param {object} csvConfig - The CSV configuration object
+     * @param {object} options - Environment options
+     * @param {boolean} options.isBrowser - Whether running in browser environment
      */
-    constructor(csvConfig) {
+    constructor(csvConfig, options = {}) {
         this.csvConfig = csvConfig;
+        this.isBrowser = options.isBrowser || (typeof window !== 'undefined' && typeof document !== 'undefined');
         this.buffer = '';
         this.isInsideQuotes = false;
         this.headers = null;
@@ -31,11 +39,91 @@ class StreamProcessor {
 
     /**
      * Process a chunk of data from the stream
-     * @param {Buffer|string} chunk - The data chunk to process
+     * @param {Buffer|string|Uint8Array} chunk - The data chunk to process
      */
     processChunk(chunk) {
-        this.buffer += chunk.toString();
+        // Convert chunk to string, handling both Node.js Buffers and browser Uint8Array
+        let chunkString;
+        if (typeof chunk === 'string') {
+            chunkString = chunk;
+        } else if (this.isBrowser && typeof globalThis.TextDecoder !== 'undefined') {
+            chunkString = new globalThis.TextDecoder().decode(chunk);
+        } else if (this.isBrowser) {
+            // Fallback for older browsers without TextDecoder
+            chunkString = String.fromCharCode.apply(null, new Uint8Array(chunk));
+        } else {
+            // Node.js environment
+            chunkString = chunk.toString();
+        }
+
+        this.buffer += chunkString;
         this._processCompleteRecords();
+    }
+
+    /**
+     * Process a stream directly (unified interface for both environments)
+     * @param {Readable|ReadableStream} stream - The stream to process
+     * @returns {Promise<Array<object>>} Promise resolving to parsed records
+     */
+    async processStream(stream) {
+        return new Promise((resolve, reject) => {
+            if (this.isBrowser) {
+                // Browser ReadableStream
+                if (!stream || typeof stream.getReader !== 'function') {
+                    reject(new Error('Invalid ReadableStream provided'));
+                    return;
+                }
+
+                const reader = stream.getReader();
+
+                const processChunk = async () => {
+                    try {
+                        while (true) {
+                            const { done, value } = await reader.read();
+
+                            if (done) {
+                                this.finalizeProcessing();
+                                resolve(this.getResult());
+                                return;
+                            }
+
+                            this.processChunk(value);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+
+                processChunk();
+            } else {
+                // Node.js Readable stream
+                if (!stream || typeof stream.pipe !== 'function') {
+                    reject(new Error('Invalid Readable stream provided'));
+                    return;
+                }
+
+                stream.on('data', (chunk) => {
+                    try {
+                        this.processChunk(chunk);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+
+                stream.on('end', () => {
+                    try {
+                        this.finalizeProcessing();
+                        resolve(this.getResult());
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+
+                stream.on('error', (error) => {
+                    reject(error);
+                });
+            }
+        });
     }
 
     /**

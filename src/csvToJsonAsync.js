@@ -194,31 +194,8 @@ class CsvToJsonAsync {
     async getJsonFromStreamAsync(stream) {
         this._validateStream(stream);
 
-        return new Promise((resolve, reject) => {
-            const streamProcessor = new StreamProcessor(this.csvToJson);
-
-            stream.on('data', (chunk) => {
-                try {
-                    streamProcessor.processChunk(chunk);
-                } catch (error) {
-                    reject(error);
-                }
-            });
-
-            stream.on('end', () => {
-                try {
-                    streamProcessor.finalizeProcessing();
-                    const result = streamProcessor.getResult();
-                    resolve(result);
-                } catch (error) {
-                    reject(error);
-                }
-            });
-
-            stream.on('error', (error) => {
-                reject(new FileOperationError(`Stream error: ${error.message}`));
-            });
-        });
+        const streamProcessor = new StreamProcessor(this.csvToJson, { isBrowser: false });
+        return streamProcessor.processStream(stream);
     }
 
     /**

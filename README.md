@@ -149,8 +149,8 @@ All APIs (Sync, Async and Browser) support the same configuration methods:
 - `trimHeaderFieldWhiteSpace(bool)` - Remove spaces from headers
 - `parseSubArray(delim, sep)` - Parse delimited arrays
 - `mapRows(fn)` - Transform, filter, or enrich each row
-- `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams
-- `getJsonFromFileStreamingAsync(filePath)` - Stream processing for large files
+- `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams for NodeJS and Browser
+- `getJsonFromFileStreamingAsync(filePath)` - Stream processing for large files for NodeJS and Browser
 - `utf8Encoding()`, `latin1Encoding()`, etc. - Set file encoding
 
 ### Examples
