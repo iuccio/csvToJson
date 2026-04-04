@@ -17,14 +17,14 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
 >
-Convert CSV files to JSON with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance.
+Convert CSV files to JSON with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance. **Memory-efficient streaming** for processing large files without loading them entirely into memory.
 
 ## Overview
 
 Transform CSV data into JSON with a simple, chainable API. Choose your implementation style:
 
 - **[Synchronous API](docs/SYNC.md)** - Blocking operations for simple workflows
-- **[Asynchronous API](docs/ASYNC.md)** - Promise-based for modern async/await patterns
+- **[Asynchronous API](docs/ASYNC.md)** - Promise-based for modern async/await patterns with **memory-efficient streaming** for large files
 - **[Browser API](docs/BROWSER.md)** - Client-side CSV parsing for web applications
 
 ## Demo and JSDoc
@@ -40,7 +40,7 @@ Transform CSV data into JSON with a simple, chainable API. Choose your implement
 ✅ **Full TypeScript Support** - Included type definitions for all APIs  
 ✅ **Flexible Configuration** - Custom delimiters, encoding, trimming, and more  
 ✅ **Method Chaining** - Fluent API for readable code  
-✅ **Large File Support** - Stream processing for memory-efficient handling  
+✅ **Memory-Efficient Streaming** - Process large files without loading them entirely into memory  
 ✅ **Comprehensive Error Handling** - Detailed, actionable error messages with solutions (see [ERROR_HANDLING.md](docs/ERROR_HANDLING.md))
 
 ## RFC 4180 Standard
@@ -150,6 +150,8 @@ All APIs (Sync, Async and Browser) support the same configuration methods:
 - `trimHeaderFieldWhiteSpace(bool)` - Remove spaces from headers
 - `parseSubArray(delim, sep)` - Parse delimited arrays
 - `mapRows(fn)` - Transform, filter, or enrich each row
+- `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams
+- `getJsonFromFileStreamingAsync(filePath)` - Stream processing for large files
 - `utf8Encoding()`, `latin1Encoding()`, etc. - Set file encoding
 
 ### Examples
@@ -231,6 +233,43 @@ csvToJson.latin1Encoding().getJsonFromCsv('data.csv');
 
 // Custom encoding
 csvToJson.customEncoding('ucs2').getJsonFromCsv('data.csv');
+```
+
+#### `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams
+```js
+const fs = require('fs');
+const csvToJson = require('convert-csv-to-json');
+
+// Process large files without loading them entirely into memory
+async function processLargeCSV() {
+  const stream = fs.createReadStream('large-dataset.csv');
+  const jsonData = await csvToJson
+    .fieldDelimiter(';')
+    .supportQuotedField(true)
+    .getJsonFromStreamAsync(stream);
+    
+  console.log(`Processed ${jsonData.length} records efficiently`);
+  return jsonData;
+}
+```
+
+#### `getJsonFromFileStreamingAsync(filePath)` - Stream processing for large files
+```js
+const csvToJson = require('convert-csv-to-json');
+
+// Most efficient way to process large CSV files
+async function processLargeCSV(filePath) {
+  const jsonData = await csvToJson
+    .fieldDelimiter(',')
+    .formatValueByType()
+    .getJsonFromFileStreamingAsync(filePath);
+    
+  console.log(`Streamed and processed ${jsonData.length} records`);
+  return jsonData;
+}
+
+// Usage - handles files of any size without memory constraints
+const data = await processLargeCSV('massive-dataset.csv');
 ```
 
 See [SYNC.md](docs/SYNC.md), [ASYNC.md](docs/ASYNC.md) or [BROWSER.md](docs/BROWSER.md) for complete configuration details.

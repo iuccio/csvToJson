@@ -256,7 +256,7 @@ const csvToJsonAsync = require('./src/csvToJsonAsync');
 /**
  * Parse CSV from a Readable stream and return parsed data as JSON array
  * Processes data in chunks for memory-efficient handling of large files
- * @param {Readable} stream - Node.js Readable stream containing CSV data
+ * @param {object} stream - Node.js Readable stream containing CSV data
  * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
  * @throws {InputValidationError} If stream is invalid
  * @throws {CsvFormatError} If CSV is malformed
