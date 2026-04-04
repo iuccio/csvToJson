@@ -24,6 +24,10 @@ class StreamProcessor {
      * @param {object} csvConfig - The CSV configuration object
      * @param {object} options - Environment options
      * @param {boolean} options.isBrowser - Whether running in browser environment
+     * @param {number} options.chunkSize - Number of rows per chunk for callback processing
+     * @param {function} options.onChunk - Callback for each chunk
+     * @param {function} options.onComplete - Callback when processing complete
+     * @param {function} options.onError - Callback for errors
      */
     constructor(csvConfig, options = {}) {
         this.csvConfig = csvConfig;
@@ -35,6 +39,13 @@ class StreamProcessor {
         this.currentRecordIndex = 0;
         this.parsedRecords = [];
         this.dataRowIndex = 0;
+
+        // Chunked processing options
+        this.chunkSize = options.chunkSize || 1000;
+        this.onChunk = options.onChunk;
+        this.onComplete = options.onComplete;
+        this.onError = options.onError;
+        this.allRecords = []; // For collecting all records when using callbacks
     }
 
     /**
@@ -58,6 +69,113 @@ class StreamProcessor {
 
         this.buffer += chunkString;
         this._processCompleteRecords();
+    }
+
+    /**
+     * Process a stream with chunked callbacks (for large files)
+     * @param {Readable|ReadableStream} stream - The stream to process
+     * @returns {Promise<void>} Promise that resolves when streaming starts
+     */
+    async processStreamWithCallbacks(stream) {
+        return new Promise((resolve, reject) => {
+            if (this.isBrowser) {
+                // Browser ReadableStream
+                if (!stream || typeof stream.getReader !== 'function') {
+                    const error = new Error('Invalid ReadableStream provided');
+                    if (this.onError) this.onError(error);
+                    reject(error);
+                    return;
+                }
+
+                const reader = stream.getReader();
+
+                const processChunk = async () => {
+                    try {
+                        while (true) {
+                            const { done, value } = await reader.read();
+
+                            if (done) {
+                                this.finalizeProcessing();
+                                this._sendRemainingChunks();
+                                if (this.onComplete) this.onComplete(this.allRecords);
+                                resolve();
+                                return;
+                            }
+
+                            this.processChunk(value);
+                            this._sendPendingChunks();
+                        }
+                    } catch (error) {
+                        if (this.onError) this.onError(error);
+                        reject(error);
+                    }
+                };
+
+                processChunk();
+            } else {
+                // Node.js Readable stream
+                if (!stream || typeof stream.pipe !== 'function') {
+                    const error = new Error('Invalid Readable stream provided');
+                    if (this.onError) this.onError(error);
+                    reject(error);
+                    return;
+                }
+
+                stream.on('data', (chunk) => {
+                    try {
+                        this.processChunk(chunk);
+                        this._sendPendingChunks();
+                    } catch (error) {
+                        if (this.onError) this.onError(error);
+                        reject(error);
+                    }
+                });
+
+                stream.on('end', () => {
+                    try {
+                        this.finalizeProcessing();
+                        this._sendRemainingChunks();
+                        if (this.onComplete) this.onComplete(this.allRecords);
+                        resolve();
+                    } catch (error) {
+                        if (this.onError) this.onError(error);
+                        reject(error);
+                    }
+                });
+
+                stream.on('error', (error) => {
+                    if (this.onError) this.onError(error);
+                    reject(error);
+                });
+            }
+        });
+    }
+
+    /**
+     * Send pending chunks when they reach the chunk size
+     * @private
+     */
+    _sendPendingChunks() {
+        if (!this.onChunk) return;
+
+        while (this.parsedRecords.length >= this.chunkSize) {
+            const chunk = this.parsedRecords.splice(0, this.chunkSize);
+            this.allRecords.push(...chunk);
+            this.onChunk(chunk, this.allRecords.length, null); // null for total when streaming
+        }
+    }
+
+    /**
+     * Send any remaining chunks at the end of processing
+     * @private
+     */
+    _sendRemainingChunks() {
+        if (!this.onChunk || this.parsedRecords.length === 0) return;
+
+        const chunk = [...this.parsedRecords];
+        this.parsedRecords.length = 0; // Clear the array
+        this.allRecords.push(...chunk);
+        this.onChunk(chunk, this.allRecords.length, this.allRecords.length);
     }
 
     /**

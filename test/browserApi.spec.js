@@ -186,9 +186,17 @@ describe('Browser API', () => {
         }
       }
 
-      const mockFile = Object.create(File.prototype);
-      mockFile.text = csv;
-      // Don't add stream method when ReadableStream is not available
+      const mockFile = {
+        text: csv,
+        // Mock File interface without stream method
+        size: csv.length,
+        type: 'text/csv',
+        name: 'test.csv'
+      };
+      // Make it pass instanceof File check but don't inherit stream method
+      mockFile.__proto__ = File.prototype;
+      // Explicitly remove stream method for this test
+      mockFile.stream = undefined;
 
       const originalFileReader = global.FileReader;
       const originalReadableStream = global.ReadableStream;
