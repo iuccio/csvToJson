@@ -273,7 +273,7 @@ class BrowserApi {
     }
 
     // Check if the file supports streaming
-    if (typeof file.stream === 'function' && file.hasOwnProperty('stream')) {
+    if (typeof file.stream === 'function') {
       // Use native streaming if available
       const stream = file.stream();
       return this.getJsonFromStreamAsync(stream);
@@ -283,6 +283,144 @@ class BrowserApi {
     }
   }
 
+  /**
+   * Parse CSV from a File object using streaming with progress callbacks for large files
+   * Processes data in chunks to avoid memory issues with large datasets
+   * @param {File} file - File object containing CSV data
+   * @param {object} options - Processing options
+   * @param {function(Array<object>, number, number): void} options.onChunk - Callback for each chunk of processed rows
+   * @param {function(Array<object>): void} [options.onComplete] - Callback when processing is complete
+   * @param {function(Error): void} [options.onError] - Callback for errors
+   * @param {number} [options.chunkSize=1000] - Number of rows per chunk
+   * @returns {Promise<void>} Promise that resolves when streaming starts
+   * @throws {InputValidationError} If file or options are invalid
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const fileInput = document.querySelector('#csvfile').files[0];
+   *
+   * await csvToJson.browser.getJsonFromFileStreamingAsyncWithCallback(fileInput, {
+   *   chunkSize: 500,
+   *   onChunk: (rows, processed, total) => {
+   *     console.log(`Processed ${processed}/${total} rows`);
+   *     // Handle chunk of rows here
+   *   },
+   *   onComplete: (allRows) => {
+   *     console.log('Processing complete!');
+   *   },
+   *   onError: (error) => {
+   *     console.error('Error:', error);
+   *   }
+   * });
+   */
+  async getJsonFromFileStreamingAsyncWithCallback(file, options = {}) {
+    if (!file || !(file instanceof File)) {
+      throw new InputValidationError(
+        'file',
+        'File object',
+        typeof file,
+        'Provide a valid File object.'
+      );
+    }
+
+    if (!options.onChunk || typeof options.onChunk !== 'function') {
+      throw new InputValidationError(
+        'options.onChunk',
+        'function',
+        typeof options.onChunk,
+        'Provide a callback function to handle processed chunks.'
+      );
+    }
+
+    const chunkSize = options.chunkSize || 1000;
+    const streamProcessor = new StreamProcessor(this.csvToJson, {
+      isBrowser: true,
+      chunkSize,
+      onChunk: options.onChunk,
+      onComplete: options.onComplete,
+      onError: options.onError
+    });
+
+    // Check if the file supports streaming
+    if (typeof file.stream === 'function') {
+      console.log('Using native streaming');
+      // Use native streaming if available
+      const stream = file.stream();
+      return streamProcessor.processStreamWithCallbacks(stream);
+    } else {
+      console.log('Falling back to FileReader');
+      // Fallback to regular file parsing for older browsers
+      return this.parseFileWithCallbacks(file, options);
+    }
+  }
+
+  /**
+   * Parse a File object with progress callbacks (fallback for non-streaming browsers)
+   * @param {File} file - File object to parse
+   * @param {object} options - Processing options
+   * @private
+   */
+  async parseFileWithCallbacks(file, options) {
+    const chunkSize = options.chunkSize || 1000;
+    const onChunk = options.onChunk;
+    const onComplete = options.onComplete;
+    const onError = options.onError;
+
+    return new Promise((resolve, reject) => {
+      if (typeof FileReader === 'undefined') {
+        const error = BrowserApiError.fileReaderNotAvailable();
+        if (onError) onError(error);
+        reject(error);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onerror = () => {
+        const error = BrowserApiError.parseFileError(
+          reader.error || new Error('Unknown file reading error')
+        );
+        if (onError) onError(error);
+        reject(error);
+      };
+
+      reader.onload = () => {
+        try {
+          const text = reader.result;
+          const allRows = this.csvToJson.csvToJson(String(text));
+
+          // Process in chunks
+          let processed = 0;
+          const total = allRows.length;
+
+          const processChunk = () => {
+            const chunk = allRows.slice(processed, processed + chunkSize);
+            if (chunk.length > 0) {
+              onChunk(chunk, processed + chunk.length, total);
+              processed += chunk.length;
+              // Use setTimeout to avoid blocking the UI
+              setTimeout(processChunk, 0);
+            } else {
+              if (onComplete) onComplete(allRows);
+              resolve();
+            }
+          };
+
+          processChunk();
+        } catch (err) {
+          const error = BrowserApiError.parseFileError(err);
+          if (onError) onError(error);
+          reject(error);
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  }
+
 }
 
 module.exports = new BrowserApi();
+
+// Assign to window for browser demo
+if (typeof window !== 'undefined') {
+  window.csvToJson = module.exports;
+}

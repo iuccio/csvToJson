@@ -1,6 +1,432 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+// Demo application for CSV to JSON converter
+// This will be bundled with the library using browserify
 
-},{}],2:[function(require,module,exports){
+const csvToJson = require('../src/browserApi');
+
+(function() {
+    'use strict';
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        setupEventListeners();
+    });
+
+    function setupEventListeners() {
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                showTab(this.getAttribute('data-tab'));
+            });
+        });
+
+        // Output tab switching
+        document.querySelectorAll('.output-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                showOutputTab(this.getAttribute('data-output'));
+            });
+        });
+
+        // Convert button
+        document.getElementById('convert-btn').addEventListener('click', convert);
+
+        // Clear button
+        document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+        // Options change listeners
+        document.getElementById('format-values').addEventListener('change', updateOptions);
+        document.getElementById('quoted-fields').addEventListener('change', updateOptions);
+        document.getElementById('delimiter').addEventListener('input', updateOptions);
+        document.getElementById('header-index').addEventListener('input', updateOptions);
+        document.getElementById('parse-subarray').addEventListener('change', updateOptions);
+        document.getElementById('map-rows').addEventListener('change', updateOptions);
+        document.getElementById('use-streaming').addEventListener('change', updateOptions);
+        document.getElementById('use-chunked').addEventListener('change', toggleChunkedOptions);
+
+        // File input change
+        document.getElementById('csv-file').addEventListener('change', handleFileSelect);
+
+        // Sample data buttons
+        document.querySelectorAll('.sample-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                loadSample(this.getAttribute('data-sample'));
+            });
+        });
+    }
+
+    function showTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + '-tab').classList.add('active');
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    }
+
+    function showOutputTab(tabName) {
+        // Hide all output tabs
+        document.querySelectorAll('.output-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.output-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show selected output tab
+        document.getElementById(tabName + '-content').classList.add('active');
+        document.querySelector(`[data-output="${tabName}"]`).classList.add('active');
+    }
+
+    function updateOptions() {
+        const formatValues = document.getElementById('format-values').checked;
+        const quotedFields = document.getElementById('quoted-fields').checked;
+        const delimiter = document.getElementById('delimiter').value;
+        const headerIndex = parseInt(document.getElementById('header-index').value) || 0;
+        const parseSubarray = document.getElementById('parse-subarray').checked;
+        const mapRows = document.getElementById('map-rows').checked;
+
+        csvToJson.formatValueByType(formatValues);
+        csvToJson.supportQuotedField(quotedFields);
+        csvToJson.fieldDelimiter(delimiter);
+        csvToJson.indexHeader(headerIndex);
+
+        if (parseSubarray) {
+            csvToJson.parseSubArray('*', ',');
+        }
+
+        if (mapRows) {
+            csvToJson.mapRows((row, index) => {
+                // Add a processed flag and row number
+                return {
+                    ...row,
+                    _processed: true,
+                    _rowNumber: index + 1
+                };
+            });
+        }
+    }
+
+    function toggleChunkedOptions() {
+        const useChunked = document.getElementById('use-chunked').checked;
+        const chunkedOptions = document.getElementById('chunked-options');
+        chunkedOptions.style.display = useChunked ? 'block' : 'none';
+    }
+
+    async function convert() {
+        const output = document.getElementById('output');
+        const convertBtn = document.getElementById('convert-btn');
+
+        // Clear previous output
+        clearOutput();
+
+        // Disable button during conversion
+        convertBtn.disabled = true;
+        convertBtn.textContent = 'Converting...';
+
+        try {
+            let result;
+
+            // Check which tab is active
+            const activeTab = document.querySelector('.tab-content.active').id;
+            const useStreaming = document.getElementById('use-streaming').checked;
+
+            if (activeTab === 'text-tab') {
+                // Text input
+                const csvText = document.getElementById('csv-input').value;
+                if (!csvText.trim()) {
+                    throw new Error('Please enter CSV text');
+                }
+                result = csvToJson.csvStringToJson(csvText);
+            } else {
+                // File input
+                const fileInput = document.getElementById('csv-file');
+                if (!fileInput.files[0]) {
+                    throw new Error('Please select a CSV file');
+                }
+
+                const useChunked = document.getElementById('use-chunked').checked;
+
+                if (useChunked) {
+                    // Use chunked processing for large files
+                    const chunkSize = parseInt(document.getElementById('chunk-size').value) || 1000;
+                    await processFileInChunks(fileInput.files[0], chunkSize);
+                } else if (useStreaming) {
+                    // Use streaming API
+                    result = await csvToJson.getJsonFromFileStreamingAsync(fileInput.files[0]);
+                    displayResult(result);
+                } else {
+                    // Use regular file parsing
+                    result = await csvToJson.parseFile(fileInput.files[0]);
+                    displayResult(result);
+                }
+            }
+            convertBtn.textContent = 'Convert to JSON';
+        }
+    }
+
+    async function processFileInChunks(file, chunkSize) {
+        const output = document.getElementById('output');
+        const jsonOutput = document.getElementById('json-output');
+        const tableOutput = document.getElementById('table-output');
+        const statsOutput = document.getElementById('stats-output');
+        const convertBtn = document.getElementById('convert-btn');
+
+        // Show results container
+        output.classList.remove('hidden');
+        clearOutput();
+
+        // Initialize progress tracking
+        let allRows = [];
+        let totalProcessed = 0;
+        let isComplete = false;
+
+        // Create progress display
+        const progressDiv = document.createElement('div');
+        progressDiv.id = 'progress-display';
+        progressDiv.innerHTML = '<h4>Processing large file...</h4><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div><div id="progress-text">Initializing...</div>';
+        output.insertBefore(progressDiv, output.firstChild);
+
+        try {
+            await csvToJson.getJsonFromFileStreamingAsyncWithCallback(file, {
+                chunkSize: chunkSize,
+                onChunk: (rows, processed, total) => {
+                    // Accumulate rows
+                    allRows.push(...rows);
+                    totalProcessed = processed;
+
+                    // Update progress
+                    const progressPercent = total ? Math.round((processed / total) * 100) : Math.min(Math.round((processed / 10000) * 100), 95); // Estimate for streaming
+                    document.getElementById('progress-fill').style.width = progressPercent + '%';
+                    document.getElementById('progress-text').textContent = `Processed ${processed} rows...`;
+
+                    // For very large files, limit display to first 1000 rows in table
+                    if (allRows.length <= 1000) {
+                        displayTable(allRows);
+                    } else if (allRows.length === 1001) {
+                        tableOutput.innerHTML = '<p>Table display limited to first 1000 rows for performance. Full data available in JSON view.</p>';
+                    }
+                },
+                onComplete: (allRowsComplete) => {
+                    isComplete = true;
+                    allRows = allRowsComplete;
+
+                    // Update progress to 100%
+                    document.getElementById('progress-fill').style.width = '100%';
+                    document.getElementById('progress-text').textContent = `Complete! Processed ${allRows.length} rows.`;
+
+                    // Display final results
+                    jsonOutput.textContent = JSON.stringify(allRows, null, 2);
+                    displayStats(allRows);
+                    showOutputTab('table');
+
+                    // Remove progress after a delay
+                    setTimeout(() => {
+                        const progressDisplay = document.getElementById('progress-display');
+                        if (progressDisplay) progressDisplay.remove();
+                    }, 3000);
+                },
+                onError: (error) => {
+                    displayError(error);
+                    const progressDisplay = document.getElementById('progress-display');
+                    if (progressDisplay) progressDisplay.remove();
+                }
+            });
+        } catch (error) {
+            displayError(error);
+            const progressDisplay = document.getElementById('progress-display');
+            if (progressDisplay) progressDisplay.remove();
+        }
+    }
+
+    function displayResult(result) {
+        const output = document.getElementById('output');
+        const jsonOutput = document.getElementById('json-output');
+        const tableOutput = document.getElementById('table-output');
+        const statsOutput = document.getElementById('stats-output');
+
+        // Show results container
+        output.classList.remove('hidden');
+
+        // JSON output
+        jsonOutput.textContent = JSON.stringify(result, null, 2);
+
+        // Table output
+        displayTable(result);
+
+        // Stats
+        displayStats(result);
+
+        // Switch to table view by default
+        showOutputTab('table');
+    }
+
+    function displayTable(data) {
+        const tableOutput = document.getElementById('table-output');
+        if (!data || data.length === 0) {
+            tableOutput.innerHTML = '<p>No data to display</p>';
+            return;
+        }
+
+        let html = '<table><thead><tr>';
+        // Headers
+        Object.keys(data[0]).forEach(key => {
+            html += `<th>${escapeHtml(key)}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        // Rows
+        data.forEach(row => {
+            html += '<tr>';
+            Object.values(row).forEach(value => {
+                html += `<td>${escapeHtml(String(value))}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+
+        tableOutput.innerHTML = html;
+    }
+
+    function displayStats(data) {
+        const statsOutput = document.getElementById('stats-output');
+        if (!data || data.length === 0) {
+            statsOutput.innerHTML = '<p>No data</p>';
+            return;
+        }
+
+        const numRows = data.length;
+        const numCols = Object.keys(data[0]).length;
+        const size = JSON.stringify(data).length;
+
+        statsOutput.innerHTML = `
+            <div><strong>Rows:</strong> ${numRows}</div>
+            <div><strong>Columns:</strong> ${numCols}</div>
+            <div><strong>JSON Size:</strong> ${size} characters</div>
+        `;
+    }
+
+    function displayError(error) {
+        const output = document.getElementById('output');
+        const errorOutput = document.getElementById('error-output');
+
+        output.classList.remove('hidden');
+        errorOutput.textContent = error.message;
+        errorOutput.classList.remove('hidden');
+    }
+
+    function clearOutput() {
+        const output = document.getElementById('output');
+        const errorOutput = document.getElementById('error-output');
+
+        output.classList.add('hidden');
+        errorOutput.classList.add('hidden');
+        errorOutput.textContent = '';
+    }
+
+    function clearAll() {
+        document.getElementById('csv-input').value = '';
+        document.getElementById('csv-file').value = '';
+        clearOutput();
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Show file info
+            const fileInfo = document.getElementById('file-info');
+            fileInfo.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
+            fileInfo.classList.remove('hidden');
+        }
+    }
+
+    function loadSample(sampleName) {
+        const samples = {
+            basic: `name,age,city
+John,25,New York
+Jane,30,London
+Bob,35,Paris`,
+
+            quoted: `"name","age","description"
+"John Doe","25","Software Engineer"
+"Jane Smith","30","Product Manager"`,
+
+            numbers: `product,price,quantity
+Widget A,19.99,100
+Widget B,29.99,50
+Widget C,9.99,200`,
+
+            dates: `event,date,attendees
+Conference,2024-01-15,150
+Workshop,2024-02-20,75
+Seminar,2024-03-10,200`,
+
+            subarray: `name,skills,hobbies
+John,"JavaScript,Python,SQL","reading,gaming"
+Jane,"React,Node.js,Docker","cooking,traveling"
+Bob,"Vue.js,PHP,MongoDB","photography,hiking"`,
+
+            mapping: `name,age,city,salary
+John,25,New York,50000
+Jane,30,London,60000
+Bob,35,Paris,55000`
+        };
+
+        document.getElementById('csv-input').value = samples[sampleName] || '';
+        showTab('text');
+
+        // Auto-enable relevant options for specific samples
+        if (sampleName === 'subarray') {
+            document.getElementById('parse-subarray').checked = true;
+            updateOptions();
+        } else if (sampleName === 'mapping') {
+            document.getElementById('map-rows').checked = true;
+            updateOptions();
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function downloadJSON() {
+        const jsonOutput = document.getElementById('json-output');
+        const data = jsonOutput.textContent;
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'converted-data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Make functions globally available for inline event handlers
+    window.showTab = showTab;
+    window.convert = convert;
+    window.clearAll = clearAll;
+    window.downloadJSON = downloadJSON;
+})();
+},{"../src/browserApi":3}],2:[function(require,module,exports){
+
+},{}],3:[function(require,module,exports){
 /* globals CsvFormatError */
 
 "use strict";
@@ -254,39 +680,6 @@ class BrowserApi {
   }
 
   /**
-   * Parse CSV from a File object using streaming for memory-efficient processing
-   * @param {File} file - File object containing CSV data
-   * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
-   * @throws {InputValidationError} If file is invalid
-   * @throws {BrowserApiError} If streaming is not supported or parsing fails
-   * @example
-   * const csvToJson = require('convert-csv-to-json');
-   * const fileInput = document.querySelector('#csvfile').files[0];
-   * const data = await csvToJson.browser.getJsonFromFileStreamingAsync(fileInput);
-   * console.log(data);
-   */
-  async getJsonFromFileStreamingAsync(file) {
-    if (!file || !(file instanceof File)) {
-      throw new InputValidationError(
-        'file',
-        'File object',
-        typeof file,
-        'Provide a valid File object.'
-      );
-    }
-
-    // Check if the file supports streaming
-    if (typeof file.stream === 'function') {
-      // Use native streaming if available
-      const stream = file.stream();
-      return this.getJsonFromStreamAsync(stream);
-    } else {
-      // Fallback to regular file parsing for older browsers
-      return this.parseFile(file);
-    }
-  }
-
-  /**
    * Parse CSV from a File object using streaming with progress callbacks for large files
    * Processes data in chunks to avoid memory issues with large datasets
    * @param {File} file - File object containing CSV data
@@ -345,12 +738,10 @@ class BrowserApi {
 
     // Check if the file supports streaming
     if (typeof file.stream === 'function') {
-      console.log('Using native streaming');
       // Use native streaming if available
       const stream = file.stream();
       return streamProcessor.processStreamWithCallbacks(stream);
     } else {
-      console.log('Falling back to FileReader');
       // Fallback to regular file parsing for older browsers
       return this.parseFileWithCallbacks(file, options);
     }
@@ -423,12 +814,8 @@ class BrowserApi {
 
 module.exports = new BrowserApi();
 
-// Assign to window for browser demo
-if (typeof window !== 'undefined') {
-  window.csvToJson = module.exports;
-}
 
-},{"./csvToJson":3,"./streamProcessor":4,"./util/errors":5}],3:[function(require,module,exports){
+},{"./csvToJson":4,"./streamProcessor":5,"./util/errors":6}],4:[function(require,module,exports){
 /* globals FileOperationError */
 "use strict";
 
@@ -985,7 +1372,7 @@ class CsvToJson {
 
 module.exports = new CsvToJson();
 
-},{"./util/errors":5,"./util/fileUtils":6,"./util/jsonUtils":7,"./util/stringUtils":8}],4:[function(require,module,exports){
+},{"./util/errors":6,"./util/fileUtils":7,"./util/jsonUtils":8,"./util/stringUtils":9}],5:[function(require,module,exports){
 /* globals CsvFormatError */
 /**
  * @typedef {import('stream').Readable} Readable
@@ -1012,10 +1399,6 @@ class StreamProcessor {
      * @param {object} csvConfig - The CSV configuration object
      * @param {object} options - Environment options
      * @param {boolean} options.isBrowser - Whether running in browser environment
-     * @param {number} options.chunkSize - Number of rows per chunk for callback processing
-     * @param {function} options.onChunk - Callback for each chunk
-     * @param {function} options.onComplete - Callback when processing complete
-     * @param {function} options.onError - Callback for errors
      */
     constructor(csvConfig, options = {}) {
         this.csvConfig = csvConfig;
@@ -1027,13 +1410,6 @@ class StreamProcessor {
         this.currentRecordIndex = 0;
         this.parsedRecords = [];
         this.dataRowIndex = 0;
-
-        // Chunked processing options
-        this.chunkSize = options.chunkSize || 1000;
-        this.onChunk = options.onChunk;
-        this.onComplete = options.onComplete;
-        this.onError = options.onError;
-        this.allRecords = []; // For collecting all records when using callbacks
     }
 
     /**
@@ -1057,113 +1433,6 @@ class StreamProcessor {
 
         this.buffer += chunkString;
         this._processCompleteRecords();
-    }
-
-    /**
-     * Process a stream with chunked callbacks (for large files)
-     * @param {Readable|ReadableStream} stream - The stream to process
-     * @returns {Promise<void>} Promise that resolves when streaming starts
-     */
-    async processStreamWithCallbacks(stream) {
-        return new Promise((resolve, reject) => {
-            if (this.isBrowser) {
-                // Browser ReadableStream
-                if (!stream || typeof stream.getReader !== 'function') {
-                    const error = new Error('Invalid ReadableStream provided');
-                    if (this.onError) this.onError(error);
-                    reject(error);
-                    return;
-                }
-
-                const reader = stream.getReader();
-
-                const processChunk = async () => {
-                    try {
-                        while (true) {
-                            const { done, value } = await reader.read();
-
-                            if (done) {
-                                this.finalizeProcessing();
-                                this._sendRemainingChunks();
-                                if (this.onComplete) this.onComplete(this.allRecords);
-                                resolve();
-                                return;
-                            }
-
-                            this.processChunk(value);
-                            this._sendPendingChunks();
-                        }
-                    } catch (error) {
-                        if (this.onError) this.onError(error);
-                        reject(error);
-                    }
-                };
-
-                processChunk();
-            } else {
-                // Node.js Readable stream
-                if (!stream || typeof stream.pipe !== 'function') {
-                    const error = new Error('Invalid Readable stream provided');
-                    if (this.onError) this.onError(error);
-                    reject(error);
-                    return;
-                }
-
-                stream.on('data', (chunk) => {
-                    try {
-                        this.processChunk(chunk);
-                        this._sendPendingChunks();
-                    } catch (error) {
-                        if (this.onError) this.onError(error);
-                        reject(error);
-                    }
-                });
-
-                stream.on('end', () => {
-                    try {
-                        this.finalizeProcessing();
-                        this._sendRemainingChunks();
-                        if (this.onComplete) this.onComplete(this.allRecords);
-                        resolve();
-                    } catch (error) {
-                        if (this.onError) this.onError(error);
-                        reject(error);
-                    }
-                });
-
-                stream.on('error', (error) => {
-                    if (this.onError) this.onError(error);
-                    reject(error);
-                });
-            }
-        });
-    }
-
-    /**
-     * Send pending chunks when they reach the chunk size
-     * @private
-     */
-    _sendPendingChunks() {
-        if (!this.onChunk) return;
-
-        while (this.parsedRecords.length >= this.chunkSize) {
-            const chunk = this.parsedRecords.splice(0, this.chunkSize);
-            this.allRecords.push(...chunk);
-            this.onChunk(chunk, this.allRecords.length, null); // null for total when streaming
-        }
-    }
-
-    /**
-     * Send any remaining chunks at the end of processing
-     * @private
-     */
-    _sendRemainingChunks() {
-        if (!this.onChunk || this.parsedRecords.length === 0) return;
-
-        const chunk = [...this.parsedRecords];
-        this.parsedRecords.length = 0; // Clear the array
-        this.allRecords.push(...chunk);
-        this.onChunk(chunk, this.allRecords.length, this.allRecords.length);
     }
 
     /**
@@ -1459,7 +1728,7 @@ class StreamProcessor {
 }
 
 module.exports = StreamProcessor;
-},{"./util/stringUtils":8}],5:[function(require,module,exports){
+},{"./util/stringUtils":9}],6:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1810,7 +2079,7 @@ module.exports = {
     BrowserApiError
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 const fs = require('fs');
@@ -1909,7 +2178,7 @@ class FileUtils {
 }
 module.exports = new FileUtils();
 
-},{"./errors":5,"fs":1}],7:[function(require,module,exports){
+},{"./errors":6,"fs":2}],8:[function(require,module,exports){
 'use strict';
 
 const { JsonValidationError } = require('./errors');
@@ -1936,7 +2205,7 @@ class JsonUtil {
 }
 
 module.exports = new JsonUtil();
-},{"./errors":5}],8:[function(require,module,exports){
+},{"./errors":6}],9:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2103,4 +2372,4 @@ class StringUtils {
 
 module.exports = new StringUtils();
 
-},{}]},{},[2]);
+},{}]},{},[1]);
