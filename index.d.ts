@@ -104,6 +104,17 @@ declare module 'convert-csv-to-json' {
    */
   getJsonFromCsvAsync(inputFileNameOrCsv: string, options?: { raw?: boolean }): Promise<any[]>;
 
+  /**
+   * Parse CSV from a Readable stream and return parsed data as JSON array
+   * Processes data in chunks for memory-efficient handling of large files
+   */
+  getJsonFromStreamAsync(stream: NodeJS.ReadableStream): Promise<any[]>;
+
+  /**
+   * Parse CSV from a file path using streaming for memory-efficient processing
+   */
+  getJsonFromFileStreamingAsync(filePath: string): Promise<any[]>;
+
     csvStringToJson(csvString: string): any[];
 
     /**

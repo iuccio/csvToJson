@@ -103,4 +103,85 @@ describe('Async API testing', () => {
             ]);
         });
     });
+
+    describe('getJsonFromStreamAsync()', () => {
+        const fs = require('fs');
+        const { Readable } = require('stream');
+
+        beforeEach(() => {
+            // Reset configurations for stream tests
+            csvToJsonAsync.fieldDelimiter(',');
+            csvToJsonAsync.supportQuotedField(false);
+            csvToJsonAsync.formatValueByType(true);
+            csvToJsonAsync.trimHeaderFieldWhiteSpace(false);
+            csvToJsonAsync.indexHeader(0);
+        });
+
+        it('should parse CSV from a readable stream', () => {
+            const stream = fs.createReadStream('test/resource/input_example.csv');
+            return csvToJsonAsync.fieldDelimiter(';')
+                .getJsonFromStreamAsync(stream)
+                .then(result => {
+                    assert.ok(Array.isArray(result));
+                    assert.ok(result.length > 0);
+                    assert.ok(result[0].hasOwnProperty('firstName'));
+                    assert.ok(result[0].hasOwnProperty('lastName'));
+                    assert.strictEqual(result[0].firstName, 'Constantin');
+                });
+        });
+
+        it('should handle quoted fields in streams', () => {
+            const csvData = 'name,description\n"John","A person with a ""quote"" in description"\n"Jane","Simple description"';
+            const stream = new Readable();
+            stream.push(csvData);
+            stream.push(null); // End the stream
+
+            return csvToJsonAsync.supportQuotedField(true)
+                .getJsonFromStreamAsync(stream)
+                .then(result => {
+                    assert.ok(Array.isArray(result));
+                    assert.strictEqual(result.length, 2);
+                    assert.strictEqual(result[0].name, 'John');
+                    assert.strictEqual(result[0].description, 'A person with a "quote" in description');
+                    assert.strictEqual(result[1].name, 'Jane');
+                    assert.strictEqual(result[1].description, 'Simple description');
+                });
+        });
+
+        it('should reject when stream is not provided', () => {
+            return csvToJsonAsync.getJsonFromStreamAsync(null)
+                .then(() => { throw new Error('Should reject'); })
+                .catch(err => assert.ok(err instanceof Error));
+        });
+
+        it('should handle empty stream', () => {
+            const stream = new Readable();
+            stream.push('');
+            stream.push(null);
+
+            return csvToJsonAsync.getJsonFromStreamAsync(stream)
+                .then(result => {
+                    assert.ok(Array.isArray(result));
+                    assert.strictEqual(result.length, 0);
+                });
+        });
+
+        it('should parse CSV from a file path using streaming', () => {
+            return csvToJsonAsync.fieldDelimiter(';')
+                .getJsonFromFileStreamingAsync('test/resource/input_example.csv')
+                .then(result => {
+                    assert.ok(Array.isArray(result));
+                    assert.ok(result.length > 0);
+                    assert.ok(result[0].hasOwnProperty('firstName'));
+                    assert.ok(result[0].hasOwnProperty('lastName'));
+                    assert.strictEqual(result[0].firstName, 'Constantin');
+                });
+        });
+
+        it('should reject when file path is invalid', () => {
+            return csvToJsonAsync.getJsonFromFileStreamingAsync(null)
+                .then(() => { throw new Error('Should reject'); })
+                .catch(err => assert.ok(err instanceof Error));
+        });
+    });
 });

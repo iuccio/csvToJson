@@ -253,6 +253,36 @@ exports.getJsonFromCsv = function(inputFileName) {
  */
 const csvToJsonAsync = require('./src/csvToJsonAsync');
 
+/**
+ * Parse CSV from a Readable stream and return parsed data as JSON array
+ * Processes data in chunks for memory-efficient handling of large files
+ * @param {Readable} stream - Node.js Readable stream containing CSV data
+ * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
+ * @throws {InputValidationError} If stream is invalid
+ * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
+ * @example
+ * const fs = require('fs');
+ * const csvToJson = require('convert-csv-to-json');
+ * const stream = fs.createReadStream('large.csv');
+ * const data = await csvToJson.getJsonFromStreamAsync(stream);
+ * console.log(data);
+ */
+
+/**
+ * Parse CSV from a file path using streaming for memory-efficient processing
+ * @param {string} filePath - Path to the CSV file
+ * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
+ * @throws {InputValidationError} If filePath is invalid
+ * @throws {FileOperationError} If file cannot be read
+ * @throws {CsvFormatError} If CSV is malformed
+ * @category 1-Core API
+ * @example
+ * const csvToJson = require('convert-csv-to-json');
+ * const data = await csvToJson.getJsonFromFileStreamingAsync('large.csv');
+ * console.log(data);
+ */
+
 // Re-export all async API methods
 Object.assign(exports, {
   getJsonFromCsvAsync: function(input, options) {
@@ -266,6 +296,12 @@ Object.assign(exports, {
   },
   generateJsonFileFromCsvAsync: function(input, output) {
     return csvToJsonAsync.generateJsonFileFromCsv(input, output);
+  },
+  getJsonFromStreamAsync: function(stream) {
+    return csvToJsonAsync.getJsonFromStreamAsync(stream);
+  },
+  getJsonFromFileStreamingAsync: function(filePath) {
+    return csvToJsonAsync.getJsonFromFileStreamingAsync(filePath);
   }
 });
 
