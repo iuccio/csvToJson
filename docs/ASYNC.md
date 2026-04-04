@@ -7,6 +7,8 @@ Promise-based async/await API for modern Node.js applications. Perfect for handl
 - [File Operations](#file-operations)
 - [Working with Raw CSV Data](#working-with-raw-csv-data)
 - [Processing Large Files](#processing-large-files)
+- [Stream Processing](#stream-processing)
+- [File Streaming](#file-streaming)
 - [Batch Processing](#batch-processing)
 - [Error Handling](#error-handling)
 - [Method Chaining](#method-chaining)
@@ -156,6 +158,91 @@ async function processChunk(records) {
   // Your processing logic here
   console.log(`Processing ${records.length} records`);
 }
+```
+
+## Stream Processing
+
+For true memory-efficient processing of large CSV files, use the stream API which processes data in chunks without loading the entire file into memory.
+
+### Basic Stream Usage
+
+```js
+const fs = require('fs');
+const csvToJson = require('convert-csv-to-json');
+
+async function processLargeCSV(filePath) {
+  const stream = fs.createReadStream(filePath);
+  const jsonData = await csvToJson.getJsonFromStreamAsync(stream);
+  
+  console.log(`Processed ${jsonData.length} records`);
+  return jsonData;
+}
+
+// Usage
+const data = await processLargeCSV('large-dataset.csv');
+```
+
+### Stream with Configuration
+
+```js
+const fs = require('fs');
+const csvToJson = require('convert-csv-to-json');
+
+async function processConfiguredStream(filePath) {
+  const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
+  
+  const jsonData = await csvToJson
+    .fieldDelimiter(';')
+    .supportQuotedField(true)
+    .getJsonFromStreamAsync(stream);
+    
+  return jsonData;
+}
+```
+
+### Stream from Other Sources
+
+```js
+const { Readable } = require('stream');
+const csvToJson = require('convert-csv-to-json');
+
+// Create a stream from a string
+function createCSVStream(csvString) {
+  const stream = new Readable();
+  stream.push(csvString);
+  stream.push(null); // End the stream
+  return stream;
+}
+
+async function processStringAsStream() {
+  const csvData = 'name,age\nAlice,30\nBob,25';
+  const stream = createCSVStream(csvData);
+  
+  const json = await csvToJson.getJsonFromStreamAsync(stream);
+  console.log(json);
+  // Output: [{ name: 'Alice', age: '30' }, { name: 'Bob', age: '25' }]
+}
+```
+
+### File Streaming
+
+For the most efficient processing of large CSV files, use the built-in file streaming API which handles all the complexity of chunked reading and parsing:
+
+```js
+const csvToJson = require('convert-csv-to-json');
+
+async function processLargeCSV(filePath) {
+  const jsonData = await csvToJson
+    .fieldDelimiter(';')
+    .supportQuotedField(true)
+    .getJsonFromFileStreamingAsync(filePath);
+    
+  console.log(`Processed ${jsonData.length} records`);
+  return jsonData;
+}
+
+// Usage
+const data = await processLargeCSV('large-dataset.csv');
 ```
 
 ## Batch Processing
