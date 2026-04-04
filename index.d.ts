@@ -99,21 +99,21 @@ declare module 'convert-csv-to-json' {
      */
     getJsonFromCsv(inputFileName: string): any[];
 
-  /**
-   * Async version of getJsonFromCsv. When options.raw is true the input is treated as a CSV string
-   */
-  getJsonFromCsvAsync(inputFileNameOrCsv: string, options?: { raw?: boolean }): Promise<any[]>;
+    /**
+     * Async version of getJsonFromCsv. When options.raw is true the input is treated as a CSV string
+     */
+    getJsonFromCsvAsync(inputFileNameOrCsv: string, options?: { raw?: boolean }): Promise<any[]>;
 
-  /**
-   * Parse CSV from a Readable stream and return parsed data as JSON array
-   * Processes data in chunks for memory-efficient handling of large files
-   */
-  getJsonFromStreamAsync(stream: NodeJS.ReadableStream): Promise<any[]>;
+    /**
+     * Parse CSV from a Readable stream and return parsed data as JSON array
+     * Processes data in chunks for memory-efficient handling of large files
+     */
+    getJsonFromStreamAsync(stream: NodeJS.ReadableStream): Promise<any[]>;
 
-  /**
-   * Parse CSV from a file path using streaming for memory-efficient processing
-   */
-  getJsonFromFileStreamingAsync(filePath: string): Promise<any[]>;
+    /**
+     * Parse CSV from a file path using streaming for memory-efficient processing
+     */
+    getJsonFromFileStreamingAsync(filePath: string): Promise<any[]>;
 
     csvStringToJson(csvString: string): any[];
 
@@ -154,13 +154,12 @@ declare module 'convert-csv-to-json' {
     /**
      * Parse CSV from a ReadableStream and return parsed data as JSON array
      */
-    getJsonFromStreamAsync(stream: ReadableStream): Promise<any[]>;
+    getJsonFromStreamAsync(stream: any): Promise<any[]>;
 
     /**
      * Parse CSV from a File object using streaming for memory-efficient processing
      */
     getJsonFromFileStreamingAsync(file: File): Promise<any[]>;
-  }
   }
 
   export const browser: BrowserApi;
