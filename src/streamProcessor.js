@@ -1,8 +1,4 @@
 /* globals CsvFormatError */
-/**
- * @typedef {import('stream').Readable} Readable
- * @typedef {ReadableStream} ReadableStream
- */
 'use strict';
 
 const stringUtils = require('./util/stringUtils');
