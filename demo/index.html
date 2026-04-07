@@ -54,7 +54,7 @@
         }
 
         .input-section {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .tabs {
@@ -100,6 +100,13 @@
             color: #495057;
         }
 
+        hr {
+            height: 2px;
+            border-width: 0;
+            color: gray;
+            background-color: gray
+        }
+
         textarea,
         input[type="file"] {
             width: 100%;
@@ -128,16 +135,13 @@
             padding: 8px 12px;
             background-color: #e9ecef;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 500;
             display: none;
         }
 
-        .samples {
-            margin-top: 15px;
-        }
-
         .sample-btn {
-            background: #6c757d;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -150,14 +154,15 @@
         }
 
         .sample-btn:hover {
-            background: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
         }
 
         .options {
             background-color: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             border: 1px solid #dee2e6;
         }
 
@@ -188,7 +193,8 @@
 
         .buttons {
             text-align: center;
-            margin-bottom: 30px;
+            margin-top: 30px;
+            margin-bottom: 15px;
         }
 
         button {
@@ -211,10 +217,10 @@
         }
 
         button:disabled {
-            background: #6c757d;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+            opacity: 0.3;
         }
 
         .output {
@@ -472,13 +478,11 @@ Example:
 name,age,city
 John,25,New York
 Jane,30,London"></textarea>
-                <div class="samples">
-                    <label>Try a sample:</label><br>
-                    <button class="sample-btn" data-sample="basic">Basic CSV</button>
-                    <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
-                    <button class="sample-btn" data-sample="numbers">Numbers</button>
-                    <button class="sample-btn" data-sample="dates">Dates</button>
-                </div>
+                <label>Try a sample:</label>
+                <button class="sample-btn" data-sample="basic">Basic CSV</button>
+                <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
+                <button class="sample-btn" data-sample="numbers">Numbers</button>
+                <button class="sample-btn" data-sample="dates">Dates</button>
             </div>
         </div>
 
@@ -492,6 +496,7 @@ Jane,30,London"></textarea>
 
         <div class="options">
             <h3>Parsing Options</h3>
+            <hr>
             <div class="option-group">
                 <input type="checkbox" id="format-values" checked>
                 <label for="format-values">Format values by type</label>
@@ -509,6 +514,8 @@ Jane,30,London"></textarea>
                 <input type="number" id="header-index" value="0" min="0" size="2">
             </div>
             <div id="file-only-options">
+                <h6>Streaming Options: for big files</h6>
+                <hr>
                 <div class="option-group">
                     <input type="checkbox" id="use-streaming">
                     <label for="use-streaming">Use streaming (files only)</label>
