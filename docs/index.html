@@ -535,7 +535,7 @@ Jane,30,London"></textarea>
 
                 <div class="output-tabs">
                     <button class="output-tab active" data-output="table">Table View</button>
-                    <button class="output-tab" data-output="json">JSON View</button>
+                    <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
                 </div>
 
                 <div id="table-content" class="output-content active">
@@ -544,8 +544,9 @@ Jane,30,London"></textarea>
 
                 <div id="json-content" class="output-content">
                     <div class="json-output" id="json-output"></div>
-                    <button class="download-btn" onclick="downloadJSON()">Download JSON</button>
                 </div>
+                <button class="download-btn" onclick="downloadJSON()">Download JSON</button>
+
             </div>
         </div>
     </div>

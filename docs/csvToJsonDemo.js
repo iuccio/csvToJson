@@ -30,14 +30,14 @@
             document.getElementById('header-index').addEventListener('input', updateOptions);
             document.getElementById('use-streaming').addEventListener('change', updateOptions);
             document.getElementById('use-chunked').addEventListener('change', toggleChunkedOptions);
-            
+
 
             // File input change
             document.getElementById('csv-file').addEventListener('change', handleFileSelect);
 
             // Ensure file-only options are hidden on initial load
             toggleFileOnlyOptions();
-            
+
             // Sample data buttons
             document.querySelectorAll('.sample-btn').forEach(btn => {
                btn.addEventListener('click', function() {
@@ -99,11 +99,11 @@
             csvToJson.supportQuotedField(quotedFields);
             csvToJson.fieldDelimiter(delimiter);
             csvToJson.indexHeader(headerIndex);
-            
+
             if (parseSubarray) {
                 csvToJson.parseSubArray('*', ',');
             }
-            
+
             if (mapRows) {
                 // Add mapping function if needed
             }
@@ -321,7 +321,7 @@ Seminar,2024-03-10,200`,
             const maxRows = 1000;
             const displayData = data.length > maxRows ? data.slice(0, maxRows) : data;
             let html = '<table>';
-            
+
             // Header
             if (displayData.length > 0) {
                 html += '<thead><tr>';
@@ -353,11 +353,18 @@ Seminar,2024-03-10,200`,
             const statsOutput = document.getElementById('stats-output');
             const rowCount = data ? data.length : 0;
             const colCount = data && data.length > 0 ? Object.keys(data[0]).length : 0;
-            
+
             statsOutput.innerHTML = `
                 <div><strong>Rows:</strong> ${rowCount}</div>
                 <div><strong>Columns:</strong> ${colCount}</div>
             `;
+
+            if(rowCount > 1000){
+                document.getElementById('output-tab-json').disabled = true;
+                document.getElementById('output-tab-json').title = "JSON preview is only available for files with fewer than 1,000 lines. Click the Download JSON button to view the result in JSON format.";
+            } else{
+                document.getElementById('output-tab-json').disabled = false;
+            }
         }
 
         function displayError(error) {
