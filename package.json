@@ -9,7 +9,7 @@
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand --detectOpenHandles",
     "lint": "eslint .",
     "docs": "jsdoc -c jsdoc.json",
-    "docs:api": "jsdoc -c jsdoc.json -d docs/api",
+    "docs:api": "jsdoc -c jsdoc.json -d demo/api",
     "prepublishOnly": "npm run docs:api",
     "version-patch": "npm version patch",
     "version-minor": "npm version minor",
