@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('header-index').addEventListener('input', updateOptions);
     document.getElementById('use-streaming').addEventListener('change', updateOptions);
     document.getElementById('use-chunked').addEventListener('change', toggleChunkedOptions);
-
+    document.getElementById('use-chunked').disabled = true;
 
     // File input change
     document.getElementById('csv-file').addEventListener('change', handleFileSelect);
@@ -94,12 +94,20 @@ function updateOptions() {
     const quotedFields = document.getElementById('quoted-fields').checked;
     const delimiter = document.getElementById('delimiter').value;
     const headerIndex = parseInt(document.getElementById('header-index').value) || 0;
-
     csvToJson.formatValueByType(formatValues);
+
     csvToJson.supportQuotedField(quotedFields);
     csvToJson.fieldDelimiter(delimiter);
     csvToJson.indexHeader(headerIndex);
-    
+    const useStreaming = document.getElementById('use-streaming');
+    const useChunk = document.getElementById('use-chunked');
+    if (useStreaming.checked) {
+        useChunk.disabled = false;
+    } else {
+        useChunk.disabled = true;
+        useChunk.removeAttr('checked');
+    }
+
 }
 
 function toggleChunkedOptions() {
@@ -152,6 +160,7 @@ async function convert() {
     const output = document.getElementById('output');
     const convertBtn = document.getElementById('convert-btn');
 
+
     // Clear previous output
     clearOutput();
 
@@ -189,8 +198,20 @@ async function convert() {
                 await processFileInChunks(fileInput.files[0], chunkSize);
             } else if (useStreaming) {
                 // Use streaming API
+                const output = document.getElementById('output');
+                output.classList.remove('hidden');
+                initProgressDisplay(output);
+                const startTime = performance.now();
                 result = await csvToJson.getJsonFromFileStreamingAsync(fileInput.files[0]);
+                console.log(result);
                 displayResult(result);
+                const endTime = performance.now();
+                const takenTimeInMs = Math.floor(endTime - startTime);
+                const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
+                document.getElementById('progress-fill').style.width = '100%';
+                document.getElementById('progress-text').textContent = `Complete! Processed ${result.length} rows in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)`;
+
+
             } else {
                 // Use regular file parsing
                 result = await csvToJson.parseFile(fileInput.files[0]);
@@ -204,6 +225,23 @@ async function convert() {
         convertBtn.disabled = false;
         convertBtn.textContent = 'Convert to JSON';
     }
+}
+
+function removeProgressDisplay() {
+    const progressDisplay = document.getElementById('progress-display');
+    if (progressDisplay) {
+        progressDisplay.remove();
+    }
+}
+
+function initProgressDisplay(output) {
+    removeProgressDisplay();
+
+    // Create progress display
+    const progressDiv = document.createElement('div');
+    progressDiv.id = 'progress-display';
+    progressDiv.innerHTML = '<h4>Processing large file...</h4><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div><div id="progress-text">Initializing...</div>';
+    output.insertBefore(progressDiv, output.firstChild);
 }
 
 async function processFileInChunks(file, chunkSize) {
@@ -220,13 +258,10 @@ async function processFileInChunks(file, chunkSize) {
     let allRows = [];
     let totalProcessed = 0;
 
-    // Create progress display
-    const progressDiv = document.createElement('div');
-    progressDiv.id = 'progress-display';
-    progressDiv.innerHTML = '<h4>Processing large file...</h4><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div><div id="progress-text">Initializing...</div>';
-    output.insertBefore(progressDiv, output.firstChild);
+    initProgressDisplay(output);
 
     try {
+        const startTime = performance.now();
         await csvToJson.getJsonFromFileStreamingAsyncWithCallback(file, {
             chunkSize: chunkSize,
             onChunk: (rows, processed, total) => {
@@ -249,11 +284,14 @@ async function processFileInChunks(file, chunkSize) {
             },
             onComplete: (allRowsComplete) => {
                 console.log('onComplete called', allRowsComplete.length);
+                const endTime = performance.now();
+                const takenTimeInMs = Math.floor(endTime - startTime);
+                const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
                 allRows = allRowsComplete;
 
                 // Update progress to 100%
                 document.getElementById('progress-fill').style.width = '100%';
-                document.getElementById('progress-text').textContent = `Complete! Processed ${allRows.length} rows.`;
+                document.getElementById('progress-text').textContent = `Complete! Processed ${allRows.length} rows in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)`;
 
                 // Display final results
                 jsonOutput.textContent = JSON.stringify(allRows, null, 2);
@@ -261,24 +299,18 @@ async function processFileInChunks(file, chunkSize) {
                 displayTable(allRows);
                 showOutputTab('table');
 
-                // Remove progress after a delay
-                setTimeout(() => {
-                    const progressDisplay = document.getElementById('progress-display');
-                    if (progressDisplay) progressDisplay.remove();
-                }, 3000);
+
             },
             onError: (error) => {
                 console.error('Error:', error);
                 displayError(error);
-                const progressDisplay = document.getElementById('progress-display');
-                if (progressDisplay) progressDisplay.remove();
+                removeProgressDisplay();
             }
         });
     } catch (error) {
         console.error('Catch error:', error);
         displayError(error);
-        const progressDisplay = document.getElementById('progress-display');
-        if (progressDisplay) progressDisplay.remove();
+        removeProgressDisplay();
     }
 }
 
@@ -373,6 +405,7 @@ function displayError(error) {
 }
 
 function clearOutput() {
+    removeProgressDisplay();
     const output = document.getElementById('output');
     const jsonOutput = document.getElementById('json-output');
     const tableOutput = document.getElementById('table-output');
