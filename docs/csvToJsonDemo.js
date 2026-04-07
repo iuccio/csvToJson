@@ -99,14 +99,7 @@ function updateOptions() {
     csvToJson.supportQuotedField(quotedFields);
     csvToJson.fieldDelimiter(delimiter);
     csvToJson.indexHeader(headerIndex);
-
-    if (parseSubarray) {
-        csvToJson.parseSubArray('*', ',');
-    }
-
-    if (mapRows) {
-        // Add mapping function if needed
-    }
+    
 }
 
 function toggleChunkedOptions() {
