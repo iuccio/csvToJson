@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="UTF-8">
@@ -28,13 +28,16 @@
             border-radius: 8px;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            padding-bottom: 10px;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 10px;
             text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header h1 {
@@ -50,7 +53,7 @@
         }
 
         .content {
-            padding: 30px;
+            padding: 20px;
         }
 
         .input-section {
@@ -59,8 +62,8 @@
 
         .tabs {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #dee2e6;
         }
 
         .tab {
@@ -140,6 +143,24 @@
             display: none;
         }
 
+        ::file-selector-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        ::file-selector-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+
         .sample-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -162,7 +183,6 @@
             background-color: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
-            margin-bottom: 15px;
             border: 1px solid #dee2e6;
         }
 
@@ -193,7 +213,7 @@
 
         .buttons {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 15px;
             margin-bottom: 15px;
         }
 
@@ -221,6 +241,9 @@
             transform: none;
             box-shadow: none;
             opacity: 0.3;
+        }
+        button:focus {
+            outline: none;
         }
 
         .output {
@@ -253,8 +276,8 @@
         }
 
         .output-tab.active {
-            border-bottom-color: #28a745;
-            color: #28a745;
+            border-bottom-color: #667EEAFF;
+            color: #667EEAFF;
             font-weight: 500;
         }
 
@@ -271,13 +294,17 @@
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 6px;
-            padding: 20px;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 14px;
             line-height: 1.4;
             max-height: 500px;
             overflow-y: auto;
             white-space: pre-wrap;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
         }
 
         .table-output table {
@@ -298,9 +325,20 @@
             font-weight: 600;
         }
 
+        .table-title {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
         .stats-output {
             background-color: #e9ecef;
-            padding: 15px;
+            padding: 5px;
             border-radius: 6px;
             margin-bottom: 20px;
             display: flex;
@@ -330,10 +368,21 @@
             margin-top: 1rem;
             background: #28a745;
             margin-left: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         .download-btn:hover {
-            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .download-btn-hidden {
+            visibility: hidden;
         }
 
         .hidden {
@@ -413,7 +462,7 @@
 
         @media (max-width: 768px) {
             .content {
-                padding: 20px;
+                padding: 15px;
             }
 
             .option-group {
@@ -488,7 +537,6 @@ Jane,30,London"></textarea>
 
         <div id="file-tab" class="tab-content">
             <div class="input-section">
-                <label for="csv-file">CSV File:</label>
                 <input type="file" id="csv-file" accept=".csv,text/csv">
                 <div id="file-info" class="file-info"></div>
             </div>
@@ -537,6 +585,7 @@ Jane,30,London"></textarea>
         <div class="buttons">
             <button id="convert-btn">Convert to JSON</button>
             <button id="clear-btn">Clear</button>
+            <button id="download-json-btn" class="download-btn-hidden" onclick="downloadJSON()">Download JSON</button>
         </div>
 
         <div id="output" class="output hidden">
@@ -549,6 +598,8 @@ Jane,30,London"></textarea>
                 <button class="output-tab" data-output="json" id="output-tab-json">JSON View
                 </button>
             </div>
+            <div class="table-title" id="table-title"></div>
+
 
             <div id="table-content" class="output-content active">
                 <div class="table-output" id="table-output"></div>
@@ -557,8 +608,6 @@ Jane,30,London"></textarea>
             <div id="json-content" class="output-content">
                 <div class="json-output" id="json-output"></div>
             </div>
-            <button class="download-btn" onclick="downloadJSON()">Download JSON</button>
-
         </div>
     </div>
 </div>

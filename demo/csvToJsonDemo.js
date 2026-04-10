@@ -118,6 +118,7 @@ function toggleChunkedOptions() {
     } else {
         chunkedOptions.style.display = 'none';
     }
+
 }
 
 function handleFileSelect(event) {
@@ -127,6 +128,19 @@ function handleFileSelect(event) {
         const size = (file.size / 1024 / 1024).toFixed(2);
         fileInfo.innerHTML = `Selected file: ${file.name} (${size} MB)`;
         fileInfo.style.display = 'block';
+        const useStreaming = document.getElementById('use-streaming');
+        if(file.size > 1000000){
+            useStreaming.checked = true;
+            useStreaming.disabled = true;
+            updateOptions();
+        }else {
+            const useChecked = document.getElementById('use-chunked');
+            useStreaming.checked = false;
+            useStreaming.disabled = false;
+            useChecked.checked = false;
+            useChecked.disabled = true;
+            updateOptions();
+        }
     }
 }
 
@@ -203,19 +217,23 @@ async function convert() {
                 initProgressDisplay(output);
                 const startTime = performance.now();
                 result = await csvToJson.getJsonFromFileStreamingAsync(fileInput.files[0]);
-                console.log(result);
                 displayResult(result);
                 const endTime = performance.now();
                 const takenTimeInMs = Math.floor(endTime - startTime);
                 const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
                 document.getElementById('progress-fill').style.width = '100%';
-                document.getElementById('progress-text').textContent = `Complete! Processed ${result.length} rows in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)`;
 
+                const statsOutput = document.getElementById('stats-output');
+
+                statsOutput.innerHTML += `
+                <div><strong>Processed:</strong> in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)</div>
+            `;
 
             } else {
                 // Use regular file parsing
                 result = await csvToJson.parseFile(fileInput.files[0]);
                 displayResult(result);
+
             }
         }
     } catch (error) {
@@ -224,6 +242,10 @@ async function convert() {
         // Re-enable button
         convertBtn.disabled = false;
         convertBtn.textContent = 'Convert to JSON';
+        setTimeout(()=> {
+            removeProgressDisplay();
+        }, 1500);
+
     }
 }
 
@@ -240,7 +262,7 @@ function initProgressDisplay(output) {
     // Create progress display
     const progressDiv = document.createElement('div');
     progressDiv.id = 'progress-display';
-    progressDiv.innerHTML = '<h4>Processing large file...</h4><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div><div id="progress-text">Initializing...</div>';
+    progressDiv.innerHTML = '<h5>Processing large file...</h5><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div>';
     output.insertBefore(progressDiv, output.firstChild);
 }
 
@@ -283,7 +305,6 @@ async function processFileInChunks(file, chunkSize) {
                 }
             },
             onComplete: (allRowsComplete) => {
-                console.log('onComplete called', allRowsComplete.length);
                 const endTime = performance.now();
                 const takenTimeInMs = Math.floor(endTime - startTime);
                 const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
@@ -297,9 +318,8 @@ async function processFileInChunks(file, chunkSize) {
                 jsonOutput.textContent = JSON.stringify(allRows, null, 2);
                 displayStats(allRows);
                 displayTable(allRows);
+                displayDownloadButton();
                 showOutputTab('table');
-
-
             },
             onError: (error) => {
                 console.error('Error:', error);
@@ -331,6 +351,7 @@ function displayResult(result) {
 
     // Display stats
     displayStats(result);
+    displayDownloadButton();
 
     // Show table tab by default
     showOutputTab('table');
@@ -367,11 +388,16 @@ function displayTable(data) {
     });
     html += '</tbody></table>';
 
-    if (data.length > maxRows) {
-        html = `<p><b>Showing first ${maxRows} rows only. Full data is available in JSON view and row count is shown in stats.</h4></p>${html}`;
-    }
-
     tableOutput.innerHTML = html;
+    displayTableTitle(data);
+}
+
+function displayTableTitle(data) {
+    const maxRows = 1000;
+    const tableTitle = document.getElementById('table-title');
+    if (data.length > maxRows) {
+        tableTitle.innerHTML = `<p><b>Showing first ${maxRows} rows only. Full data is available in JSON View for files containing less than 1,000 lines. For bigger files click to the Download JSON button.</h4></p>`;
+    }
 }
 
 function displayStats(data) {
@@ -390,6 +416,20 @@ function displayStats(data) {
     } else {
         document.getElementById('output-tab-json').disabled = false;
     }
+}
+
+function displayDownloadButton() {
+    const downloadButton = document.getElementById('download-json-btn');
+    downloadButton.classList.remove('hidden');
+    downloadButton.classList.remove('download-btn-hidden');
+    downloadButton.classList.add('download-btn');
+}
+
+function hideDownloadButton() {
+    const downloadButton = document.getElementById('download-json-btn');
+    downloadButton.classList.add('hidden');
+    downloadButton.classList.add('download-btn-hidden');
+    downloadButton.classList.remove('download-btn');
 }
 
 function displayError(error) {
@@ -425,6 +465,10 @@ function clearAll() {
     document.getElementById('csv-input').value = '';
     document.getElementById('csv-file').value = '';
     document.getElementById('file-info').style.display = 'none';
+    document.getElementById('use-streaming').checked = false;
+    document.getElementById('use-chunked').checked = false;
+    toggleChunkedOptions();
+    hideDownloadButton();
 }
 
 function downloadJSON() {
