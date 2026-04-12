@@ -1,5 +1,6 @@
+"use strict";
 // Demo JavaScript code
-csvToJson = window.csvToJson;
+const csvToJson = window.csvToJson;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -66,8 +67,9 @@ function showTab(tabName) {
 function toggleFileOnlyOptions() {
     const activeTab = document.querySelector('.tab-content.active').id;
     const fileOnlyOptions = document.getElementById('file-only-options');
-    if (!fileOnlyOptions) return;
-
+    if (!fileOnlyOptions) {
+        return;
+    }
     if (activeTab === 'file-tab') {
         fileOnlyOptions.style.display = 'block';
     } else {
@@ -129,11 +131,11 @@ function handleFileSelect(event) {
         fileInfo.innerHTML = `Selected file: ${file.name} (${size} MB)`;
         fileInfo.style.display = 'block';
         const useStreaming = document.getElementById('use-streaming');
-        if(file.size > 1000000){
+        if (file.size > 1000000) {
             useStreaming.checked = true;
             useStreaming.disabled = true;
             updateOptions();
-        }else {
+        } else {
             const useChecked = document.getElementById('use-chunked');
             useStreaming.checked = false;
             useStreaming.disabled = false;
@@ -171,13 +173,9 @@ Seminar,2024-03-10,200`,
 }
 
 async function convert() {
-    const output = document.getElementById('output');
     const convertBtn = document.getElementById('convert-btn');
-
-
     // Clear previous output
     clearOutput();
-
     // Disable button during conversion
     convertBtn.disabled = true;
     convertBtn.textContent = 'Converting...';
@@ -220,7 +218,7 @@ async function convert() {
                 displayResult(result);
                 const endTime = performance.now();
                 const takenTimeInMs = Math.floor(endTime - startTime);
-                const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
+                const takenTimeInSeconds = ((takenTimeInMs) / 1000).toFixed(2);
                 document.getElementById('progress-fill').style.width = '100%';
 
                 const statsOutput = document.getElementById('stats-output');
@@ -242,7 +240,7 @@ async function convert() {
         // Re-enable button
         convertBtn.disabled = false;
         convertBtn.textContent = 'Convert to JSON';
-        setTimeout(()=> {
+        setTimeout(() => {
             removeProgressDisplay();
         }, 1500);
 
@@ -262,15 +260,13 @@ function initProgressDisplay(output) {
     // Create progress display
     const progressDiv = document.createElement('div');
     progressDiv.id = 'progress-display';
-    progressDiv.innerHTML = '<h5>Processing large file...</h5><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.3s;"></div></div>';
+    progressDiv.innerHTML = '<h5>Processing large file...</h5><div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;"><div id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.5s;"></div></div>';
     output.insertBefore(progressDiv, output.firstChild);
 }
 
 async function processFileInChunks(file, chunkSize) {
     const output = document.getElementById('output');
     const jsonOutput = document.getElementById('json-output');
-    const tableOutput = document.getElementById('table-output');
-    const statsOutput = document.getElementById('stats-output');
 
     // Show results container
     output.classList.remove('hidden');
@@ -283,7 +279,6 @@ async function processFileInChunks(file, chunkSize) {
     initProgressDisplay(output);
 
     try {
-        const startTime = performance.now();
         await csvToJson.getJsonFromFileStreamingAsyncWithCallback(file, {
             chunkSize: chunkSize,
             onChunk: (rows, processed, total) => {
@@ -295,8 +290,6 @@ async function processFileInChunks(file, chunkSize) {
                 // Update progress
                 const progressPercent = total ? Math.round((processed / total) * 100) : Math.min(Math.round((processed / 10000) * 100), 95);
                 document.getElementById('progress-fill').style.width = progressPercent + '%';
-                document.getElementById('progress-text').textContent = `Processed ${processed} rows...`;
-
                 // For very large files, show the first 1000 rows only
                 if (allRows.length <= 1000) {
                     displayTable(allRows);
@@ -305,15 +298,9 @@ async function processFileInChunks(file, chunkSize) {
                 }
             },
             onComplete: (allRowsComplete) => {
-                const endTime = performance.now();
-                const takenTimeInMs = Math.floor(endTime - startTime);
-                const takenTimeInSeconds = ((takenTimeInMs)/1000).toFixed(2);
                 allRows = allRowsComplete;
-
                 // Update progress to 100%
                 document.getElementById('progress-fill').style.width = '100%';
-                document.getElementById('progress-text').textContent = `Complete! Processed ${allRows.length} rows in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)`;
-
                 // Display final results
                 jsonOutput.textContent = JSON.stringify(allRows, null, 2);
                 displayStats(allRows);
@@ -337,8 +324,6 @@ async function processFileInChunks(file, chunkSize) {
 function displayResult(result) {
     const output = document.getElementById('output');
     const jsonOutput = document.getElementById('json-output');
-    const tableOutput = document.getElementById('table-output');
-    const statsOutput = document.getElementById('stats-output');
 
     // Show results container
     output.classList.remove('hidden');
@@ -446,7 +431,6 @@ function displayError(error) {
 
 function clearOutput() {
     removeProgressDisplay();
-    const output = document.getElementById('output');
     const jsonOutput = document.getElementById('json-output');
     const tableOutput = document.getElementById('table-output');
     const statsOutput = document.getElementById('stats-output');
@@ -474,8 +458,9 @@ function clearAll() {
 function downloadJSON() {
     const jsonOutput = document.getElementById('json-output');
     const data = jsonOutput.textContent;
-    if (!data) return;
-
+    if (!data) {
+        return;
+    }
     const blob = new Blob([data], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

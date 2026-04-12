@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -34,26 +34,26 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 10px;
+            padding: 5px;
             text-align: center;
             border-radius: 8px;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 300;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
         }
 
         .header p {
-            margin: 10px 0 0 0;
+            margin: 5px 0 0 0;
             opacity: 0.9;
-            font-size: 1.1em;
         }
 
         .content {
-            padding: 20px;
+            padding: 10px;
+            margin-top: 75px;
+            margin-bottom: 20px;
         }
 
         .input-section {
@@ -315,7 +315,7 @@
 
         .table-output th,
         .table-output td {
-            padding: 8px 12px;
+            padding: 4px 6px;
             text-align: left;
             border-bottom: 1px solid #dee2e6;
         }
@@ -506,7 +506,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>CSV to JSON Converter</h1>
+        <h2>CSV to JSON Converter</h2>
         <p>Convert CSV files to JSON with <b>no dependencies</b>. Supports Node.js (Sync & Async),
             and Browser
             environments with full RFC 4180 compliance.</p>
