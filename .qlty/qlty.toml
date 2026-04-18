@@ -1,0 +1,4 @@
+exclude_patterns = [
+  "docs/*.js",
+  "docs/*.html"
+]
