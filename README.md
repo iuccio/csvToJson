@@ -3,7 +3,6 @@
 [![Node CI](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml/badge.svg?branch=master)](https://github.com/iuccio/csvToJson/actions/workflows/ci-cd.yml)
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Maintainability](https://qlty.sh/gh/iuccio/projects/csvToJson/maintainability.svg)](https://qlty.sh/gh/iuccio/projects/csvToJson)
-[![Code Climate](https://codeclimate.com/github/iuccio/csvToJson/badges/gpa.svg)](https://codeclimate.com/github/iuccio/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 ![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=18.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
