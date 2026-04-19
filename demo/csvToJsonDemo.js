@@ -97,6 +97,12 @@ class UIManager {
         if (element) element.innerHTML = html;
     }
 
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     addClass(element, className) {
         if (element) element.classList.add(className);
     }
@@ -170,7 +176,7 @@ class UIManager {
         const fileInfo = this.getElement(CONSTANTS.ELEMENTS.FILE_INFO);
         if (file && fileInfo) {
             const size = (file.size / 1024 / 1024).toFixed(2);
-            this.setElementHTML(fileInfo, `Selected file: ${file.name} (${size} MB)`);
+            this.setElementHTML(fileInfo, `Selected file: ${this.escapeHtml(file.name)} (${size} MB)`);
             this.showElement(fileInfo);
         }
     }
@@ -376,7 +382,7 @@ class ResultDisplayManager {
         // Header
         if (displayData.length > 0) {
             Object.keys(displayData[0]).forEach(key => {
-                html += `<th>${key}</th>`;
+                html += `<th>${this.uiManager.escapeHtml(key)}</th>`;
             });
             html += '</tr></thead>';
         }
@@ -386,7 +392,7 @@ class ResultDisplayManager {
         displayData.forEach(row => {
             html += '<tr>';
             Object.values(row).forEach(value => {
-                html += `<td>${value}</td>`;
+                html += `<td>${this.uiManager.escapeHtml(String(value))}</td>`;
             });
             html += '</tr>';
         });
