@@ -342,12 +342,10 @@ class BrowserApi {
 
     // Check if the file supports streaming
     if (typeof file.stream === 'function') {
-      console.log('Using native streaming');
       // Use native streaming if available
       const stream = file.stream();
       return streamProcessor.processStreamWithCallbacks(stream);
     } else {
-      console.log('Falling back to FileReader');
       // Fallback to regular file parsing for older browsers
       return this.parseFileWithCallbacks(file, options);
     }
@@ -419,8 +417,3 @@ class BrowserApi {
 }
 
 module.exports = new BrowserApi();
-
-// Assign to window for browser demo
-if (typeof window !== 'undefined') {
-  window.csvToJson = module.exports;
-}

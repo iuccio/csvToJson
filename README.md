@@ -152,6 +152,7 @@ All APIs (Sync, Async and Browser) support the same configuration methods:
 - `mapRows(fn)` - Transform, filter, or enrich each row
 - `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams for NodeJS and Browser
 - `getJsonFromFileStreamingAsync(filePath)` - Stream processing for large files for NodeJS and Browser
+- `getJsonFromFileStreamingAsyncWithCallback(filePath, options = {})` -  Parse CSV from a File using streaming with progress callbacks for large files
 - `utf8Encoding()`, `latin1Encoding()`, etc. - Set file encoding
 
 ### Examples
@@ -270,6 +271,27 @@ async function processLargeCSV(filePath) {
 
 // Usage - handles files of any size without memory constraints
 const data = await processLargeCSV('massive-dataset.csv');
+```
+
+#### `getJsonFromFileStreamingAsyncWithCallback(filePath, options = {})` - Parse CSV from a File object using streaming with progress callbacks for large files
+
+```js
+const csvToJson = require('convert-csv-to-json');
+const fileInput = document.querySelector('#csvfile').files[0];
+
+ csvToJson.browser.getJsonFromFileStreamingAsyncWithCallback(fileInput, {
+   chunkSize: 500,
+   onChunk: (rows, processed, total) => {
+     console.log(`Processed ${processed}/${total} rows`);
+     // Handle chunk of rows here
+   },
+   onComplete: (allRows) => {
+     console.log('Processing complete!');
+   },
+   onError: (error) => {
+     console.error('Error:', error);
+   }
+ });
 ```
 
 See [SYNC.md](docs/SYNC.md), [ASYNC.md](docs/ASYNC.md) or [BROWSER.md](docs/BROWSER.md) for complete configuration details.
