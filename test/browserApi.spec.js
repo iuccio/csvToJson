@@ -219,5 +219,245 @@ describe('Browser API', () => {
       await expect(browser.getJsonFromFileStreamingAsync(null)).rejects.toThrow(/File object/);
       await expect(browser.getJsonFromFileStreamingAsync('not a file')).rejects.toThrow(/File object/);
     });
+
+    test('getJsonFromFileStreamingAsyncWithCallback processes chunks with callbacks', async () => {
+      const csv = 'name;age\nJohn;30\nJane;25\nBob;35';
+      const chunkSpy = jest.fn();
+      const completeSpy = jest.fn();
+
+      class MockFileReader {
+        constructor() {
+          this.onload = null;
+          this.onerror = null;
+          this.result = null;
+        }
+        readAsText(file, encoding) {
+          setTimeout(() => {
+            this.result = file.text || file;
+            if (this.onload) this.onload();
+          }, 0);
+        }
+      }
+
+      const mockFile = {
+        text: csv,
+        size: csv.length,
+        type: 'text/csv',
+        name: 'test.csv'
+      };
+      mockFile.__proto__ = File.prototype;
+      mockFile.stream = undefined;
+
+      const originalFileReader = global.FileReader;
+      const originalReadableStream = global.ReadableStream;
+
+      global.FileReader = MockFileReader;
+      if (originalReadableStream !== undefined) delete global.ReadableStream;
+
+      await browser.getJsonFromFileStreamingAsyncWithCallback(mockFile, {
+        chunkSize: 2,
+        onChunk: chunkSpy,
+        onComplete: completeSpy
+      });
+
+      expect(chunkSpy).toHaveBeenCalledTimes(2);
+      expect(chunkSpy).toHaveBeenNthCalledWith(
+        1,
+        [{ name: 'John', age: '30' }, { name: 'Jane', age: '25' }],
+        2,
+        3
+      );
+      expect(chunkSpy).toHaveBeenNthCalledWith(
+        2,
+        [{ name: 'Bob', age: '35' }],
+        3,
+        3
+      );
+      expect(completeSpy).toHaveBeenCalledWith([
+        { name: 'John', age: '30' },
+        { name: 'Jane', age: '25' },
+        { name: 'Bob', age: '35' }
+      ]);
+
+      if (originalFileReader === undefined) {
+        delete global.FileReader;
+      } else {
+        global.FileReader = originalFileReader;
+      }
+      if (originalReadableStream !== undefined) global.ReadableStream = originalReadableStream;
+    });
+
+    test('getJsonFromFileStreamingAsyncWithCallback calls onError on file read failure', async () => {
+      const errorSpy = jest.fn();
+
+      class MockFileReader {
+        constructor() {
+          this.onload = null;
+          this.onerror = null;
+          this.error = new Error('Read failed');
+        }
+        readAsText(file, encoding) {
+          setTimeout(() => {
+            if (this.onerror) this.onerror();
+          }, 0);
+        }
+      }
+
+      const mockFile = {
+        size: 100,
+        type: 'text/csv',
+        name: 'test.csv'
+      };
+      mockFile.__proto__ = File.prototype;
+      mockFile.stream = undefined;
+
+      const originalFileReader = global.FileReader;
+      const originalReadableStream = global.ReadableStream;
+
+      global.FileReader = MockFileReader;
+      if (originalReadableStream !== undefined) delete global.ReadableStream;
+
+      await expect(
+        browser.getJsonFromFileStreamingAsyncWithCallback(mockFile, {
+          onChunk: jest.fn(),
+          onError: errorSpy
+        })
+      ).rejects.toThrow();
+
+      expect(errorSpy).toHaveBeenCalled();
+
+      if (originalFileReader === undefined) {
+        delete global.FileReader;
+      } else {
+        global.FileReader = originalFileReader;
+      }
+      if (originalReadableStream !== undefined) global.ReadableStream = originalReadableStream;
+    });
+
+    test('getJsonFromFileStreamingAsyncWithCallback rejects when onChunk callback missing', async () => {
+      const mockFile = {
+        size: 100,
+        type: 'text/csv'
+      };
+      mockFile.__proto__ = File.prototype;
+
+      await expect(browser.getJsonFromFileStreamingAsyncWithCallback(mockFile, {}))
+        .rejects.toThrow(/options\.onChunk/);
+    });
+
+    test('getJsonFromFileStreamingAsyncWithCallback rejects with invalid file', async () => {
+      await expect(
+        browser.getJsonFromFileStreamingAsyncWithCallback(null, { onChunk: jest.fn() })
+      ).rejects.toThrow(/File object/);
+
+      await expect(
+        browser.getJsonFromFileStreamingAsyncWithCallback('not a file', { onChunk: jest.fn() })
+      ).rejects.toThrow(/File object/);
+    });
+
+    test('parseFileWithCallbacks processes file with callbacks (fallback)', async () => {
+      const csv = 'name;age\nAlice;28\nCharlie;42';
+      const chunkSpy = jest.fn();
+      const completeSpy = jest.fn();
+
+      class MockFileReader {
+        constructor() {
+          this.onload = null;
+          this.onerror = null;
+          this.result = null;
+        }
+        readAsText(file, encoding) {
+          setTimeout(() => {
+            this.result = file.text || file;
+            if (this.onload) this.onload();
+          }, 0);
+        }
+      }
+
+      const mockFile = { text: csv };
+
+      const originalFileReader = global.FileReader;
+      global.FileReader = MockFileReader;
+
+      await browser.parseFileWithCallbacks(mockFile, {
+        chunkSize: 1,
+        onChunk: chunkSpy,
+        onComplete: completeSpy
+      });
+
+      expect(chunkSpy).toHaveBeenCalledTimes(2);
+      expect(chunkSpy).toHaveBeenNthCalledWith(1, [{ name: 'Alice', age: '28' }], 1, 2);
+      expect(chunkSpy).toHaveBeenNthCalledWith(2, [{ name: 'Charlie', age: '42' }], 2, 2);
+      expect(completeSpy).toHaveBeenCalledWith([
+        { name: 'Alice', age: '28' },
+        { name: 'Charlie', age: '42' }
+      ]);
+
+      if (originalFileReader === undefined) {
+        delete global.FileReader;
+      } else {
+        global.FileReader = originalFileReader;
+      }
+    });
+
+    test('parseFileWithCallbacks handles parse errors with onError callback', async () => {
+      const errorSpy = jest.fn();
+      const invalidCsv = 'name;age\nJohn;';
+
+      class MockFileReader {
+        constructor() {
+          this.onload = null;
+          this.onerror = null;
+          this.result = null;
+        }
+        readAsText(file, encoding) {
+          setTimeout(() => {
+            this.result = file;
+            if (this.onload) this.onload();
+          }, 0);
+        }
+      }
+
+      const mockFile = {
+        toString() { throw new Error('CSV parsing failed'); }
+      };
+
+      const originalFileReader = global.FileReader;
+      global.FileReader = MockFileReader;
+
+      await expect(
+        browser.parseFileWithCallbacks(mockFile, {
+          onChunk: jest.fn(),
+          onError: errorSpy
+        })
+      ).rejects.toThrow();
+
+      expect(errorSpy).toHaveBeenCalled();
+
+      if (originalFileReader === undefined) {
+        delete global.FileReader;
+      } else {
+        global.FileReader = originalFileReader;
+      }
+    });
+
+    test('parseFileWithCallbacks rejects when FileReader unavailable', async () => {
+      const originalFileReader = global.FileReader;
+      if (originalFileReader !== undefined) delete global.FileReader;
+
+      const errorSpy = jest.fn();
+      const mockFile = { text: 'a;b\n1;2' };
+
+      await expect(
+        browser.parseFileWithCallbacks(mockFile, {
+          onChunk: jest.fn(),
+          onError: errorSpy
+        })
+      ).rejects.toThrow(/FileReader.*not available/);
+
+      expect(errorSpy).toHaveBeenCalled();
+
+      if (originalFileReader !== undefined) global.FileReader = originalFileReader;
+    });
   });
 });
