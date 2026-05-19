@@ -72,6 +72,17 @@ class BrowserApi {
   }
 
   /**
+   * Configure columns to exclude from output
+   * @param {Array<number>} indexes - Column indexes to ignore
+   * @returns {this} For method chaining
+   * @private Used internally after validation in index.js
+   */
+  ignoreColumnIndexes(indexes) {
+    this.csvToJson.ignoreColumnIndexes(indexes);
+    return this;
+  }
+
+  /**
    * Configure sub-array parsing for special field values
    * @param {string} delimiter - Bracket character (default: '*')
    * @param {string} separator - Item separator within brackets (default: ',')

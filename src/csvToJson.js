@@ -108,6 +108,17 @@ class CsvToJson {
   }
 
   /**
+   * Configure columns to exclude from output
+   * @param {Array<number>} indexes - Column indexes to ignore
+   * @returns {this} For method chaining
+   * @private Used internally after validation in index.js
+   */
+  ignoreColumnIndexes(indexes) {
+    this.indexesToIgnore = new Set(indexes);
+    return this;
+  }
+
+  /**
    * Sets a mapper function to transform each row after conversion
    * @param {function(object, number): (object|null)} mapperFn - Function that receives (row, index) and returns transformed row or null to filter out
    * @returns {this} For method chaining
@@ -375,6 +386,10 @@ class CsvToJson {
   buildJsonResult(headers, currentLine) {
     let jsonObject = {};
     for (let j = 0; j < headers.length; j++) {
+      if (this.indexesToIgnore?.has(j)) {
+        continue;
+      }
+
       let propertyName = stringUtils.trimPropertyName(this.isTrimHeaderFieldWhiteSpace, headers[j]);
       let value = currentLine[j];
 

@@ -96,6 +96,26 @@ exports.parseSubArray = function (delimiter, separator) {
 };
 
 /**
+ * Set column indexes to ignore
+ * Specified columns will be excluded from the JSON output
+ * @category 1-Core API
+ * @param {Array<number>} indexes - Array of column indexes to ignore
+ * @returns {object} Module context for method chaining
+ * @example
+ * csvToJson.ignoreColumnIndexes([1, 3]) // Ignore columns at index 1 and 3
+ */
+exports.ignoreColumnIndexes = function (indexes) {
+  if (!Array.isArray(indexes)) {
+    throw new TypeError('indexes must be an array of numbers');
+  }
+  if (!indexes.every(idx => Number.isInteger(idx) && idx >= 0)) {
+    throw new TypeError('All elements in indexes must be valid non-negative numbers (>= 0)');
+  }
+  csvToJson.ignoreColumnIndexes(indexes);
+  return this;
+};
+
+/**
  * Set custom file encoding for reading CSV files
  * Useful for non-UTF8 encoded files
  * @category 1-Core API
