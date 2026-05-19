@@ -102,6 +102,17 @@ class CsvToJsonAsync {
     }
 
     /**
+     * Configure columns to exclude from output
+     * @param {Array<number>} indexes - Column indexes to ignore
+     * @returns {this} For method chaining
+     * @private Used internally after validation in index.js
+     */
+    ignoreColumnIndexes(indexes) {
+        this.csvToJson.ignoreColumnIndexes(indexes);
+        return this;
+    }
+
+    /**
      * Read a CSV file and write parsed JSON to an output file (async)
      * @param {string} fileInputName - Path to input CSV file
      * @param {string} fileOutputName - Path to output JSON file
