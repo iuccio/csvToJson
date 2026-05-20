@@ -227,6 +227,22 @@ const json = convert.browser
 // Output: { Name: 'Alice', Age: '30' } (spaces removed from header)
 ```
 
+### Ignore Column Indexes
+
+```js
+const csv = 'name,age,active\nAlice,30,true\nBob,25,false';
+
+const json = convert.browser
+  .ignoreColumnIndexes([2])
+  .csvStringToJson(csv);
+
+// Output:
+// [
+//   { name: 'Alice', age: 30 },
+//   { name: 'Bob', age: 25 }
+// ]
+```
+
 ### Method Chaining
 
 ```js

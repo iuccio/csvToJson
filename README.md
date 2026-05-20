@@ -147,6 +147,7 @@ All APIs (Sync, Async and Browser) support the same configuration methods:
 - `supportQuotedField(bool)` - Handle quoted fields with embedded delimiters
 - `indexHeader(num)` - Specify header row (default: 0)
 - `trimHeaderFieldWhiteSpace(bool)` - Remove spaces from headers
+- `ignoreColumnIndexes(indexes)` - Exclude specific columns by index from the JSON output
 - `parseSubArray(delim, sep)` - Parse delimited arrays
 - `mapRows(fn)` - Transform, filter, or enrich each row
 - `getJsonFromStreamAsync(stream)` - Process CSV from Readable streams for NodeJS and Browser

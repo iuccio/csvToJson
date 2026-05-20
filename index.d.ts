@@ -33,6 +33,12 @@ declare module 'convert-csv-to-json' {
     parseSubArray(delimiter: string, separator: string): this;
 
     /**
+     * Set column indexes to ignore
+     * Specified columns will be excluded from the JSON output
+     */
+    ignoreColumnIndexes(indexes: number[]): this;
+
+    /**
      * Defines a custom encoding to decode a file
      */
     customEncoding(encoding: string): this;
@@ -139,6 +145,7 @@ declare module 'convert-csv-to-json' {
     fieldDelimiter(delimiter: string): this;
     indexHeader(index: number): this;
     parseSubArray(delimiter: string, separator: string): this;
+    ignoreColumnIndexes(indexes: number[]): this;
     mapRows(mapperFn: (row: any, index: number) => any | null): this;
 
     csvStringToJson(csvString: string): any[];
