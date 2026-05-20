@@ -198,6 +198,31 @@ const json = csvToJson.csvStringToJson(csv);
 const jsonString = csvToJson.csvStringToJsonStringified(csv);
 ```
 
+### Ignore Column Indexes
+Exclude specific columns from the JSON output by specifying their column indexes:
+
+```js
+// Ignore columns at index 2 and 3
+csvToJson
+  .ignoreColumnIndexes([2, 3])
+  .getJsonFromCsv('file.csv');
+```
+
+**Example Input:**
+```csv
+name,email,active,id
+John,john@example.com,true,0012
+Jane,jane@example.com,false,987
+```
+
+**Output:**
+```json
+[
+  { "name": "John", "email": "John,john@example.com" },
+  { "name": "Jane", "email": "jane@example.com" }
+]
+```
+
 ### Method Chaining
 
 Combine multiple configuration options:
