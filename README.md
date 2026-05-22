@@ -206,6 +206,15 @@ csvToJson.parseSubArray('*', ',').getJsonFromCsv('data.csv');
 // Output: { name: 'John', tags: ['javascript', 'nodejs', 'typescript'] }
 ```
 
+#### `ignoreColumnIndexes(indexes)` - Exclude specific columns by index
+```js
+// Input: firstName,lastName,age
+//        John,Doe,30
+//        Jane,Smith,25
+csvToJson.ignoreColumnIndexes([1]).getJsonFromCsv('data.csv');
+// Output: [{ firstName: 'John', age: '30' }, { firstName: 'Jane', age: '25' }]
+```
+
 #### `mapRows(fn)` - Transform, filter, or enrich each row
 
 ```js
