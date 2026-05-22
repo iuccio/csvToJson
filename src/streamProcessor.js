@@ -21,9 +21,9 @@ class StreamProcessor {
      * @param {object} options - Environment options
      * @param {boolean} options.isBrowser - Whether running in browser environment
      * @param {number} options.chunkSize - Number of rows per chunk for callback processing
-     * @param {function} options.onChunk - Callback for each chunk
-     * @param {function} options.onComplete - Callback when processing complete
-     * @param {function} options.onError - Callback for errors
+     * @param {function(Array<object>, number, number): void} [options.onChunk] - Callback for each chunk
+     * @param {function(Array<object>): void} [options.onComplete] - Callback when processing complete
+     * @param {function(Error): void} [options.onError] - Callback for errors
      */
     constructor(csvConfig, options = {}) {
         this.csvConfig = csvConfig;
@@ -72,7 +72,7 @@ class StreamProcessor {
 
     /**
      * Process a stream with chunked callbacks (for large files)
-     * @param {Readable|ReadableStream} stream - The stream to process
+     * @param {object} stream - The stream to process (Node.js Readable or browser ReadableStream)
      * @returns {Promise<void>} Promise that resolves when streaming starts
      */
     async processStreamWithCallbacks(stream) {
@@ -179,7 +179,7 @@ class StreamProcessor {
 
     /**
      * Process a stream directly (unified interface for both environments)
-     * @param {Readable|ReadableStream} stream - The stream to process
+     * @param {object} stream - The stream to process (Node.js Readable or browser ReadableStream)
      * @returns {Promise<Array<object>>} Promise resolving to parsed records
      */
     async processStream(stream) {
@@ -364,6 +364,13 @@ class StreamProcessor {
         return record.split(this.csvConfig.delimiter || ',');
     }
 
+    /**
+     * Split a CSV line into fields using parser configuration rules
+     * @param {string} line - The CSV line to split
+     * @param {object} config - The CSV parser configuration object
+     * @returns {string[]} Array of parsed field values
+     * @private
+     */
     _splitWithConfig(line, config) {
         if (line.length === 0) {
             return [];
@@ -401,6 +408,13 @@ class StreamProcessor {
         return fields;
     }
 
+    /**
+     * Convert a parsed CSV row into a JSON object using header names
+     * @param {string[]} headers - Array of header names
+     * @param {string[]} currentLine - Array of field values for the current row
+     * @returns {object} Parsed row object keyed by header names
+     * @private
+     */
     _buildJsonResult(headers, currentLine) {
         const jsonObject = {};
         for (let j = 0; j < headers.length; j++) {
@@ -424,6 +438,12 @@ class StreamProcessor {
         return jsonObject;
     }
 
+    /**
+     * Determine whether a field value represents a sub-array expression
+     * @param {string} value - The field value to inspect
+     * @returns {boolean} True when the value is wrapped in the configured sub-array delimiters
+     * @private
+     */
     _isParseSubArray(value) {
         if (this.csvConfig.parseSubArrayDelimiter) {
             return value && (value.indexOf(this.csvConfig.parseSubArrayDelimiter) === 0 && value.lastIndexOf(this.csvConfig.parseSubArrayDelimiter) === value.length - 1);
@@ -431,6 +451,12 @@ class StreamProcessor {
         return false;
     }
 
+    /**
+     * Parse a field value into a JSON sub-array based on configured delimiters and separators
+     * @param {string} value - The quoted sub-array string to parse
+     * @returns {Array<string|number|boolean>} Parsed sub-array values
+     * @private
+     */
     _buildJsonSubArray(value) {
         const extractedValues = value.substring(
             value.indexOf(this.csvConfig.parseSubArrayDelimiter) + 1,

@@ -75,7 +75,7 @@ class BrowserApi {
    * Configure columns to exclude from output
    * @param {Array<number>} indexes - Column indexes to ignore
    * @returns {this} For method chaining
-   * @private Used internally after validation in index.js
+   * @private
    */
   ignoreColumnIndexes(indexes) {
     this.csvToJson.ignoreColumnIndexes(indexes);
@@ -304,7 +304,7 @@ class BrowserApi {
    * @param {function(Array<object>, number, number): void} options.onChunk - Callback for each chunk of processed rows
    * @param {function(Array<object>): void} [options.onComplete] - Callback when processing is complete
    * @param {function(Error): void} [options.onError] - Callback for errors
-   * @param {number} [options.chunkSize=1000] - Number of rows per chunk
+   * @param {number} [options.chunkSize] - Number of rows per chunk (default: 1000)
    * @returns {Promise<void>} Promise that resolves when streaming starts
    * @throws {InputValidationError} If file or options are invalid
    * @example
