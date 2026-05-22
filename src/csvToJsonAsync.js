@@ -3,113 +3,22 @@
 
 const fileUtils = require('./util/fileUtils');
 const csvToJson = require('./csvToJson');
+const Configurable = require('./configurable');
 const { InputValidationError } = require('./util/errors');
 const StreamProcessor = require('./streamProcessor');
 
 /**
  * Asynchronous CSV to JSON converter
- * Proxies configuration to sync instance but provides async file I/O methods
+ * Provides async file I/O methods and isolated parser configuration
  * @category 3-Async
  */
-class CsvToJsonAsync {
+class CsvToJsonAsync extends Configurable {
     /**
      * Constructor initializes proxy to sync csvToJson instance
      */
     constructor() {
-        // Proxy the configuration methods to the sync instance
+        super();
         this.csvToJson = csvToJson;
-    }
-
-    /**
-     * Enable or disable automatic type formatting for values
-     * @param {boolean} active - Whether to format values by type
-     * @returns {this} For method chaining
-     */
-    formatValueByType(active) {
-        this.csvToJson.formatValueByType(active);
-        return this;
-    }
-
-    /**
-     * Enable or disable support for RFC 4180 quoted fields
-     * @param {boolean} active - Whether to support quoted fields
-     * @returns {this} For method chaining
-     */
-    supportQuotedField(active) {
-        this.csvToJson.supportQuotedField(active);
-        return this;
-    }
-
-    /**
-     * Set the field delimiter character
-     * @param {string} delimiter - Character(s) to use as field separator
-     * @returns {this} For method chaining
-     */
-    fieldDelimiter(delimiter) {
-        this.csvToJson.fieldDelimiter(delimiter);
-        return this;
-    }
-
-    /**
-     * Configure whitespace handling in header field names
-     * @param {boolean} active - If true, removes all whitespace; if false, only trims edges
-     * @returns {this} For method chaining
-     */
-    trimHeaderFieldWhiteSpace(active) {
-        this.csvToJson.trimHeaderFieldWhiteSpace(active);
-        return this;
-    }
-
-    /**
-     * Set the row index where CSV headers are located
-     * @param {number} indexHeader - Zero-based row index containing headers
-     * @returns {this} For method chaining
-     */
-    indexHeader(indexHeader) {
-        this.csvToJson.indexHeader(indexHeader);
-        return this;
-    }
-
-    /**
-     * Configure sub-array parsing for special field values
-     * @param {string} delimiter - Bracket character (default: '*')
-     * @param {string} separator - Item separator within brackets (default: ',')
-     * @returns {this} For method chaining
-     */
-    parseSubArray(delimiter = '*', separator = ',') {
-        this.csvToJson.parseSubArray(delimiter, separator);
-        return this;
-    }
-
-    /**
-     * Set a mapper function to transform each row after conversion
-     * @param {function(object, number): (object|null)} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
-     * @returns {this} For method chaining
-     */
-    mapRows(mapperFn) {
-        this.csvToJson.mapRows(mapperFn);
-        return this;
-    }
-
-    /**
-     * Set file encoding for reading CSV files
-     * @param {string} encoding - Node.js supported encoding (e.g., 'utf8', 'latin1')
-     * @returns {this} For method chaining
-     */
-    encoding(encoding) {
-        this.csvToJson.encoding = encoding;
-        return this;
-    }
-
-    /**
-     * Configure columns to exclude from output
-     * @param {Array<number>} indexes - Column indexes to ignore
-     * @returns {this} For method chaining
-     * @private
-     */
-    ignoreColumnIndexes(indexes) {
-        this.csvToJson.ignoreColumnIndexes(indexes);
-        return this;
     }
 
     /**
@@ -162,7 +71,7 @@ class CsvToJsonAsync {
             );
         }
 
-        const config = this.csvToJson.getParserConfig();
+        const config = this.getParserConfig();
 
         if (options.raw) {
             if (inputFileNameOrCsv === '') {
@@ -207,7 +116,7 @@ class CsvToJsonAsync {
     async getJsonFromStreamAsync(stream) {
         this._validateStream(stream);
 
-        const config = this.csvToJson.getParserConfig();
+        const config = this.getParserConfig();
         const streamProcessor = new StreamProcessor(config, { isBrowser: false });
         return streamProcessor.processStream(stream);
     }
@@ -252,7 +161,7 @@ class CsvToJsonAsync {
         }
 
         const fs = require('fs');
-        const config = this.csvToJson.getParserConfig();
+        const config = this.getParserConfig();
         const encoding = typeof config.encoding === 'string' ? config.encoding : 'utf8';
         const stream = fs.createReadStream(filePath, { encoding });
         return this.getJsonFromStreamAsync(stream);

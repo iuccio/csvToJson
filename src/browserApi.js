@@ -3,104 +3,52 @@
 "use strict";
 
 const csvToJson = require('./csvToJson');
+const Configurable = require('./configurable');
 const { InputValidationError, BrowserApiError } = require('./util/errors');
 const StreamProcessor = require('./streamProcessor');
 
 /**
  * Browser-friendly CSV to JSON API
  * Provides methods for parsing CSV strings and File/Blob objects in browser environments
- * Proxies configuration to sync csvToJson instance
+ * Uses isolated parser configuration via ParserConfig snapshots
  * @category 4-Browser
  */
-class BrowserApi {
+class BrowserApi extends Configurable {
   /**
    * Constructor initializes proxy to sync csvToJson instance
    */
   constructor() {
-    // reuse the existing csvToJson instance for parsing and configuration
+    super();
+    // reuse the existing csvToJson instance for parsing
     this.csvToJson = csvToJson;
   }
 
   /**
-   * Enable or disable automatic type formatting for values
-   * @param {boolean} active - Whether to format values by type (default: true)
-   * @returns {this} For method chaining
-   */
-  formatValueByType(active = true) {
-    this.csvToJson.formatValueByType(active);
-    return this;
-  }
-
-  /**
-   * Enable or disable support for RFC 4180 quoted fields
-   * @param {boolean} active - Whether to support quoted fields (default: false)
-   * @returns {this} For method chaining
-   */
-  supportQuotedField(active = false) {
-    this.csvToJson.supportQuotedField(active);
-    return this;
-  }
-
-  /**
-   * Set the field delimiter character
-   * @param {string} delimiter - Character(s) to use as field separator
-   * @returns {this} For method chaining
-   */
-  fieldDelimiter(delimiter) {
-    this.csvToJson.fieldDelimiter(delimiter);
-    return this;
-  }
-
-  /**
-   * Configure whitespace handling in header field names
-   * @param {boolean} active - If true, removes all whitespace; if false, only trims edges (default: false)
-   * @returns {this} For method chaining
-   */
-  trimHeaderFieldWhiteSpace(active = false) {
-    this.csvToJson.trimHeaderFieldWhiteSpace(active);
-    return this;
-  }
-
-  /**
-   * Set the row index where CSV headers are located
-   * @param {number} index - Zero-based row index containing headers
-   * @returns {this} For method chaining
-   */
-  indexHeader(index) {
-    this.csvToJson.indexHeader(index);
-    return this;
-  }
-
-  /**
-   * Configure columns to exclude from output
-   * @param {Array<number>} indexes - Column indexes to ignore
-   * @returns {this} For method chaining
+   * Validate CSV text input for browser methods.
+   * @param {string} csvString - CSV content as string
+   * @throws {InputValidationError} If the input is not a valid string
    * @private
    */
-  ignoreColumnIndexes(indexes) {
-    this.csvToJson.ignoreColumnIndexes(indexes);
-    return this;
+  _validateCsvString(csvString) {
+    if (csvString === undefined || csvString === null) {
+      throw new InputValidationError(
+        'csvString',
+        'string',
+        `${typeof csvString}`,
+        'Provide valid CSV content as a string to parse.'
+      );
+    }
   }
 
   /**
-   * Configure sub-array parsing for special field values
-   * @param {string} delimiter - Bracket character (default: '*')
-   * @param {string} separator - Item separator within brackets (default: ',')
-   * @returns {this} For method chaining
+   * Parse CSV text using a frozen parser configuration snapshot.
+   * @param {string} csvString - CSV content as string
+   * @returns {Array<object>} Parsed CSV rows
+   * @private
    */
-  parseSubArray(delimiter = '*', separator = ',') {
-    this.csvToJson.parseSubArray(delimiter, separator);
-    return this;
-  }
-
-  /**
-   * Set a mapper function to transform each row after conversion
-   * @param {function(object, number): (object|null)} mapperFn - Function receiving (row, index) that returns transformed row or null to filter
-   * @returns {this} For method chaining
-   */
-  mapRows(mapperFn) {
-    this.csvToJson.mapRows(mapperFn);
-    return this;
+  _parseCsvText(csvString) {
+    const config = this.getParserConfig();
+    return this.csvToJson.csvToJsonWithConfig(String(csvString), config);
   }
 
   /**
@@ -115,15 +63,8 @@ class BrowserApi {
    * console.log(rows); // [{ name: 'Alice', age: '30' }]
    */
   csvStringToJson(csvString) {
-    if (csvString === undefined || csvString === null) {
-      throw new InputValidationError(
-        'csvString',
-        'string',
-        `${typeof csvString}`,
-        'Provide valid CSV content as a string to parse.'
-      );
-    }
-    return this.csvToJson.csvToJson(csvString);
+    this._validateCsvString(csvString);
+    return this._parseCsvText(csvString);
   }
 
   /**
@@ -138,15 +79,9 @@ class BrowserApi {
    * console.log(jsonString);
    */
   csvStringToJsonStringified(csvString) {
-    if (csvString === undefined || csvString === null) {
-      throw new InputValidationError(
-        'csvString',
-        'string',
-        `${typeof csvString}`,
-        'Provide valid CSV content as a string to parse.'
-      );
-    }
-    return this.csvToJson.csvStringToJsonStringified(csvString);
+    this._validateCsvString(csvString);
+    const rows = this._parseCsvText(csvString);
+    return JSON.stringify(rows, undefined, 1);
   }
 
   /**
@@ -212,10 +147,7 @@ class BrowserApi {
       ));
       reader.onload = () => {
         try {
-          const text = reader.result;
-          const config = this.csvToJson.getParserConfig();
-          const result = this.csvToJson.csvToJsonWithConfig(String(text), config);
-          resolve(result);
+          resolve(this._parseCsvText(reader.result));
         } catch (err) {
           reject(BrowserApiError.parseFileError(err));
         }
@@ -258,7 +190,7 @@ class BrowserApi {
       );
     }
 
-    const config = this.csvToJson.getParserConfig();
+    const config = this.getParserConfig();
     const streamProcessor = new StreamProcessor(config, { isBrowser: true });
     return streamProcessor.processStream(stream);
   }
@@ -345,7 +277,7 @@ class BrowserApi {
     }
 
     const chunkSize = options.chunkSize || 1000;
-    const config = this.csvToJson.getParserConfig();
+    const config = this.getParserConfig();
     const streamProcessor = new StreamProcessor(config, {
       isBrowser: true,
       chunkSize,
@@ -396,9 +328,7 @@ class BrowserApi {
 
       reader.onload = () => {
         try {
-          const text = reader.result;
-          const config = this.csvToJson.getParserConfig();
-          const allRows = this.csvToJson.csvToJsonWithConfig(String(text), config);
+          const allRows = this._parseCsvText(reader.result);
 
           // Process in chunks
           let processed = 0;
