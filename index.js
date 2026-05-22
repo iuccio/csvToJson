@@ -10,13 +10,13 @@
 let csvToJson = require("./src/csvToJson.js");
 
 const encodingOps = {
-    utf8: 'utf8',
-    ucs2: 'ucs2',
-    utf16le: 'utf16le',
-    latin1: 'latin1',
-    ascii: 'ascii',
-    base64: 'base64',
-    hex: 'hex'
+    UTF8: 'utf8',
+    UCS2: 'ucs2',
+    UTF16LE: 'utf16le',
+    LATIN1: 'latin1',
+    ASCII: 'ascii',
+    BASE64: 'base64',
+    HEX: 'hex'
 };
 
 const csvToJsonAsync = require('./src/csvToJsonAsync');
@@ -143,7 +143,7 @@ exports.customEncoding = function (encoding) {
  * @returns {object} Module context for method chaining
  */
 exports.utf8Encoding = function utf8Encoding() {
-  return applyConfigToAllClients(client => client.encoding(encodingOps.utf8));
+  return applyConfigToAllClients(client => client.encoding(encodingOps.UTF8));
 };
 
 /**
@@ -197,7 +197,7 @@ exports.base64Encoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.hexEncoding = function () {
-  return applyConfigToAllClients(client => client.encoding(encodingOps.hex));
+  return applyConfigToAllClients(client => client.encoding(encodingOps.HEX));
 };
 
 /**
@@ -259,8 +259,8 @@ exports.getJsonFromCsv = function(inputFileName) {
 };
 
 /**
- * Parse CSV file asynchronously and return parsed data as JSON array
- * @param {string} inputFileNameOrCsv - Path to file or CSV string
+ * Parse CSV file asynchronously and return parsed data as JSON array.
+ * @param {string} input - Path to file or CSV string
  * @param {object} options - Configuration options
  * @param {boolean} options.raw - If true, treats first param as CSV content; if false, reads from file
  * @returns {Promise<Array<object>>} Promise resolving to array of objects
@@ -273,10 +273,46 @@ exports.getJsonFromCsv = function(inputFileName) {
  * const data = await csvToJson.getJsonFromCsvAsync('resource/input.csv');
  * console.log(data);
  */
+exports.getJsonFromCsvAsync = function(input, options) {
+  return csvToJsonAsync.getJsonFromCsvAsync(input, options);
+};
 
 /**
- * Parse CSV from a Readable stream and return parsed data as JSON array
- * Processes data in chunks for memory-efficient handling of large files
+ * Parse a raw CSV string asynchronously and return parsed JSON objects.
+ * @param {string} input - CSV content as a string
+ * @param {object} [options] - Configuration options
+ * @param {boolean} [options.raw] - If true, treats input as CSV content
+ * @returns {Promise<Array<object>>} Promise resolving to array of parsed objects
+ * @category 1-Core API
+ */
+exports.csvStringToJsonAsync = function(input, options) {
+  return csvToJsonAsync.csvStringToJsonAsync(input, options);
+};
+
+/**
+ * Parse a raw CSV string asynchronously and return a JSON string.
+ * @param {string} input - CSV content as a string
+ * @returns {Promise<string>} Promise resolving to JSON string
+ * @category 1-Core API
+ */
+exports.csvStringToJsonStringifiedAsync = function(input) {
+  return csvToJsonAsync.csvStringToJsonStringifiedAsync(input);
+};
+
+/**
+ * Parse a CSV file asynchronously and write the parsed JSON to an output file.
+ * @param {string} input - Path to the input CSV file
+ * @param {string} output - Path to the output JSON file
+ * @returns {Promise<void>} Promise resolving when file is written
+ * @category 1-Core API
+ */
+exports.generateJsonFileFromCsvAsync = function(input, output) {
+  return csvToJsonAsync.generateJsonFileFromCsv(input, output);
+};
+
+/**
+ * Parse CSV from a Readable stream and return parsed data as JSON array.
+ * Processes data in chunks for memory-efficient handling of large files.
  * @param {object} stream - Node.js Readable stream containing CSV data
  * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
  * @throws {InputValidationError} If stream is invalid
@@ -289,9 +325,12 @@ exports.getJsonFromCsv = function(inputFileName) {
  * const data = await csvToJson.getJsonFromStreamAsync(stream);
  * console.log(data);
  */
+exports.getJsonFromStreamAsync = function(stream) {
+  return csvToJsonAsync.getJsonFromStreamAsync(stream);
+};
 
 /**
- * Parse CSV from a file path using streaming for memory-efficient processing
+ * Parse CSV from a file path using streaming for memory-efficient processing.
  * @param {string} filePath - Path to the CSV file
  * @returns {Promise<Array<object>>} Promise resolving to array of objects representing CSV rows
  * @throws {InputValidationError} If filePath is invalid
@@ -303,28 +342,9 @@ exports.getJsonFromCsv = function(inputFileName) {
  * const data = await csvToJson.getJsonFromFileStreamingAsync('large.csv');
  * console.log(data);
  */
-
-// Re-export all async API methods
-Object.assign(exports, {
-  getJsonFromCsvAsync: function(input, options) {
-    return csvToJsonAsync.getJsonFromCsvAsync(input, options);
-  },
-  csvStringToJsonAsync: function(input, options) {
-    return csvToJsonAsync.csvStringToJsonAsync(input, options);
-  },
-  csvStringToJsonStringifiedAsync: function(input) {
-    return csvToJsonAsync.csvStringToJsonStringifiedAsync(input);
-  },
-  generateJsonFileFromCsvAsync: function(input, output) {
-    return csvToJsonAsync.generateJsonFileFromCsv(input, output);
-  },
-  getJsonFromStreamAsync: function(stream) {
-    return csvToJsonAsync.getJsonFromStreamAsync(stream);
-  },
-  getJsonFromFileStreamingAsync: function(filePath) {
-    return csvToJsonAsync.getJsonFromFileStreamingAsync(filePath);
-  }
-});
+exports.getJsonFromFileStreamingAsync = function(filePath) {
+  return csvToJsonAsync.getJsonFromFileStreamingAsync(filePath);
+};
 
 /**
  * Parse a CSV string and return as JSON array of objects (synchronous)

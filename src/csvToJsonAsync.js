@@ -3,9 +3,9 @@
 
 const fileUtils = require('./util/fileUtils');
 const csvToJson = require('./csvToJson');
-const Configurable = require('./configurable');
-const { InputValidationError } = require('./util/errors');
-const StreamProcessor = require('./streamProcessor');
+const Configurable = require('./core/configurable');
+const { InputValidationError } = require('./core/errors');
+const StreamProcessor = require('./core/streamProcessor');
 
 /**
  * Asynchronous CSV to JSON converter

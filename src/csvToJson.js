@@ -8,9 +8,9 @@ const {
     ConfigurationError,
     CsvFormatError,
     JsonValidationError
-} = require('./util/errors');
-const Configurable = require('./configurable');
-const ParserConfig = require('./parserConfig');
+} = require('./core/errors');
+const Configurable = require('./core/configurable');
+const ParserConfig = require('./core/parserConfig');
 
 const DEFAULT_FIELD_DELIMITER = ",";
 const QUOTE_CHAR = '"';

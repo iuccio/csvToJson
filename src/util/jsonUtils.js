@@ -1,6 +1,6 @@
 'use strict';
 
-const { JsonValidationError } = require('./errors');
+const { JsonValidationError } = require('../core/errors');
 
 /**
  * JSON validation utilities

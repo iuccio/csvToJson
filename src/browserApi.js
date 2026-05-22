@@ -3,9 +3,9 @@
 "use strict";
 
 const csvToJson = require('./csvToJson');
-const Configurable = require('./configurable');
-const { InputValidationError, BrowserApiError } = require('./util/errors');
-const StreamProcessor = require('./streamProcessor');
+const Configurable = require('./core/configurable');
+const { InputValidationError, BrowserApiError } = require('./core/errors');
+const StreamProcessor = require('./core/streamProcessor');
 
 /**
  * Browser-friendly CSV to JSON API
