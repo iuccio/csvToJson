@@ -19,6 +19,24 @@ const encodingOps = {
     hex: 'hex'
 };
 
+const csvToJsonAsync = require('./src/csvToJsonAsync');
+
+/**
+ * Apply the same parser configuration update to every parser client.
+ * This keeps root-level chainable API calls in sync across sync, async, and browser clients.
+ * @param {function(object): void} configFn - Function that applies configuration to a client instance
+ * @returns {object} Module exports for chaining
+ * @private
+ */
+function applyConfigToAllClients(configFn) {
+  configFn(csvToJson);
+  configFn(csvToJsonAsync);
+  if (exports.browser) {
+    configFn(exports.browser);
+  }
+  return exports;
+}
+
 /**
  * Enable or disable automatic type formatting for values
  * Converts numeric strings to numbers, 'true'/'false' to booleans
@@ -27,8 +45,7 @@ const encodingOps = {
  * @returns {object} Module context for method chaining
  */
 exports.formatValueByType = function (active = true) {
-  csvToJson.formatValueByType(active);
-  return this;
+  return applyConfigToAllClients(client => client.formatValueByType(active));
 };
 
 /**
@@ -39,8 +56,7 @@ exports.formatValueByType = function (active = true) {
  * @returns {object} Module context for method chaining
  */
 exports.supportQuotedField = function (active = false) {
-  csvToJson.supportQuotedField(active);
-  return this;
+  return applyConfigToAllClients(client => client.supportQuotedField(active));
 };
 /**
  * Set the field delimiter character used to separate CSV fields
@@ -49,8 +65,7 @@ exports.supportQuotedField = function (active = false) {
  * @returns {object} Module context for method chaining
  */
 exports.fieldDelimiter = function (delimiter) {
-  csvToJson.fieldDelimiter(delimiter);
-  return this;
+  return applyConfigToAllClients(client => client.fieldDelimiter(delimiter));
 };
 
 /**
@@ -62,8 +77,7 @@ exports.fieldDelimiter = function (delimiter) {
  * @returns {object} Module context for method chaining
  */
 exports.trimHeaderFieldWhiteSpace = function (active = false) {
-  csvToJson.trimHeaderFieldWhiteSpace(active);
-  return this;
+  return applyConfigToAllClients(client => client.trimHeaderFieldWhiteSpace(active));
 };
 
 /**
@@ -74,8 +88,7 @@ exports.trimHeaderFieldWhiteSpace = function (active = false) {
  * @returns {object} Module context for method chaining
  */
 exports.indexHeader = function (index) {
-  csvToJson.indexHeader(index);
-  return this;
+  return applyConfigToAllClients(client => client.indexHeader(index));
 };
 
 /**
@@ -91,8 +104,7 @@ exports.indexHeader = function (index) {
  * csvToJson.parseSubArray('*', ',')
  */
 exports.parseSubArray = function (delimiter, separator) {
-  csvToJson.parseSubArray(delimiter, separator);
-  return this;
+  return applyConfigToAllClients(client => client.parseSubArray(delimiter, separator));
 };
 
 /**
@@ -111,8 +123,7 @@ exports.ignoreColumnIndexes = function (indexes) {
   if (!indexes.every(idx => Number.isInteger(idx) && idx >= 0)) {
     throw new TypeError('All elements in indexes must be valid non-negative numbers (>= 0)');
   }
-  csvToJson.ignoreColumnIndexes(indexes);
-  return this;
+  return applyConfigToAllClients(client => client.ignoreColumnIndexes(indexes));
 };
 
 /**
@@ -123,8 +134,7 @@ exports.ignoreColumnIndexes = function (indexes) {
  * @returns {object} Module context for method chaining
  */
 exports.customEncoding = function (encoding) {
-  csvToJson.encoding = encoding;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encoding));
 };
 
 /**
@@ -133,8 +143,7 @@ exports.customEncoding = function (encoding) {
  * @returns {object} Module context for method chaining
  */
 exports.utf8Encoding = function utf8Encoding() {
-  csvToJson.encoding = encodingOps.utf8;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.utf8));
 };
 
 /**
@@ -143,8 +152,7 @@ exports.utf8Encoding = function utf8Encoding() {
  * @returns {object} Module context for method chaining
  */
 exports.ucs2Encoding = function () {
-  csvToJson.encoding = encodingOps.ucs2;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.ucs2));
 };
 
 /**
@@ -153,8 +161,7 @@ exports.ucs2Encoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.utf16leEncoding = function () {
-  csvToJson.encoding = encodingOps.utf16le;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.utf16le));
 };
 
 /**
@@ -163,8 +170,7 @@ exports.utf16leEncoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.latin1Encoding = function () {
-  csvToJson.encoding = encodingOps.latin1;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.latin1));
 };
 
 /**
@@ -173,8 +179,7 @@ exports.latin1Encoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.asciiEncoding = function () {
-  csvToJson.encoding = encodingOps.ascii;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.ascii));
 };
 
 /**
@@ -183,8 +188,7 @@ exports.asciiEncoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.base64Encoding = function () {
-  this.csvToJson = encodingOps.base64;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.base64));
 };
 
 /**
@@ -193,8 +197,7 @@ exports.base64Encoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.hexEncoding = function () {
-  this.csvToJson = encodingOps.hex;
-  return this;
+  return applyConfigToAllClients(client => client.encoding(encodingOps.hex));
 };
 
 /**
@@ -210,8 +213,7 @@ exports.hexEncoding = function () {
  *   .getJsonFromCsv('input.csv')
  */
 exports.mapRows = function (mapperFn) {
-  csvToJson.mapRows(mapperFn);
-  return this;
+  return applyConfigToAllClients(client => client.mapRows(mapperFn));
 };
 
 /**
@@ -271,7 +273,6 @@ exports.getJsonFromCsv = function(inputFileName) {
  * const data = await csvToJson.getJsonFromCsvAsync('resource/input.csv');
  * console.log(data);
  */
-const csvToJsonAsync = require('./src/csvToJsonAsync');
 
 /**
  * Parse CSV from a Readable stream and return parsed data as JSON array
