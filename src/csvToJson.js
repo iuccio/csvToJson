@@ -17,6 +17,39 @@ const LF = '\n';
 const CR = '\r';
 
 /**
+ * Immutable parser configuration snapshot used for concurrent async parsing.
+ */
+class ParserConfig {
+  /**
+   * @param {object} options
+   * @param {string} [options.delimiter]
+   * @param {string} [options.encoding]
+   * @param {boolean} [options.isSupportQuotedField]
+   * @param {boolean} [options.isTrimHeaderFieldWhiteSpace]
+   * @param {number} [options.indexHeaderValue]
+   * @param {string} [options.parseSubArrayDelimiter]
+   * @param {string} [options.parseSubArraySeparator]
+   * @param {boolean} [options.printValueFormatByType]
+   * @param {function(object, number):(object|null)} [options.rowMapper]
+   * @param {Array<number>} [options.indexesToIgnore]
+   */
+  constructor(options = {}) {
+    this.delimiter = options.delimiter;
+    this.encoding = options.encoding;
+    this.isSupportQuotedField = options.isSupportQuotedField;
+    this.isTrimHeaderFieldWhiteSpace = options.isTrimHeaderFieldWhiteSpace;
+    this.indexHeaderValue = options.indexHeaderValue;
+    this.parseSubArrayDelimiter = options.parseSubArrayDelimiter;
+    this.parseSubArraySeparator = options.parseSubArraySeparator;
+    this.printValueFormatByType = options.printValueFormatByType;
+    this.rowMapper = options.rowMapper;
+    this.indexesToIgnore = options.indexesToIgnore ? Object.freeze([...options.indexesToIgnore]) : Object.freeze([]);
+
+    Object.freeze(this);
+  }
+}
+
+/**
  * Main CSV to JSON converter class
  * Provides chainable API for configuring and converting CSV data
  * @category 2-Sync 
@@ -132,6 +165,82 @@ class CsvToJson {
   }
 
   /**
+   * Create an immutable parser configuration snapshot for concurrent operations.
+   * @returns {ParserConfig} Frozen parser configuration
+   */
+  getParserConfig() {
+    const indexesToIgnore = this.indexesToIgnore ? Object.freeze([...this.indexesToIgnore]) : Object.freeze([]);
+    return new ParserConfig({
+      delimiter: this.delimiter,
+      encoding: this.encoding,
+      isSupportQuotedField: this.isSupportQuotedField,
+      isTrimHeaderFieldWhiteSpace: this.isTrimHeaderFieldWhiteSpace,
+      indexHeaderValue: this.indexHeaderValue,
+      parseSubArrayDelimiter: this.parseSubArrayDelimiter,
+      parseSubArraySeparator: this.parseSubArraySeparator,
+      printValueFormatByType: this.printValueFormatByType,
+      rowMapper: this.rowMapper,
+      indexesToIgnore
+    });
+  }
+
+  /**
+   * Parse CSV content using a frozen configuration snapshot.
+   * @param {string} parsedCsv - Raw CSV content as string
+   * @param {ParserConfig} config - Frozen parser configuration
+   * @returns {Array<object>} Parsed JSON array
+   */
+  csvToJsonWithConfig(parsedCsv, config) {
+    this.validateInputConfig(config);
+
+    const records = this.parseRecords(parsedCsv);
+    const fieldDelimiter = config.delimiter || DEFAULT_FIELD_DELIMITER;
+    let index = this.getIndexHeader(config);
+    let headers;
+
+    while (index < records.length) {
+      if (config.isSupportQuotedField) {
+        headers = this.split(records[index], config);
+      } else {
+        headers = records[index].split(fieldDelimiter);
+      }
+
+      if (stringUtils.hasContent(headers)) {
+        break;
+      }
+      index++;
+    }
+
+    if (!headers) {
+      throw CsvFormatError.missingHeader();
+    }
+
+    const jsonResult = [];
+    for (let i = index + 1; i < records.length; i++) {
+      let currentLine;
+      if (config.isSupportQuotedField) {
+        currentLine = this.split(records[i], config);
+      } else {
+        currentLine = records[i].split(fieldDelimiter);
+      }
+
+      if (stringUtils.hasContent(currentLine)) {
+        let row = this.buildJsonResult(headers, currentLine, config);
+        if (config.rowMapper) {
+          row = config.rowMapper(row, i - (index + 1));
+          if (row != null) {
+            jsonResult.push(row);
+          }
+        } else {
+          jsonResult.push(row);
+        }
+      }
+    }
+
+    return jsonResult;
+  }
+
+  /**
    * Read a CSV file and write the parsed JSON to an output file
    * @param {string} fileInputName - Path to input CSV file
    * @param {string} fileOutputName - Path to output JSON file
@@ -219,58 +328,7 @@ class CsvToJson {
    * @private
    */
   csvToJson(parsedCsv) {
-  	this.validateInputConfig();
-    
-    // Parse CSV into individual records, respecting quoted fields that may contain newlines
-    let records = this.parseRecords(parsedCsv);
-    
-    let fieldDelimiter = this.getFieldDelimiter();
-    let index = this.getIndexHeader();
-    let headers;
-    
-    // Find the header row
-    while (index < records.length) {
-      if (this.isSupportQuotedField) {
-        headers = this.split(records[index]);
-      } else {
-        headers = records[index].split(fieldDelimiter);
-      }
-      
-      if (stringUtils.hasContent(headers)) {
-        break;
-      }
-      index++;
-    }
-    
-    if (!headers) {
-      throw CsvFormatError.missingHeader();
-    }
-
-    let jsonResult = [];
-    for (let i = (index + 1); i < records.length; i++) {
-        let currentLine;
-        if (this.isSupportQuotedField) {
-            currentLine = this.split(records[i]);
-        } else {
-            currentLine = records[i].split(fieldDelimiter);
-        }
-        
-        if (stringUtils.hasContent(currentLine)) {
-            let row = this.buildJsonResult(headers, currentLine);
-            
-            // Apply row mapper if defined
-            if (this.rowMapper) {
-              row = this.rowMapper(row, i - (index + 1)); // Pass row and 0-based row index
-              // If mapper returns null/undefined, skip this row (allows filtering)
-              if (row != null) {
-                jsonResult.push(row);
-              }
-            } else {
-              jsonResult.push(row);
-            }
-        }
-    }
-    return jsonResult;
+    return this.csvToJsonWithConfig(parsedCsv, this.getParserConfig());
   }
 
   /**
@@ -353,24 +411,26 @@ class CsvToJson {
 
   /**
    * Get the configured field delimiter, or default if not set
+   * @param {ParserConfig} [config] - Parser configuration
    * @returns {string} Field delimiter character
    * @private
    */
-  getFieldDelimiter() {
-    if (this.delimiter) {
-      return this.delimiter;
+  getFieldDelimiter(config = this) {
+    if (config.delimiter) {
+      return config.delimiter;
     }
     return DEFAULT_FIELD_DELIMITER;
   }
 
   /**
    * Get the configured header row index, or default (0) if not set
+   * @param {ParserConfig} [config] - Parser configuration
    * @returns {number} Header row index
    * @private
    */
-  getIndexHeader(){
-    if(this.indexHeaderValue !== null && !isNaN(this.indexHeaderValue)){
-        return this.indexHeaderValue;
+  getIndexHeader(config = this) {
+    if (config.indexHeaderValue !== null && !isNaN(config.indexHeaderValue)) {
+      return config.indexHeaderValue;
     }
     return 0;
   }
@@ -380,24 +440,26 @@ class CsvToJson {
    * Applies type formatting and sub-array parsing as configured
    * @param {string[]} headers - Array of header field names
    * @param {string[]} currentLine - Array of field values
+   * @param {ParserConfig} [config] - Frozen parser configuration
    * @returns {object} JSON object with header names as keys
    * @private
    */
-  buildJsonResult(headers, currentLine) {
+  buildJsonResult(headers, currentLine, config = this) {
     let jsonObject = {};
+    const ignoredIndexes = config.indexesToIgnore ? new Set(config.indexesToIgnore) : new Set();
     for (let j = 0; j < headers.length; j++) {
-      if (this.indexesToIgnore?.has(j)) {
+      if (ignoredIndexes.has(j)) {
         continue;
       }
 
-      let propertyName = stringUtils.trimPropertyName(this.isTrimHeaderFieldWhiteSpace, headers[j]);
+      let propertyName = stringUtils.trimPropertyName(config.isTrimHeaderFieldWhiteSpace, headers[j]);
       let value = currentLine[j];
 
-      if(this.isParseSubArray(value)){
-        value = this.buildJsonSubArray(value);
+      if (this.isParseSubArray(value, config)) {
+        value = this.buildJsonSubArray(value, config);
       }
 
-      if (this.printValueFormatByType && !Array.isArray(value)) {
+      if (config.printValueFormatByType && !Array.isArray(value)) {
         value = stringUtils.getValueFormatByType(currentLine[j]);
       }
 
@@ -409,18 +471,19 @@ class CsvToJson {
   /**
    * Parse a field value into a sub-array using configured delimiter and separator
    * @param {string} value - Field value to parse
+   * @param {ParserConfig} [config] - Frozen parser configuration
    * @returns {Array<string|number|boolean>} Array of parsed values
    * @private
    */
-  buildJsonSubArray(value) {
+  buildJsonSubArray(value, config = this) {
     let extractedValues = value.substring(
-        value.indexOf(this.parseSubArrayDelimiter) + 1,
-        value.lastIndexOf(this.parseSubArrayDelimiter)
+        value.indexOf(config.parseSubArrayDelimiter) + 1,
+        value.lastIndexOf(config.parseSubArrayDelimiter)
     );
     extractedValues.trim();
-    value = extractedValues.split(this.parseSubArraySeparator);
-    if(this.printValueFormatByType){
-      for(let i=0; i < value.length; i++){
+    value = extractedValues.split(config.parseSubArraySeparator);
+    if (config.printValueFormatByType) {
+      for (let i = 0; i < value.length; i++) {
         value[i] = stringUtils.getValueFormatByType(value[i]);
       }
     }
@@ -430,12 +493,13 @@ class CsvToJson {
   /**
    * Check if a field value should be parsed as a sub-array
    * @param {string} value - Field value to check
+   * @param {ParserConfig} [config] - Frozen parser configuration
    * @returns {boolean} True if value is bracketed with sub-array delimiter
    * @private
    */
-  isParseSubArray(value){
-    if(this.parseSubArrayDelimiter){
-      if (value && (value.indexOf(this.parseSubArrayDelimiter) === 0 && value.lastIndexOf(this.parseSubArrayDelimiter) === (value.length - 1))) {
+  isParseSubArray(value, config = this) {
+    if (config.parseSubArrayDelimiter) {
+      if (value && (value.indexOf(config.parseSubArrayDelimiter) === 0 && value.lastIndexOf(config.parseSubArrayDelimiter) === (value.length - 1))) {
         return true;
       }
     }
@@ -444,18 +508,19 @@ class CsvToJson {
 
   /**
    * Validate configuration for conflicts and incompatibilities
+   * @param {ParserConfig} [config] - Parser configuration
    * @throws {ConfigurationError} If incompatible options are set
    * @private
    */
-  validateInputConfig(){
-    if(this.isSupportQuotedField) {
-      if(this.getFieldDelimiter() === '"'){
+  validateInputConfig(config = this) {
+    if (config.isSupportQuotedField) {
+      if (this.getFieldDelimiter(config) === '"') {
         throw ConfigurationError.quotedFieldConflict('fieldDelimiter', '"');
       }
-      if(this.parseSubArraySeparator === '"'){
+      if (config.parseSubArraySeparator === '"') {
         throw ConfigurationError.quotedFieldConflict('parseSubArraySeparator', '"');
       }
-      if(this.parseSubArrayDelimiter === '"'){
+      if (config.parseSubArrayDelimiter === '"') {
         throw ConfigurationError.quotedFieldConflict('parseSubArrayDelimiter', '"');
       }
     }
@@ -478,9 +543,10 @@ class CsvToJson {
    * - Escaped quotes (double quotes within quoted fields)
    * - Empty quoted fields
    * @param {string} line - A single CSV record line
+   * @param {ParserConfig} [config] - Parser configuration
    * @returns {string[]} Array of field values
    */
-  split(line) {
+  split(line, config = this) {
     if (line.length === 0) {
       return [];
     }
@@ -488,7 +554,7 @@ class CsvToJson {
     let fields = [];
     let currentField = '';
     let insideQuotes = false;
-    let delimiter = this.getFieldDelimiter();
+    let delimiter = this.getFieldDelimiter(config);
     
     for (let i = 0; i < line.length; i++) {
       let char = line[i];
@@ -568,3 +634,4 @@ class CsvToJson {
 }
 
 module.exports = new CsvToJson();
+module.exports.CsvToJson = CsvToJson;

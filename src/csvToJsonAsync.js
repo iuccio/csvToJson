@@ -162,15 +162,17 @@ class CsvToJsonAsync {
             );
         }
 
+        const config = this.csvToJson.getParserConfig();
+
         if (options.raw) {
             if (inputFileNameOrCsv === '') {
                 return [];
             }
-            return this.csvToJson.csvToJson(inputFileNameOrCsv);
+            return this.csvToJson.csvToJsonWithConfig(inputFileNameOrCsv, config);
         }
 
-        const parsedCsv = await fileUtils.readFileAsync(inputFileNameOrCsv, this.csvToJson.encoding || 'utf8');
-        return this.csvToJson.csvToJson(parsedCsv);
+        const parsedCsv = await fileUtils.readFileAsync(inputFileNameOrCsv, config.encoding || 'utf8');
+        return this.csvToJson.csvToJsonWithConfig(parsedCsv, config);
     }
 
     /**
@@ -205,7 +207,8 @@ class CsvToJsonAsync {
     async getJsonFromStreamAsync(stream) {
         this._validateStream(stream);
 
-        const streamProcessor = new StreamProcessor(this.csvToJson, { isBrowser: false });
+        const config = this.csvToJson.getParserConfig();
+        const streamProcessor = new StreamProcessor(config, { isBrowser: false });
         return streamProcessor.processStream(stream);
     }
 
@@ -249,7 +252,8 @@ class CsvToJsonAsync {
         }
 
         const fs = require('fs');
-        const encoding = typeof this.csvToJson.encoding === 'string' ? this.csvToJson.encoding : 'utf8';
+        const config = this.csvToJson.getParserConfig();
+        const encoding = typeof config.encoding === 'string' ? config.encoding : 'utf8';
         const stream = fs.createReadStream(filePath, { encoding });
         return this.getJsonFromStreamAsync(stream);
     }
