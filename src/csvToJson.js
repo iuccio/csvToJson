@@ -21,17 +21,18 @@ const CR = '\r';
  */
 class ParserConfig {
   /**
-   * @param {object} options
-   * @param {string} [options.delimiter]
-   * @param {string} [options.encoding]
-   * @param {boolean} [options.isSupportQuotedField]
-   * @param {boolean} [options.isTrimHeaderFieldWhiteSpace]
-   * @param {number} [options.indexHeaderValue]
-   * @param {string} [options.parseSubArrayDelimiter]
-   * @param {string} [options.parseSubArraySeparator]
-   * @param {boolean} [options.printValueFormatByType]
-   * @param {function(object, number):(object|null)} [options.rowMapper]
-   * @param {Array<number>} [options.indexesToIgnore]
+   * Create a frozen parser configuration snapshot for concurrent parsing.
+   * @param {object} options - Configuration options
+   * @param {string} [options.delimiter] - Field delimiter
+   * @param {string} [options.encoding] - File encoding
+   * @param {boolean} [options.isSupportQuotedField] - Support quoted fields
+   * @param {boolean} [options.isTrimHeaderFieldWhiteSpace] - Trim whitespace in header names
+   * @param {number} [options.indexHeaderValue] - Header row index
+   * @param {string} [options.parseSubArrayDelimiter] - Sub-array delimiter character
+   * @param {string} [options.parseSubArraySeparator] - Sub-array item separator
+   * @param {boolean} [options.printValueFormatByType] - Format values by type
+   * @param {function(object, number): object|null} [options.rowMapper] - Function that receives each parsed row and its index and returns transformed row or null to filter it out
+   * @param {Array<number>} [options.indexesToIgnore] - Column indexes to ignore
    */
   constructor(options = {}) {
     this.delimiter = options.delimiter;
@@ -141,10 +142,11 @@ class CsvToJson {
   }
 
   /**
-   * Configure columns to exclude from output
+   * Configure columns to exclude from output.
+   * Used internally after validation in index.js.
    * @param {Array<number>} indexes - Column indexes to ignore
    * @returns {this} For method chaining
-   * @private Used internally after validation in index.js
+   * @private
    */
   ignoreColumnIndexes(indexes) {
     this.indexesToIgnore = new Set(indexes);

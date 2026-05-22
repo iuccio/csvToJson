@@ -105,7 +105,7 @@ class CsvToJsonAsync {
      * Configure columns to exclude from output
      * @param {Array<number>} indexes - Column indexes to ignore
      * @returns {this} For method chaining
-     * @private Used internally after validation in index.js
+     * @private
      */
     ignoreColumnIndexes(indexes) {
         this.csvToJson.ignoreColumnIndexes(indexes);
