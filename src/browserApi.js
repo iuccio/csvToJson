@@ -213,7 +213,8 @@ class BrowserApi {
       reader.onload = () => {
         try {
           const text = reader.result;
-          const result = this.csvToJson.csvToJson(String(text));
+          const config = this.csvToJson.getParserConfig();
+          const result = this.csvToJson.csvToJsonWithConfig(String(text), config);
           resolve(result);
         } catch (err) {
           reject(BrowserApiError.parseFileError(err));
@@ -257,7 +258,8 @@ class BrowserApi {
       );
     }
 
-    const streamProcessor = new StreamProcessor(this.csvToJson, { isBrowser: true });
+    const config = this.csvToJson.getParserConfig();
+    const streamProcessor = new StreamProcessor(config, { isBrowser: true });
     return streamProcessor.processStream(stream);
   }
 
@@ -343,7 +345,8 @@ class BrowserApi {
     }
 
     const chunkSize = options.chunkSize || 1000;
-    const streamProcessor = new StreamProcessor(this.csvToJson, {
+    const config = this.csvToJson.getParserConfig();
+    const streamProcessor = new StreamProcessor(config, {
       isBrowser: true,
       chunkSize,
       onChunk: options.onChunk,
@@ -394,7 +397,8 @@ class BrowserApi {
       reader.onload = () => {
         try {
           const text = reader.result;
-          const allRows = this.csvToJson.csvToJson(String(text));
+          const config = this.csvToJson.getParserConfig();
+          const allRows = this.csvToJson.csvToJsonWithConfig(String(text), config);
 
           // Process in chunks
           let processed = 0;

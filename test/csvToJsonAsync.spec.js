@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const csvToJsonAsync = require('../src/csvToJsonAsync');
+const fileUtils = require('../src/util/fileUtils');
 const index = require('../index');
 
 describe('Async API testing', () => {
@@ -29,6 +30,27 @@ describe('Async API testing', () => {
                     assert.strictEqual(result[0].firstName, 'Constantin');
                     assert.strictEqual(result[0].lastName, 'Langsdon');
                 });
+        });
+
+        it('should preserve parser configuration for concurrent async file parses', () => {
+            const originalReadFileAsync = fileUtils.readFileAsync;
+            fileUtils.readFileAsync = (filePath, encoding = 'utf8') => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    originalReadFileAsync.call(fileUtils, filePath, encoding).then(resolve, reject);
+                }, 10);
+            });
+
+            const firstParse = csvToJsonAsync.fieldDelimiter(';').getJsonFromCsvAsync('test/resource/input_example.csv');
+            const secondParse = csvToJsonAsync.fieldDelimiter('~').getJsonFromCsvAsync('test/resource/input_tilde_delimiter.csv');
+
+            return Promise.all([firstParse, secondParse]).then(([result1, result2]) => {
+                assert.ok(Array.isArray(result1));
+                assert.ok(Array.isArray(result2));
+                assert.strictEqual(result1[0].firstName, 'Constantin');
+                assert.strictEqual(result2[0].firstName, 'Constantin');
+            }).finally(() => {
+                fileUtils.readFileAsync = originalReadFileAsync;
+            });
         });
 
         it('should reject on missing file', () => {

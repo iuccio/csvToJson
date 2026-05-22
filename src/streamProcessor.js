@@ -31,10 +31,13 @@ class StreamProcessor {
         this.buffer = '';
         this.isInsideQuotes = false;
         this.headers = null;
-        this.headerRowIndex = csvConfig.getIndexHeader();
+        this.headerRowIndex = csvConfig.indexHeaderValue !== null && !isNaN(csvConfig.indexHeaderValue)
+            ? csvConfig.indexHeaderValue
+            : 0;
         this.currentRecordIndex = 0;
         this.parsedRecords = [];
         this.dataRowIndex = 0;
+        this.ignoredIndexes = new Set(csvConfig.indexesToIgnore || []);
 
         // Chunked processing options
         this.chunkSize = options.chunkSize || 1000;
@@ -324,7 +327,7 @@ class StreamProcessor {
     _processDataRecord(record) {
         const dataFields = this._splitRecord(record);
         if (stringUtils.hasContent(dataFields)) {
-            const row = this.csvConfig.buildJsonResult(this.headers, dataFields);
+            const row = this._buildJsonResult(this.headers, dataFields);
             const processedRow = this._applyRowMapper(row);
             if (processedRow !== null) {
                 this.parsedRecords.push(processedRow);
@@ -356,9 +359,92 @@ class StreamProcessor {
      */
     _splitRecord(record) {
         if (this.csvConfig.isSupportQuotedField) {
-            return this.csvConfig.split(record);
+            return this._splitWithConfig(record, this.csvConfig);
         }
         return record.split(this.csvConfig.delimiter || ',');
+    }
+
+    _splitWithConfig(line, config) {
+        if (line.length === 0) {
+            return [];
+        }
+
+        const fields = [];
+        let currentField = '';
+        let insideQuotes = false;
+        const delimiter = config.delimiter || ',';
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+
+            if (char === QUOTE_CHAR) {
+                if (insideQuotes && i + 1 < line.length && line[i + 1] === QUOTE_CHAR) {
+                    currentField += QUOTE_CHAR;
+                    i++;
+                } else {
+                    insideQuotes = !insideQuotes;
+                }
+            } else if (char === delimiter && !insideQuotes) {
+                fields.push(currentField);
+                currentField = '';
+            } else {
+                currentField += char;
+            }
+        }
+
+        fields.push(currentField);
+
+        if (insideQuotes) {
+            throw CsvFormatError.mismatchedQuotes('row');
+        }
+
+        return fields;
+    }
+
+    _buildJsonResult(headers, currentLine) {
+        const jsonObject = {};
+        for (let j = 0; j < headers.length; j++) {
+            if (this.ignoredIndexes.has(j)) {
+                continue;
+            }
+
+            const propertyName = stringUtils.trimPropertyName(this.csvConfig.isTrimHeaderFieldWhiteSpace, headers[j]);
+            let value = currentLine[j];
+
+            if (this._isParseSubArray(value)) {
+                value = this._buildJsonSubArray(value);
+            }
+
+            if (this.csvConfig.printValueFormatByType && !Array.isArray(value)) {
+                value = stringUtils.getValueFormatByType(currentLine[j]);
+            }
+
+            jsonObject[propertyName] = value;
+        }
+        return jsonObject;
+    }
+
+    _isParseSubArray(value) {
+        if (this.csvConfig.parseSubArrayDelimiter) {
+            return value && (value.indexOf(this.csvConfig.parseSubArrayDelimiter) === 0 && value.lastIndexOf(this.csvConfig.parseSubArrayDelimiter) === value.length - 1);
+        }
+        return false;
+    }
+
+    _buildJsonSubArray(value) {
+        const extractedValues = value.substring(
+            value.indexOf(this.csvConfig.parseSubArrayDelimiter) + 1,
+            value.lastIndexOf(this.csvConfig.parseSubArrayDelimiter)
+        );
+        const items = extractedValues.split(this.csvConfig.parseSubArraySeparator);
+
+        if (this.csvConfig.printValueFormatByType) {
+            for (let i = 0; i < items.length; i++) {
+                items[i] = stringUtils.getValueFormatByType(items[i]);
+            }
+        }
+
+        return items;
     }
 
     /**
