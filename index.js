@@ -10,13 +10,13 @@
 let csvToJson = require("./src/csvToJson.js");
 
 const encodingOps = {
-    UTF8: 'utf8',
-    UCS2: 'ucs2',
-    UTF16LE: 'utf16le',
-    LATIN1: 'latin1',
-    ASCII: 'ascii',
-    BASE64: 'base64',
-    HEX: 'hex'
+    utf8: 'utf8',
+    ucs2: 'ucs2',
+    utf16le: 'utf16le',
+    latin1: 'latin1',
+    ascii: 'ascii',
+    base64: 'base64',
+    hex: 'hex'
 };
 
 const csvToJsonAsync = require('./src/csvToJsonAsync');
@@ -143,7 +143,7 @@ exports.customEncoding = function (encoding) {
  * @returns {object} Module context for method chaining
  */
 exports.utf8Encoding = function utf8Encoding() {
-  return applyConfigToAllClients(client => client.encoding(encodingOps.UTF8));
+  return applyConfigToAllClients(client => client.encoding(encodingOps.utf8));
 };
 
 /**
@@ -197,7 +197,7 @@ exports.base64Encoding = function () {
  * @returns {object} Module context for method chaining
  */
 exports.hexEncoding = function () {
-  return applyConfigToAllClients(client => client.encoding(encodingOps.HEX));
+  return applyConfigToAllClients(client => client.encoding(encodingOps.hex));
 };
 
 /**

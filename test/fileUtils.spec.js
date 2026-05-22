@@ -278,16 +278,23 @@ describe('FileUtils', () => {
                 it(`should handle ${encoding} encoding`, async () => {
                     const encodingFile = path.join(testDir, `${encoding}.txt`);
                     const testContent = 'Hello World 123 !@#';
+                    let encodedContent = testContent;
 
-                    // Write content in UTF-8
-                    await fileUtils.writeFileAsync(testContent, encodingFile);
+                    if (encoding === 'base64' || encoding === 'hex') {
+                        encodedContent = Buffer.from(testContent, 'utf8').toString(encoding);
+                    }
+
+                    // Write the encoded content to file
+                    await fs.promises.writeFile(encodingFile, encodedContent, 'utf8');
                     
-                    // Read with specific encoding
+                    // Read with specific encoding and validate decoding for base64/hex
                     const content = await fileUtils.readFileAsync(encodingFile, encoding);
-                    
-                    // Convert back to UTF-8 for comparison
-                    const buffer = Buffer.from(content, encoding);
-                    expect(buffer.toString()).toBe(testContent);
+                    if (encoding === 'base64' || encoding === 'hex') {
+                        expect(content).toBe(testContent);
+                    } else {
+                        const buffer = Buffer.from(content, encoding);
+                        expect(buffer.toString()).toBe(testContent);
+                    }
                 });
             });
 
