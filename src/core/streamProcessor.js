@@ -1,7 +1,7 @@
 /* globals CsvFormatError */
 'use strict';
 
-const stringUtils = require('./util/stringUtils');
+const stringUtils = require('../util/stringUtils');
 
 const QUOTE_CHAR = '"';
 const CRLF = '\r\n';

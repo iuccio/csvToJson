@@ -1,6 +1,6 @@
 'use strict';
 
-const { ConfigurationError } = require('./util/errors');
+const { ConfigurationError } = require('./errors');
 const ParserConfig = require('./parserConfig');
 
 /**

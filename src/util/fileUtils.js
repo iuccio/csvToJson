@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const { FileOperationError } = require('./errors');
+const { FileOperationError } = require('../core/errors');
 
 /**
  * File I/O utilities for reading and writing CSV/JSON files

@@ -1,4 +1,9 @@
+/// <reference types="node" />
+
 declare module 'convert-csv-to-json' {
+  /**
+   * Singleton parser instance with chainable CSV-to-JSON configuration methods.
+   */
   export class ConvertCsvToJson {
     /**
      * Prints a digit as Number type (for example 32 instead of '32')
@@ -121,22 +126,45 @@ declare module 'convert-csv-to-json' {
      */
     getJsonFromFileStreamingAsync(filePath: string): Promise<any[]>;
 
+    /**
+     * Parse a raw CSV string asynchronously and return parsed JSON objects
+     */
+    csvStringToJsonAsync(csvString: string, options?: { raw?: boolean }): Promise<any[]>;
+
+    /**
+     * Parse a raw CSV string asynchronously and return a JSON string
+     */
+    csvStringToJsonStringifiedAsync(csvString: string): Promise<string>;
+
+    /**
+     * Parses a CSV file and writes a JSON file asynchronously.
+     * @param inputFileName Path to the input CSV file
+     * @param outputFileName Path to the output JSON file
+     */
+    generateJsonFileFromCsvAsync(inputFileName: string, outputFileName: string): Promise<void>;
+
+    /**
+     * Parses a CSV string and returns an array of JSON objects.
+     * @param csvString CSV content as a string
+     */
     csvStringToJson(csvString: string): any[];
 
     /**
-    * Parses a csv string and returns a JSON string (validated)
-    * @param {csvString} csvString CSV content as string
-    * @return {string} JSON stringified result
-    */
+     * Parses a CSV string and returns a validated JSON string.
+     * @param csvString CSV content as string
+     * @returns JSON stringified result
+     */
     csvStringToJsonStringified(csvString: string): string;
-    
 
   }
   const converter: ConvertCsvToJson;
+  /**
+   * Default singleton parser instance for convert-csv-to-json.
+   */
   export default converter;
   
   /**
-   * Browser API exposes parsing helpers for browser environments
+   * Browser API exposes parsing helpers for browser environments.
    */
   export interface BrowserApi {
     formatValueByType(active: boolean): this;
@@ -148,9 +176,28 @@ declare module 'convert-csv-to-json' {
     ignoreColumnIndexes(indexes: number[]): this;
     mapRows(mapperFn: (row: any, index: number) => any | null): this;
 
+    /**
+     * Parses a CSV string and returns an array of JSON objects.
+     * @param csvString CSV content as a string
+     */
     csvStringToJson(csvString: string): any[];
+
+    /**
+     * Parses a CSV string and returns a JSON string.
+     * @param csvString CSV content as a string
+     */
     csvStringToJsonStringified(csvString: string): string;
+
+    /**
+     * Parses a CSV string asynchronously and returns an array of JSON objects.
+     * @param csvString CSV content as a string
+     */
     csvStringToJsonAsync(csvString: string): Promise<any[]>;
+
+    /**
+     * Parses a CSV string asynchronously and returns a validated JSON string.
+     * @param csvString CSV content as a string
+     */
     csvStringToJsonStringifiedAsync(csvString: string): Promise<string>;
 
     /**
