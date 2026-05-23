@@ -82,11 +82,25 @@ class UIManager {
     }
 
     showElement(element) {
-        if (element) element.classList.remove(CONSTANTS.CLASSES.HIDDEN);
+        if (element) {
+            element.classList.remove(CONSTANTS.CLASSES.HIDDEN);
+            try {
+                element.style.display = '';
+            } catch (e) {
+                // ignore
+            }
+        }
     }
 
     hideElement(element) {
-        if (element) element.classList.add(CONSTANTS.CLASSES.HIDDEN);
+        if (element) {
+            element.classList.add(CONSTANTS.CLASSES.HIDDEN);
+            try {
+                element.style.display = 'none';
+            } catch (e) {
+                // ignore
+            }
+        }
     }
 
     setElementText(element, text) {
@@ -176,7 +190,10 @@ class UIManager {
         const fileInfo = this.getElement(CONSTANTS.ELEMENTS.FILE_INFO);
         if (file && fileInfo) {
             const size = (file.size / 1024 / 1024).toFixed(2);
-            this.setElementHTML(fileInfo, `Selected file: ${this.escapeHtml(file.name)} (${size} MB)`);
+            this.setElementHTML(fileInfo, `<b>Selected file</b>: ${this.escapeHtml(file.name)} (${size} MB)`);
+            // Ensure the stats container is visible and show file info inside it
+            const statsContainer = this.getElement('stats-output-container');
+            if (statsContainer) this.showElement(statsContainer);
             this.showElement(fileInfo);
         }
     }
@@ -252,7 +269,7 @@ class UIManager {
         const elements = [
             CONSTANTS.ELEMENTS.JSON_OUTPUT,
             CONSTANTS.ELEMENTS.TABLE_OUTPUT,
-            CONSTANTS.ELEMENTS.STATS_OUTPUT,
+            // keep STATS_OUTPUT so file-info remains visible during processing
             CONSTANTS.ELEMENTS.ERROR_OUTPUT
         ];
 
@@ -271,6 +288,10 @@ class UIManager {
     clearAll() {
         this.clearOutput();
         this.hideElement(this.getElement(CONSTANTS.ELEMENTS.OUTPUT));
+        const statsContainer = this.getElement('stats-output-container');
+        if (statsContainer) {
+            this.hideElement(statsContainer);
+        }
         this.getElement(CONSTANTS.ELEMENTS.CSV_INPUT).value = '';
         this.getElement(CONSTANTS.ELEMENTS.CSV_FILE).value = '';
         this.clearFileInfo();
@@ -432,10 +453,22 @@ class ResultDisplayManager {
         const rowCount = data ? data.length : 0;
         const colCount = data && data.length > 0 ? Object.keys(data[0]).length : 0;
 
-        this.uiManager.setElementHTML(statsOutput, `
+        // Preserve existing file-info (if any) inside the stats output
+        const fileInfoEl = statsOutput ? statsOutput.querySelector('#file-info') : null;
+        const fileInfoHTML = fileInfoEl ? fileInfoEl.outerHTML : '';
+
+        this.uiManager.setElementHTML(statsOutput,
+            fileInfoHTML + `
             <div><strong>Rows:</strong> ${rowCount}</div>
             <div><strong>Columns:</strong> ${colCount}</div>
-        `);
+        `
+        );
+
+        // Ensure the stats container wrapper is visible
+        const statsContainer = this.uiManager.getElement('stats-output-container');
+        if (statsContainer) {
+            this.uiManager.showElement(statsContainer);
+        }
 
         this.updateJSONTabAvailability(rowCount);
     }
@@ -460,6 +493,12 @@ class ResultDisplayManager {
         this.uiManager.setElementHTML(statsOutput,
             existingHTML + `<div><strong>Processed:</strong> in ${takenTimeInSeconds} seconds (${takenTimeInMs} milliseconds)</div>`
         );
+
+        // Make sure the stats container is visible when adding processing time
+        const statsContainer = this.uiManager.getElement('stats-output-container');
+        if (statsContainer) {
+            this.uiManager.showElement(statsContainer);
+        }
     }
 }
 

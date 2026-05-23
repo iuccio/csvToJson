@@ -16,53 +16,132 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
+            padding: 0;
             color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 120px;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            box-shadow: none;
             overflow: hidden;
-            padding-bottom: 10px;
+            padding: 0 40px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 5px;
+            padding: 15px 20px;
             text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            position: fixed;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .header h2 {
+            margin: 0 0 5px 0;
         }
 
         .header p {
-            margin: 5px 0 0 0;
+            margin: 0;
             opacity: 0.9;
+            font-size: 14px;
         }
 
         .content {
-            padding: 10px;
-            margin-top: 75px;
-            margin-bottom: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-top: 0;
+            margin-bottom: 0;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 10px;
+            grid-template-areas: "sidebar main";
+            flex: 1;
+            overflow-y: auto;
         }
 
         .input-section {
-            margin-bottom: 15px;
+            grid-column: 1 / -1;
+        }
+
+        .left-sidebar {
+            grid-area: sidebar;
+            position: sticky;
+            top: 50px;
+            height: fit-content;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .main-content {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .right-panel {
+            display: none;
+        }
+
+        @media (max-width: 1400px) {
+            .content {
+                grid-template-columns: 250px 1fr;
+                grid-template-areas: "sidebar main";
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 110px;
+            }
+            .container {
+                padding: 0 15px;
+            }
+            .content {
+                grid-template-columns: 1fr;
+                grid-template-areas: "sidebar" "main";
+                gap: 15px;
+                padding: 15px 0;
+            }
+            .left-sidebar {
+                position: relative;
+                top: 0;
+                max-height: none;
+                padding-right: 0;
+            }
+            .header {
+                padding: 10px 15px;
+            }
+            .header h2 {
+                font-size: 20px;
+            }
+            .action-footer {
+                padding: 12px 15px;
+            }
         }
 
         .tabs {
             display: flex;
-            margin-bottom: 12px;
             border-bottom: 2px solid #dee2e6;
         }
 
@@ -113,13 +192,14 @@
         textarea,
         input[type="file"] {
             width: 100%;
-            padding: 12px;
+            padding-top: 10px;
+            padding-left: 10px;    
             border: 2px solid #dee2e6;
             border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 14px;
             line-height: 1.4;
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
 
         textarea:focus,
@@ -129,17 +209,14 @@
         }
 
         textarea {
-            height: 200px;
+            height: 300px;
             resize: vertical;
+            max-height: 60vh;
         }
 
-        .file-info {
-            margin-top: 10px;
-            padding: 8px 12px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
+        input[type="text"],
+        input[type="number"] {
+            box-sizing: border-box;
         }
 
         ::file-selector-button {
@@ -185,35 +262,63 @@
             border: 1px solid #dee2e6;
         }
 
-        .options h3 {
+        .left-sidebar .options {
+            padding: 15px;
+            margin-bottom: 0;
+        }
+
+        .left-sidebar .options h3 {
             margin-top: 0;
-            color: #495057;
-            font-size: 1.2em;
-        }
-
-        .option-group {
-            display: inline-block;
-            margin-right: 30px;
             margin-bottom: 15px;
+            color: #495057;
+            font-size: 1em;
         }
 
-        .option-group label {
+        .left-sidebar .options h6 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .left-sidebar .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 0;
+            margin-bottom: 12px;
+        }
+
+        .left-sidebar .option-group label {
             display: inline;
-            margin-right: 8px;
+            margin-right: 0;
             font-weight: normal;
+            margin-bottom: 0;
             cursor: pointer;
+            white-space: nowrap;
         }
 
-        input[type="checkbox"],
-        input[type="number"],
-        input[type="text"] {
-            margin-right: 5px;
+        .left-sidebar input[type="text"],
+        .left-sidebar input[type="number"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
         .buttons {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 10px;
             margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .buttons button {
+            margin: 0;
         }
 
         button {
@@ -225,7 +330,6 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 500;
-            margin: 0 10px;
             transition: all 0.3s;
             box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
         }
@@ -241,6 +345,7 @@
             box-shadow: none;
             opacity: 0.3;
         }
+
         button:focus {
             outline: none;
         }
@@ -299,6 +404,11 @@
             max-height: 500px;
             overflow-y: auto;
             white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .output > .stats-output {
+            display: none;
         }
 
         th {
@@ -336,12 +446,24 @@
         }
 
         .stats-output {
-            background-color: #e9ecef;
-            padding: 5px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 0;
             display: flex;
-            gap: 20px;
+            flex-direction: row;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stats-output div {
+            background-color: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
         }
 
         .stats-output p {
@@ -398,24 +520,50 @@
             left: 0;
             bottom: 0;
             width: 100%;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            padding-bottom: 0.3rem;
+            margin-top: 0;
+            padding: 5px;
             background-color: #ffffff;
             color: #4b4c4d;
+            z-index: 4;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .action-footer {
+            position: fixed;
+            left: 0;
+            bottom: 52px;
+            width: 100%;
+            background-color: white;
+            padding-bottom: 13px;
+            padding-top: 5px;
+            z-index: 5;
+        }
+
+        .action-footer .buttons {
+            max-width: 100%;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-footer button {
+            margin: 0;
         }
 
         .footer-basic ul {
             padding: 0;
             list-style: none;
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1.6;
-            margin-bottom: 0;
+            margin: 0 0 15px 0;
         }
 
         .footer-basic li {
             padding: 0 10px;
+            display: inline-block;
         }
 
         .footer-basic ul a {
@@ -430,19 +578,20 @@
 
         .footer-basic .social {
             text-align: center;
-            padding-top: 1rem;
+            padding-top: 0;
+            margin-top: 10px;
         }
 
         .footer-basic .social > a {
-            font-size: 24px;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
+            font-size: 20px;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
             display: inline-block;
             text-align: center;
             border-radius: 50%;
             border: 1px solid #ccc;
-            margin: 0 8px;
+            margin: 0 5px;
             color: inherit;
             opacity: 0.75;
         }
@@ -452,28 +601,14 @@
         }
 
         .footer-basic .copyright {
-            margin-top: 15px;
+            margin-top: 10px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             color: #aaa;
             margin-bottom: 0;
         }
 
-        @media (max-width: 768px) {
-            .content {
-                padding: 15px;
-            }
 
-            .option-group {
-                display: block;
-                margin-right: 0;
-            }
-
-            .stats-output {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
 
         .chunked-options {
             margin-left: 20px;
@@ -503,115 +638,124 @@
 </head>
 
 <body>
-<div class="container">
-    <div class="header">
-        <h2>CSV to JSON Converter</h2>
-        <p>Convert CSV files to JSON with <b>no dependencies</b>. Supports Node.js (Sync & Async),
+<div class="header">
+    <h2>CSV to JSON Converter</h2>
+    <p>Convert CSV files to JSON with <b>no dependencies</b>. Supports Node.js (Sync & Async),
             and Browser
             environments with full RFC 4180 compliance.</p>
-    </div>
-
+</div>
+<div class="container">
+  
     <div class="content">
-        <div class="tabs">
-            <button class="tab active" data-tab="text">Paste CSV</button>
-            <button class="tab" data-tab="file">Upload File</button>
+        <div class="left-sidebar">
+            <div class="options">
+                <h3>Parsing Options</h3>
+                <hr>
+                <div class="option-group">
+                    <input type="checkbox" id="format-values" checked>
+                    <label for="format-values">Format values by type</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="quoted-fields">
+                    <label for="quoted-fields">Support quoted fields</label>
+                </div>
+                <div class="option-group">
+                    <label for="delimiter">Field Delimiter:</label>
+                    <input type="text" id="delimiter" value="," size="1">
+                </div>
+                <div class="option-group">
+                    <label for="header-index">Header Row Index:</label>
+                    <input type="number" id="header-index" value="0" min="0" size="2">
+                </div>
+                <div class="option-group">
+                    <label for="ignore-column-indexes">Ignore Column Indexes:</label>
+                    <input type="text" id="ignore-column-indexes" placeholder="e.g. 0,2,4">
+                </div>
+                <div id="file-only-options" style="display: none;">
+                    <h3>Streaming Options</h3>
+                    <hr>
+                    <div class="option-group">
+                        <input type="checkbox" id="use-streaming">
+                        <label for="use-streaming">Use streaming</label>
+                    </div>
+                    <div class="option-group">
+                        <input type="checkbox" id="use-chunked">
+                        <label for="use-chunked">Chunked processing</label>
+                    </div>
+                    <div class="option-group chunked-options" id="chunked-options"
+                         style="display: none;">
+                        <label for="chunk-size">Chunk size:</label>
+                        <input type="number" id="chunk-size" value="1000" min="100" max="10000"
+                               size="4">
+                        <small>rows per chunk</small>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="text-tab" class="tab-content active">
-            <div class="input-section">
-                <label for="csv-input">CSV Input:</label>
-                <textarea id="csv-input" placeholder="Paste your CSV data here...
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" data-tab="text">Paste CSV</button>
+                <button class="tab" data-tab="file">Upload File</button>
+            </div>
+
+            <div id="text-tab" class="tab-content active">
+                <div class="input-section">
+                    <label for="csv-input">CSV Input:</label>
+                    <textarea id="csv-input" placeholder="Paste your CSV data here...
 
 Example:
 name,age,city
 John,25,New York
 Jane,30,London"></textarea>
-                <label>Try a sample:</label>
-                <button class="sample-btn" data-sample="basic">Basic CSV</button>
-                <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
-                <button class="sample-btn" data-sample="numbers">Numbers</button>
-                <button class="sample-btn" data-sample="dates">Dates</button>
-            </div>
-        </div>
-
-        <div id="file-tab" class="tab-content">
-            <div class="input-section">
-                <input type="file" id="csv-file" accept=".csv,text/csv">
-                <div id="file-info" class="file-info"></div>
-            </div>
-        </div>
-
-        <div class="options">
-            <h3>Parsing Options</h3>
-            <hr>
-            <div class="option-group">
-                <input type="checkbox" id="format-values" checked>
-                <label for="format-values">Format values by type</label>
-            </div>
-            <div class="option-group">
-                <input type="checkbox" id="quoted-fields">
-                <label for="quoted-fields">Support quoted fields</label>
-            </div>
-            <div class="option-group">
-                <label for="delimiter">Field Delimiter:</label>
-                <input type="text" id="delimiter" value="," size="1">
-            </div>
-            <div class="option-group">
-                <label for="header-index">Header Row Index:</label>
-                <input type="number" id="header-index" value="0" min="0" size="2">
-            </div>
-            <div class="option-group">
-                <label for="ignore-column-indexes">Ignore Column Indexes:</label>
-                <input type="text" id="ignore-column-indexes" placeholder="e.g. 1,3">
-            </div>
-            <div id="file-only-options">
-                <h6>Streaming Options: for big files</h6>
-                <hr>
-                <div class="option-group">
-                    <input type="checkbox" id="use-streaming">
-                    <label for="use-streaming">Use streaming (files only)</label>
+                    <label>Try a sample:</label>
+                    <button class="sample-btn" data-sample="basic">Basic CSV</button>
+                    <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
+                    <button class="sample-btn" data-sample="numbers">Numbers</button>
+                    <button class="sample-btn" data-sample="dates">Dates</button>
                 </div>
-                <div class="option-group">
-                    <input type="checkbox" id="use-chunked">
-                    <label for="use-chunked">Chunked processing (large files)</label>
+            </div>
+
+            <div id="file-tab" class="tab-content">
+                <div class="input-section">
+                    <input type="file" id="csv-file" accept=".csv,text/csv">
                 </div>
-                <div class="option-group chunked-options" id="chunked-options"
-                     style="display: none;">
-                    <label for="chunk-size">Chunk size:</label>
-                    <input type="number" id="chunk-size" value="1000" min="100" max="10000"
-                           size="4">
-                    <small>rows per chunk</small>
+            </div>
+
+            <div id="stats-output-container" style="border-radius: 8px; display: none;">
+                <div class="stats-output" id="stats-output">
+                    <div id="file-info">
+                        <strong></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div id="output" class="output hidden">
+                <div id="error-output" class="error-output hidden"></div>
+
+                <div class="output-tabs">
+                    <button class="output-tab active" data-output="table">Table View</button>
+                    <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
+                </div>
+                <div class="table-title" id="table-title"></div>
+
+                <div id="table-content" class="output-content active">
+                    <div class="table-output" id="table-output"></div>
+                </div>
+
+                <div id="json-content" class="output-content">
+                    <div class="json-output" id="json-output"></div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="buttons">
-            <button id="convert-btn">Convert to JSON</button>
-            <button id="clear-btn">Clear</button>
-            <button id="download-json-btn" class="download-btn-hidden" onclick="downloadJSON()">Download JSON</button>
-        </div>
-
-        <div id="output" class="output hidden">
-            <div id="error-output" class="error-output hidden"></div>
-
-            <div class="stats-output" id="stats-output"></div>
-
-            <div class="output-tabs">
-                <button class="output-tab active" data-output="table">Table View</button>
-                <button class="output-tab" data-output="json" id="output-tab-json">JSON View
-                </button>
-            </div>
-            <div class="table-title" id="table-title"></div>
-
-
-            <div id="table-content" class="output-content active">
-                <div class="table-output" id="table-output"></div>
-            </div>
-
-            <div id="json-content" class="output-content">
-                <div class="json-output" id="json-output"></div>
-            </div>
-        </div>
+<div class="action-footer">
+    <div class="buttons">
+        <button id="convert-btn">Convert to JSON</button>
+        <button id="clear-btn">Clear</button>
+        <button id="download-json-btn" class="download-btn-hidden" onclick="downloadJSON()">Download JSON</button>
     </div>
 </div>
 
