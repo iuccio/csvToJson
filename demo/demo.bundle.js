@@ -19,6 +19,7 @@
       this.parseSubArrayDelimiter = null;
       this.parseSubArraySeparator = ',';
       this.rowMapper = null;
+      this.indexesToIgnore = [];
     }
 
     formatValueByType(active = true) { this.printValueFormatByType = active; return this; }
@@ -26,6 +27,11 @@
     fieldDelimiter(delimiter) { this.delimiter = delimiter; return this; }
     trimHeaderFieldWhiteSpace(active = false) { this.isTrimHeaderFieldWhiteSpace = active; return this; }
     parseSubArray(delimiter = '*', separator = ',') { this.parseSubArrayDelimiter = delimiter; this.parseSubArraySeparator = separator; return this; }
+    ignoreColumnIndexes(indexes) {
+      if (!Array.isArray(indexes)) throw new Error('ignoreColumnIndexes() expects an array of indexes');
+      this.indexesToIgnore = indexes.filter(index => Number.isInteger(index) && index >= 0);
+      return this;
+    }
 
     indexHeader(index) {
       if (isNaN(index)) throw new Error('indexHeader() expects a numeric value');
@@ -149,6 +155,7 @@
     buildObject(headers, fields) {
       const obj = {};
       for (let i = 0; i < headers.length; i++) {
+        if (this.indexesToIgnore.includes(i)) continue;
         const key = this.isTrimHeaderFieldWhiteSpace ? headers[i].replace(/\s/g, '') : headers[i].trim();
         let value = fields[i] || '';
         if (this.printValueFormatByType) value = this.parseValue(value);
@@ -260,6 +267,7 @@
     trimHeaderFieldWhiteSpace(active = false) { this.csvToJson.trimHeaderFieldWhiteSpace(active); return this; }
     indexHeader(index) { this.csvToJson.indexHeader(index); return this; }
     parseSubArray(delimiter = '*', separator = ',') { this.csvToJson.parseSubArray(delimiter, separator); return this; }
+    ignoreColumnIndexes(indexes) { this.csvToJson.ignoreColumnIndexes(indexes); return this; }
     mapRows(mapperFn) { this.csvToJson.mapRows(mapperFn); return this; }
     csvStringToJson(csvString) { return this.csvToJson.csvStringToJson(csvString); }
     csvStringToJsonStringified(csvString) { return this.csvToJson.csvStringToJsonStringified(csvString); }

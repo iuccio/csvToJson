@@ -291,13 +291,27 @@ class ConfigManager {
         const quotedFields = document.getElementById('quoted-fields').checked;
         const delimiter = document.getElementById('delimiter').value;
         const headerIndex = parseInt(document.getElementById('header-index').value) || 0;
+        const ignoreColumnIndexes = document.getElementById('ignore-column-indexes').value;
 
         this.csvToJson.formatValueByType(formatValues);
         this.csvToJson.supportQuotedField(quotedFields);
         this.csvToJson.fieldDelimiter(delimiter);
         this.csvToJson.indexHeader(headerIndex);
+        this.csvToJson.ignoreColumnIndexes(this.parseIgnoreColumnIndexes(ignoreColumnIndexes));
 
         this.updateStreamingOptions();
+    }
+
+    parseIgnoreColumnIndexes(value) {
+        if (!value || !value.trim()) {
+            return [];
+        }
+
+        return value.split(',')
+            .map(item => item.trim())
+            .filter(item => item !== '')
+            .map(item => parseInt(item, 10))
+            .filter(index => Number.isInteger(index) && index >= 0);
     }
 
     updateStreamingOptions() {
@@ -641,7 +655,7 @@ class CsvToJsonDemo {
         });
 
         // Options change listeners
-        ['format-values', 'quoted-fields', 'delimiter', 'header-index', 'use-streaming'].forEach(id => {
+        ['format-values', 'quoted-fields', 'delimiter', 'header-index', 'ignore-column-indexes', 'use-streaming'].forEach(id => {
             document.getElementById(id).addEventListener('change', () => {
                 this.configManager.updateOptions();
             });
@@ -681,6 +695,7 @@ class CsvToJsonDemo {
     async convert() {
         const convertBtn = this.uiManager.getElement(CONSTANTS.ELEMENTS.CONVERT_BTN);
 
+        this.configManager.updateOptions();
         this.uiManager.clearOutput();
         this.uiManager.setDisabled(convertBtn, true);
         this.uiManager.setButtonText(convertBtn, 'Converting...');
