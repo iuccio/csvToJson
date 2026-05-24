@@ -75,46 +75,10 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            padding-bottom: 160px;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
-        }
-        .action-footer {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            z-index: 60;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
-            padding: 1rem 0.75rem;
-        }
-        .action-footer-inner {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-        }
-        .action-footer .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            justify-content: center;
-            width: 100%;
-        }
-        @media (min-width: 640px) {
-            .action-footer .buttons {
-                width: auto;
-            }
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
@@ -214,6 +178,35 @@
             transform: translateY(-1px);
             background: rgba(67, 56, 202, 0.24);
         }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: transparent;
+            color: #4338ca;
+            border: none;
+            padding: 0;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.18s ease;
+        }
+        .download-btn:hover {
+            color: #2a14b4;
+            text-decoration: none;
+            background: transparent;
+        }
+        .download-btn:focus-visible {
+            outline: 2px solid rgba(67, 56, 202, 0.35);
+            outline-offset: 2px;
+        }
+        .download-btn .material-symbols-outlined {
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .download-btn:focus-visible {
+            outline: 2px solid rgba(255,255,255,0.9);
+            outline-offset: 3px;
+        }
         .file-btn {
             background: rgba(67, 56, 202, 0.06);
             color: #4338ca;
@@ -248,10 +241,10 @@
             box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.1);
         }
         #output-container {
-            min-height: 260px;
+            min-height: 170px;
         }
         body.file-tab-active #output-container {
-            min-height: 488px;
+            min-height: 597px;
         }
         .table-output {
             width: 100%;
@@ -353,6 +346,28 @@
             color: #c7d2fe;
         }
         .copy-json-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.08); }
+        .spinner-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(67, 56, 202, 0.18);
+            border-top-color: #4338ca;
+            border-radius: 9999px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
         .tab-content,
         .output-content {
             display: none;
@@ -432,15 +447,15 @@
                         <input id="quoted-fields" type="checkbox" class="accent-primary" />
                     </div>
                     <div class="space-y-2">
-                        <label for="delimiter" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Field Delimiter</label>
+                        <label for="delimiter" class="text-xs font-bold uppercase text-outline">Field Delimiter</label>
                         <input id="delimiter" type="text" value="," class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                     </div>
                     <div class="space-y-2">
-                        <label for="header-index" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Header Row Index</label>
+                        <label for="header-index" class="text-xs font-bold uppercase text-outline">Header Row Index</label>
                         <input id="header-index" type="number" value="0" min="0" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                     </div>
                     <div class="space-y-2">
-                        <label for="ignore-column-indexes" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Ignore Column Indexes</label>
+                        <label for="ignore-column-indexes" class="text-xs font-bold uppercase text-outline">Ignore Column Indexes</label>
                         <input id="ignore-column-indexes" type="text" placeholder="e.g. 0,2,4" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                     </div>
                     <div id="file-only-options" style="display: none;" class="space-y-4 rounded-3xl bg-surface-container p-4 border border-outline-variant/10">
@@ -458,6 +473,10 @@
                             <input id="chunk-size" type="number" value="1000" min="100" max="10000" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                             <p class="text-xs text-secondary">Rows per chunk</p>
                         </div>
+                    </div>
+                    <div class="flex flex-col gap-3 pt-4 border-t border-outline-variant/10">
+                        <button id="convert-btn" class="rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-bold shadow-lg hover:shadow-indigo-200 transition">Convert to JSON</button>
+                        <button id="clear-btn" class="rounded-3xl border border-outline-variant/20 bg-white/90 px-6 py-3 text-on-surface font-semibold hover:bg-surface-container transition">Clear</button>
                     </div>
                 </div>
             </div>
@@ -496,18 +515,21 @@
                 </div>
             </div>
             <div id="output-container" class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-2 space-y-4">
-                <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
-                    <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
-                    </div>
-                </div>
                 <div id="output" class="output hidden space-y-4">
                     <div id="error-output" class="error-output rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 hidden"></div>
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="flex flex-wrap gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <button class="output-tab active" data-output="table">Table View</button>
                             <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
+                            <button id="download-json-btn" type="button" class="download-btn download-btn-hidden hidden inline-flex items-center gap-2" aria-label="Download JSON">
+                                <span class="material-symbols-outlined" aria-hidden="true">download</span>
+                                <span>Download</span>
+                            </button>
+                            <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
+                                <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs uppercase tracking-[0.3em] text-secondary">Preview</span>
                     </div>
                     <div id="table-title" class="text-xs text-secondary"></div>
                     <div id="table-content" class="output-content active">
@@ -530,16 +552,6 @@
         </div>
     </div>
 </main>
-<div class="action-footer">
-    <div class="action-footer-inner">
-        <div class="buttons">
-            <button id="convert-btn" class="rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-bold shadow-lg hover:shadow-indigo-200 transition">Convert to JSON</button>
-            <button id="clear-btn" class="rounded-3xl border border-outline-variant/20 bg-white/90 px-6 py-3 text-on-surface font-semibold hover:bg-surface-container transition">Clear</button>
-            <button id="download-json-btn" class="download-btn download-btn-hidden hidden rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-semibold shadow-lg transition">Download JSON</button>
-        </div>
-    </div>
-</div>
-
 <script src="demo.bundle.js"></script>
 <script src="csvToJsonDemo.js"></script>
 <script>
