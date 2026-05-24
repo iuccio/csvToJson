@@ -126,6 +126,45 @@
             background: #c7c4d7;
             border-radius: 10px;
         }
+        /* Toggle switch style for checkboxes */
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 44px;
+            height: 24px;
+            background: rgba(15,23,42,0.06);
+            border-radius: 9999px;
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0;
+            cursor: pointer;
+            border: 1px solid rgba(15,23,42,0.06);
+            transition: background 0.18s ease, border-color 0.18s ease;
+        }
+        input[type="checkbox"]::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(2,6,23,0.12);
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        input[type="checkbox"]:checked {
+            background: linear-gradient(90deg, #4338ca 0%, #6d28d9 100%);
+            border-color: transparent;
+        }
+        input[type="checkbox"]:checked::after {
+            transform: translateX(20px);
+        }
+        input[type="checkbox"]:focus {
+            box-shadow: 0 0 0 4px rgba(67,56,202,0.12);
+            outline: none;
+        }
         .tab, .output-tab {
             padding: 0.9rem 1.25rem;
             border-radius: 9999px;
@@ -175,6 +214,31 @@
             transform: translateY(-1px);
             background: rgba(67, 56, 202, 0.24);
         }
+        .file-btn {
+            background: rgba(67, 56, 202, 0.06);
+            color: #4338ca;
+            border: 1px solid rgba(67, 56, 202, 0.12);
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .file-btn:hover {
+            background: rgba(67, 56, 202, 0.12);
+            transform: translateY(-1px);
+        }
+        #output-container {
+            min-height: 260px;
+        }
+        body.file-tab-active #output-container {
+            min-height: 488px;
+        }
         .table-output {
             width: 100%;
             display: block;
@@ -190,7 +254,7 @@
             min-width: 100%;
         }
         .table-output th {
-            background: rgba(67, 56, 202, 0.08);
+            background: rgba(241,242,254, 1);
             color: #4338ca;
             font-weight: 600;
             text-align: left;
@@ -219,6 +283,62 @@
         .table-output tr:last-child td {
             border-bottom: none;
         }
+        .json-output {
+            position: relative;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+            font-size: 0.875rem;
+            background: linear-gradient(180deg, #0f1724 0%, #071028 100%);
+            color: #e6eef8;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(99,102,241,0.12);
+            box-shadow: 0 6px 18px rgba(3,7,18,0.45);
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px;
+            white-space: pre;
+            line-height: 1.45;
+        }
+        .json-output::before {
+            content: "JSON";
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            background: rgba(255,255,255,0.04);
+            color: #c7d2fe;
+            border: 1px solid rgba(199,210,254,0.12);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 20;
+        }
+        .copy-json-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 4.75rem; /* nudged right for visibility */
+            z-index: 30;
+            background: rgba(255,255,255,0.06);
+            color: #e6eef8;
+            border: 1px solid rgba(199,210,254,0.08);
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.08s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .copy-json-btn svg {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            vertical-align: middle;
+            color: #c7d2fe;
+        }
+        .copy-json-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.08); }
         .tab-content,
         .output-content {
             display: none;
@@ -281,7 +401,7 @@
         </div>
     </div>
 </nav>
-<main class="pt-32 pb-16 px-6 md:px-8 max-w-[1600px] mx-auto">
+<main class="pt-24 pb-16 px-6 md:px-8 max-w-[1600px] mx-auto">
     <div class="grid content-grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <aside class="lg:col-span-3 space-y-6">
             <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 p-6 shadow-sm">
@@ -328,9 +448,9 @@
                 </div>
             </div>
         </aside>
-        <div class="lg:col-span-9 grid grid-cols-1 gap-8">
+        <div class="lg:col-span-9 grid grid-cols-1 gap-4">
             <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 bg-white/70 px-6 py-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 bg-white/70 px-6 py-3">
                     <div>
                         <p class="text-sm font-semibold text-on-surface">Source CSV</p>
                         <p class="text-sm text-secondary">Paste CSV text or upload a file to convert.</p>
@@ -340,9 +460,9 @@
                         <button class="tab" data-tab="file">Upload File</button>
                     </div>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-2 space-y-2">
                     <div id="text-tab" class="tab-content active space-y-5">
-                        <textarea id="csv-input" class="w-full min-h-[320px] rounded-[2rem] border border-outline-variant/20 bg-white/90 p-6 text-sm font-mono leading-6 custom-scrollbar focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Paste your CSV data here...\n\nExample:\nname,age,city\nJohn,25,New York\nJane,30,London"></textarea>
+                        <textarea id="csv-input" class="w-full min-h-[320px] rounded-[2rem] border border-outline-variant/20 bg-white/90 p-6 text-sm font-mono leading-6 custom-scrollbar focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Paste your CSV data here..."></textarea>
                         <div class="flex flex-wrap gap-3">
                             <button class="sample-btn" data-sample="basic">Basic CSV</button>
                             <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
@@ -351,14 +471,17 @@
                         </div>
                     </div>
                     <div id="file-tab" class="tab-content">
-                        <input id="csv-file" type="file" accept=".csv,text/csv" class="w-full rounded-[2rem] border border-outline-variant/20 bg-white/90 px-5 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                        <label for="csv-file" class="file-btn w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm">
+                            Choose file
+                            <input id="csv-file" type="file" accept=".csv,text/csv" class="hidden" />
+                        </label>
+                        <div id="file-info" class="px-3 mt-3 text-sm text-secondary"></div>
                     </div>
                 </div>
             </div>
-            <div class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-6 space-y-6">
+            <div id="output-container" class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-2 space-y-4">
                 <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
                     <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
-                        <div id="file-info"></div>
                     </div>
                 </div>
                 <div id="output" class="output hidden space-y-4">
@@ -372,10 +495,19 @@
                     </div>
                     <div id="table-title" class="text-xs text-secondary"></div>
                     <div id="table-content" class="output-content active">
-                        <div id="table-output" class="table-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar"></div>
+                        <div id="table-output" class="table-output rounded-3xl border border-outline-variant/10 bg-white/90 overflow-auto custom-scrollbar"></div>
                     </div>
                     <div id="json-content" class="output-content">
-                        <div id="json-output" class="json-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar whitespace-pre-wrap break-words"></div>
+                        <div class="json-output-wrapper" style="position:relative">
+                            <button id="copy-json-btn" class="copy-json-btn" aria-label="Copy JSON">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <rect x="9" y="9" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+                                    <path d="M7 15H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Copy
+                            </button>
+                            <div id="json-output" class="json-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -394,5 +526,30 @@
 
 <script src="demo.bundle.js"></script>
 <script src="csvToJsonDemo.js"></script>
+<script>
+document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'copy-json-btn') {
+        const btn = e.target;
+        const out = document.getElementById('json-output');
+        if (!out) return;
+        const text = out.textContent || out.innerText || '';
+        if (!navigator.clipboard) {
+            // fallback
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (err) {}
+            document.body.removeChild(ta);
+        } else {
+            navigator.clipboard.writeText(text).catch(()=>{});
+        }
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.disabled = true;
+        setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1500);
+    }
+});
+</script>
 </body>
 </html>

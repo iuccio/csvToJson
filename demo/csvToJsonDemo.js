@@ -155,6 +155,13 @@ class UIManager {
         this.addClass(tabContent, CONSTANTS.CLASSES.ACTIVE);
         this.addClass(tabButton, CONSTANTS.CLASSES.ACTIVE);
 
+        // Toggle output container min-height based on active tab
+        if (tabName === 'file') {
+            document.body.classList.add('file-tab-active');
+        } else {
+            document.body.classList.remove('file-tab-active');
+        }
+
         // Toggle file-only options visibility
         this.toggleFileOnlyOptions();
     }
@@ -714,6 +721,7 @@ class CsvToJsonDemo {
 
         // File input
         this.uiManager.getElement(CONSTANTS.ELEMENTS.CSV_FILE).addEventListener('change', (event) => {
+            this.uiManager.clearOutput();
             this.configManager.handleFileSelect(event);
             this.uiManager.updateFileInfo(event.target.files[0]);
         });
