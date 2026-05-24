@@ -365,22 +365,26 @@ class ConfigManager {
     handleFileSelect(event) {
         const file = event.target.files[0];
         if (file) {
-            const useStreaming = document.getElementById('use-streaming');
-            const useChunked = document.getElementById('use-chunked');
-
-            if (file.size > CONSTANTS.LARGE_FILE_THRESHOLD) {
-                useStreaming.checked = true;
-                useStreaming.disabled = true;
-                useChunked.disabled = false;
-            } else {
-                useStreaming.checked = false;
-                useStreaming.disabled = false;
-                useChunked.checked = false;
-                useChunked.disabled = true;
-            }
-
-            this.updateOptions();
+            this.processFile(file);
         }
+    }
+
+    processFile(file) {
+        const useStreaming = document.getElementById('use-streaming');
+        const useChunked = document.getElementById('use-chunked');
+
+        if (file.size > CONSTANTS.LARGE_FILE_THRESHOLD) {
+            useStreaming.checked = true;
+            useStreaming.disabled = true;
+            useChunked.disabled = false;
+        } else {
+            useStreaming.checked = false;
+            useStreaming.disabled = false;
+            useChunked.checked = false;
+            useChunked.disabled = true;
+        }
+
+        this.updateOptions();
     }
 }
 
@@ -720,11 +724,48 @@ class CsvToJsonDemo {
         });
 
         // File input
-        this.uiManager.getElement(CONSTANTS.ELEMENTS.CSV_FILE).addEventListener('change', (event) => {
+        const csvFileInput = this.uiManager.getElement(CONSTANTS.ELEMENTS.CSV_FILE);
+        const dropZone = document.getElementById('drop-zone');
+
+        csvFileInput.addEventListener('change', (event) => {
             this.uiManager.clearOutput();
             this.configManager.handleFileSelect(event);
             this.uiManager.updateFileInfo(event.target.files[0]);
         });
+
+        // Drag and drop handlers
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                        csvFileInput.files = files;
+                        this.uiManager.clearOutput();
+                        this.configManager.handleFileSelect({ target: { files: files } });
+                        this.uiManager.updateFileInfo(file);
+                    } else {
+                        alert('Please drop a CSV file.');
+                    }
+                }
+            });
+        }
 
         // Sample data buttons
         document.querySelectorAll('.sample-btn').forEach(btn => {
