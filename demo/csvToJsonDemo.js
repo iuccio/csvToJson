@@ -7,7 +7,7 @@
 
 // Constants
 const CONSTANTS = {
-    MAX_ROWS_DISPLAY: 1000,
+    MAX_ROWS_DISPLAY: 2000,
     LARGE_FILE_THRESHOLD: 1000000,
     DEFAULT_CHUNK_SIZE: 1000,
     PROGRESS_UPDATE_INTERVAL: 1500,
@@ -221,19 +221,19 @@ class UIManager {
         const progressDiv = document.createElement('div');
         progressDiv.id = 'progress-display';
         progressDiv.innerHTML = `
-            <h5>Processing large file...</h5>
-            <div id="progress-bar" style="width: 100%; background: #f0f0f0; height: 20px; border-radius: 10px; margin: 10px 0;">
-                <div id="${CONSTANTS.ELEMENTS.PROGRESS_FILL}" style="width: 0%; height: 100%; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); border-radius: 10px; transition: width 0.5s;"></div>
+            <div class="spinner-container rounded-3xl bg-white/90 p-6 border border-outline-variant/10 flex items-center gap-4">
+                <div class="spinner" aria-hidden="true"></div>
+                <div>
+                    <p class="text-sm font-semibold text-on-surface">Parsing file…</p>
+                    <p class="text-sm text-secondary">Please wait while your CSV data is processed.</p>
+                </div>
             </div>
         `;
         output.insertBefore(progressDiv, output.firstChild);
     }
 
     updateProgress(percent) {
-        const progressFill = this.getElement(CONSTANTS.ELEMENTS.PROGRESS_FILL);
-        if (progressFill) {
-            progressFill.style.width = percent + '%';
-        }
+        // Spinner-only loading state; progress percent is not displayed.
     }
 
     removeProgressDisplay() {
@@ -452,7 +452,7 @@ class ResultDisplayManager {
         const tableTitle = this.uiManager.getElement(CONSTANTS.ELEMENTS.TABLE_TITLE);
         if (data.length > CONSTANTS.MAX_ROWS_DISPLAY) {
             this.uiManager.setElementHTML(tableTitle,
-                `<p><b>Showing first ${CONSTANTS.MAX_ROWS_DISPLAY} rows only. Full data is available in JSON View for files containing less than 1,000 lines. For bigger files click to the Download JSON button.</b></p>`
+                `<p><b>Showing first ${CONSTANTS.MAX_ROWS_DISPLAY} rows only. Full data is available in JSON View for files containing less than 2,000 lines. For bigger files click the Download JSON button.</b></p>`
             );
         } else {
             this.uiManager.setElementHTML(tableTitle, '');
@@ -488,7 +488,7 @@ class ResultDisplayManager {
         const jsonTab = this.uiManager.getElement(CONSTANTS.ELEMENTS.OUTPUT_TAB_JSON);
         if (rowCount > CONSTANTS.MAX_ROWS_DISPLAY) {
             this.uiManager.setDisabled(jsonTab, true);
-            jsonTab.title = "JSON preview is only available for files with fewer than 1,000 lines. Click the Download JSON button to view the result in JSON format.";
+            jsonTab.title = "JSON preview is only available for files with fewer than 2,000 lines. Click the Download JSON button to view the result in JSON format.";
         } else {
             this.uiManager.setDisabled(jsonTab, false);
             jsonTab.title = "";
