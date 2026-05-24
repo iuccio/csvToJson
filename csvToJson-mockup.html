@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Alchemist | Premium CSV to JSON Converter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed": "#e3dfff",
+              "surface-dim": "#d2d9f4",
+              "tertiary-fixed": "#c9e6ff",
+              "on-surface-variant": "#464554",
+              "surface": "#faf8ff",
+              "surface-container": "#eaedff",
+              "outline": "#777586",
+              "surface-tint": "#5148d7",
+              "secondary-fixed": "#d3e4fe",
+              "on-secondary-container": "#54647a",
+              "on-primary-container": "#c1beff",
+              "on-tertiary-fixed-variant": "#004c6e",
+              "on-error-container": "#93000a",
+              "background": "#faf8ff",
+              "on-secondary-fixed-variant": "#38485d",
+              "tertiary-container": "#00577e",
+              "primary": "#2a14b4",
+              "surface-container-highest": "#dae2fd",
+              "on-tertiary-fixed": "#001e2f",
+              "on-background": "#131b2e",
+              "on-secondary-fixed": "#0b1c30",
+              "on-surface": "#131b2e",
+              "surface-container-high": "#e2e7ff",
+              "primary-container": "#4338ca",
+              "primary-fixed-dim": "#c3c0ff",
+              "secondary-container": "#d0e1fb",
+              "inverse-primary": "#c3c0ff",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#89ceff",
+              "secondary": "#505f76",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#84cdff",
+              "secondary-fixed-dim": "#b7c8e1",
+              "tertiary": "#003f5c",
+              "error": "#ba1a1a",
+              "on-primary-fixed-variant": "#372abf",
+              "on-error": "#ffffff",
+              "on-primary": "#ffffff",
+              "outline-variant": "#c7c4d7",
+              "on-primary-fixed": "#100069",
+              "surface-container-low": "#f2f3ff",
+              "surface-variant": "#dae2fd",
+              "on-secondary": "#ffffff",
+              "inverse-surface": "#283044",
+              "error-container": "#ffdad6",
+              "surface-bright": "#faf8ff",
+              "inverse-on-surface": "#eef0ff"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .code-editor-bg {
+            background-image: radial-gradient(circle at 2px 2px, rgba(199, 196, 215, 0.2) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7c4d7;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 h-20 bg-white/80 backdrop-blur-2xl dark:bg-slate-900/80 shadow-[0_24px_48px_-12px_rgba(19,27,46,0.08)]">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 w-full h-full">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold tracking-tighter text-indigo-900 dark:text-white font-['Space_Grotesk']">Alchemist</span>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-indigo-700 dark:text-indigo-300 font-semibold border-b-2 border-indigo-600 font-['Space_Grotesk'] text-base tracking-tight" href="#">Converter</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-colors font-['Space_Grotesk'] text-base tracking-tight" href="#">History</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-colors font-['Space_Grotesk'] text-base tracking-tight" href="#">Documentation</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 rounded-lg text-indigo-700 dark:text-indigo-400 font-medium hover:bg-slate-100/50 transition-all active:scale-95 duration-200">Sign In</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-indigo-200 transition-all active:scale-95 duration-200">Start Transmuting</button>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-20 px-8 max-w-[1600px] mx-auto min-h-screen">
+<!-- Hero Section -->
+<header class="mb-16 max-w-3xl">
+<h1 class="font-headline text-5xl md:text-6xl font-bold text-on-background tracking-tight leading-[1.1] mb-6">
+                Refine Raw Data into <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-container">Intelligence</span>
+</h1>
+<p class="text-lg text-secondary leading-relaxed font-light">
+                A high-precision CSV-to-JSON utility for developers who value technical elegance. No telemetry, no clutter, just pure data transmutation.
+            </p>
+</header>
+<!-- Main Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Sidebar: Parsing Options -->
+<aside class="lg:col-span-3 space-y-6">
+<div class="bg-surface-container-low rounded-xl p-6 space-y-8">
+<div>
+<h3 class="font-headline text-sm font-bold uppercase tracking-widest text-secondary mb-6">Transmutation Rules</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between group">
+<label class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors cursor-pointer">Header Row</label>
+<button class="w-12 h-6 bg-primary rounded-full relative p-1 transition-colors">
+<div class="w-4 h-4 bg-white rounded-full translate-x-6 transition-transform"></div>
+</button>
+</div>
+<div class="flex items-center justify-between group">
+<label class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors cursor-pointer">Type Inference</label>
+<button class="w-12 h-6 bg-primary rounded-full relative p-1 transition-colors">
+<div class="w-4 h-4 bg-white rounded-full translate-x-6 transition-transform"></div>
+</button>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-outline uppercase tracking-tighter">Delimiter</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none rounded-lg py-3 px-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 appearance-none">
+<option>Comma (,)</option>
+<option>Semicolon (;)</option>
+<option>Tab (\t)</option>
+<option>Pipe (|)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-outline uppercase tracking-tighter">JSON Indentation</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 text-xs font-medium bg-primary-fixed text-on-primary-fixed-variant rounded-lg">2 Space</button>
+<button class="py-2 text-xs font-medium bg-surface-container-lowest text-secondary hover:bg-white rounded-lg transition-colors">4 Space</button>
+<button class="py-2 text-xs font-medium bg-surface-container-lowest text-secondary hover:bg-white rounded-lg transition-colors">Minify</button>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/20">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-4 rounded-xl font-headline font-bold text-lg shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+                            Convert
+                        </button>
+</div>
+</div>
+<!-- Stats/Info Bento -->
+<div class="grid grid-cols-1 gap-4">
+<div class="bg-surface-container rounded-xl p-5 flex items-center gap-4">
+<div class="w-10 h-10 bg-tertiary-fixed rounded-lg flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<p class="text-xs text-secondary">Processing Speed</p>
+<p class="text-sm font-bold">1.2ms / MB</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Editor Section -->
+<div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+<!-- Input Area -->
+<div class="flex flex-col h-[700px]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+<span class="font-headline font-bold tracking-tight">Source CSV</span>
+</div>
+<button class="text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">upload_file</span>
+                            Upload File
+                        </button>
+</div>
+<div class="flex-grow bg-surface-container-lowest rounded-xl shadow-[0_24px_48px_-12px_rgba(19,27,46,0.04)] border border-outline-variant/10 relative overflow-hidden flex flex-col">
+<div class="absolute inset-0 code-editor-bg opacity-40 pointer-events-none"></div>
+<div class="flex items-center gap-4 px-6 py-3 border-b border-outline-variant/5 bg-white/50 backdrop-blur-sm z-10">
+<div class="flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-red-400/30"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-amber-400/30"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-400/30"></div>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Read Only Mode Off</span>
+</div>
+<textarea class="flex-grow p-8 font-mono text-sm bg-transparent border-none focus:ring-0 resize-none z-10 custom-scrollbar text-on-surface" placeholder="Paste your CSV content here...
+id,name,email,role,status
+1,Julianne Moore,jmoore@alchemy.io,Lead Architect,active
+2,Cillian Murphy,cillian@alchemy.io,Senior Researcher,active
+3,Anya Taylor-Joy,anya@alchemy.io,Data Scientist,pending"></textarea>
+</div>
+</div>
+<!-- Output Area -->
+<div class="flex flex-col h-[700px]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">terminal</span>
+<span class="font-headline font-bold tracking-tight">Intelligence JSON</span>
+</div>
+<div class="flex gap-4">
+<button class="text-xs font-bold text-secondary flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                                Copy
+                            </button>
+<button class="text-xs font-bold text-secondary flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                                Download
+                            </button>
+</div>
+</div>
+<div class="flex-grow bg-surface-container-low rounded-xl border border-outline-variant/10 relative overflow-hidden flex flex-col">
+<div class="absolute inset-0 code-editor-bg opacity-40 pointer-events-none"></div>
+<div class="flex items-center justify-between px-6 py-3 border-b border-outline-variant/5 bg-white/30 backdrop-blur-sm z-10">
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">JSON Output</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] text-primary font-bold uppercase tracking-widest">Valid Syntax</span>
+</div>
+</div>
+<pre class="flex-grow p-8 font-mono text-sm text-indigo-900/80 z-10 custom-scrollbar overflow-auto"><code>[
+  {
+    "id": 1,
+    "name": "Julianne Moore",
+    "email": "jmoore@alchemy.io",
+    "role": "Lead Architect",
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Cillian Murphy",
+    "email": "cillian@alchemy.io",
+    "role": "Senior Researcher",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Anya Taylor-Joy",
+    "email": "anya@alchemy.io",
+    "role": "Data Scientist",
+    "status": "pending"
+  }
+]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<!-- Ad/Promo Asymmetric Section -->
+<section class="mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-primary-fixed/30 rounded-3xl p-12 overflow-hidden relative">
+<div class="md:col-span-7 z-10">
+<h2 class="font-headline text-3xl font-bold mb-4">Enterprise Grade Security</h2>
+<p class="text-secondary max-w-lg mb-8 leading-relaxed">
+                    All processing happens client-side. Your raw data never touches our servers, ensuring your sensitive CSV files remain strictly within your laboratory.
+                </p>
+<div class="flex gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<span class="text-sm font-bold">100% Local</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">encrypted</span>
+<span class="text-sm font-bold">No Telemetry</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-5 relative h-64 md:h-full">
+<img alt="abstract geometric representation of security and privacy using interlocking crystalline shapes in shades of indigo and crystal" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain mix-blend-multiply opacity-80" data-alt="minimalist 3d abstract visualization of digital security with translucent indigo glass shields and white glowing particles in a studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJzzRBomvg1hXct3tUM1jS_0kfAqEghXcwbz0vX7Xw3hJSUWlcvSLW4g-uTSNKSX8ChaNeH1R9cZ2dqPNsNJiHHwR_4N9LkRC621H9kmOFF1JO1ic1ZhfB67nzTXFd5YBR50Nuge0SxLtBnd7hLDiVJE5sPCPE05_HYb62V0bda_YZHo4wmbUGA4Vlk1YV1yEyoG5LO97jDuLNohSfdvXJATQzckjg__u198oWYUiV74G6Ah5HrOOQbfAyHxc-rBXultfOM0NtFAg"/>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-16">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-8 gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-['Space_Grotesk'] font-bold text-slate-900 dark:text-slate-100 text-xl">Alchemist</span>
+<p class="font-['Inter'] text-sm tracking-normal text-slate-500 dark:text-slate-500">© 2024 Alchemist. Precision Data Transmutation.</p>
+</div>
+<div class="flex gap-10">
+<a class="text-slate-500 dark:text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all font-['Inter'] text-sm tracking-normal" href="#">Terms</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all font-['Inter'] text-sm tracking-normal" href="#">Privacy</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all font-['Inter'] text-sm tracking-normal" href="#">API</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all font-['Inter'] text-sm tracking-normal" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,797 +1,398 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-
+<html class="light" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-          content="Fast Online conversion of CSV Files to JSON. RFC 4180 Compliant. Large File Support. Custom field delimiters. Allows mapping of header row index and value formatting. Works in Node.js and Browser environments.">
-    <title>Convert CSV to JSON</title>
-    <link rel="icon" type="image/x-icon" href="csvToJson.ico">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Fast Online conversion of CSV Files to JSON. RFC 4180 Compliant. Large File Support. Custom field delimiters. Allows mapping of header row index and value formatting. Works in Browser environments with full RFC 4180 compliance."/>
+    <title>CSV to JSON Converter</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed": "#e3dfff",
+              "surface-dim": "#d2d9f4",
+              "tertiary-fixed": "#c9e6ff",
+              "on-surface-variant": "#464554",
+              "surface": "#faf8ff",
+              "surface-container": "#eaedff",
+              "outline": "#777586",
+              "surface-tint": "#5148d7",
+              "secondary-fixed": "#d3e4fe",
+              "on-secondary-container": "#54647a",
+              "on-primary-container": "#c1beff",
+              "on-tertiary-fixed-variant": "#004c6e",
+              "on-error-container": "#93000a",
+              "background": "#faf8ff",
+              "on-secondary-fixed-variant": "#38485d",
+              "tertiary-container": "#00577e",
+              "primary": "#2a14b4",
+              "surface-container-highest": "#dae2fd",
+              "on-tertiary-fixed": "#001e2f",
+              "on-background": "#131b2e",
+              "on-secondary-fixed": "#0b1c30",
+              "on-surface": "#131b2e",
+              "surface-container-high": "#e2e7ff",
+              "primary-container": "#4338ca",
+              "primary-fixed-dim": "#c3c0ff",
+              "secondary-container": "#d0e1fb",
+              "inverse-primary": "#c3c0ff",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#89ceff",
+              "secondary": "#505f76",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#84cdff",
+              "secondary-fixed-dim": "#b7c8e1",
+              "tertiary": "#003f5c",
+              "error": "#ba1a1a",
+              "on-primary-fixed-variant": "#372abf",
+              "on-error": "#ffffff",
+              "on-primary": "#ffffff",
+              "outline-variant": "#c7c4d7",
+              "on-primary-fixed": "#100069",
+              "surface-container-low": "#f2f3ff",
+              "surface-variant": "#dae2fd",
+              "on-secondary": "#ffffff",
+              "inverse-surface": "#283044",
+              "error-container": "#ffdad6",
+              "surface-bright": "#faf8ff",
+              "inverse-on-surface": "#eef0ff"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"}
+          }
+        }
+      }
+    </script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding-bottom: 120px;
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 160px;
         }
-
-        .container {
-            max-width: 100%;
-            margin: 0;
-            background: white;
-            border-radius: 0;
-            box-shadow: none;
-            overflow: hidden;
-            padding: 0 40px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
         }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            border-radius: 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            flex-shrink: 0;
-        }
-
-        .header h2 {
-            margin: 0 0 5px 0;
-        }
-
-        .header p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .content {
-            padding-top: 20px;
-            padding-bottom: 20px;
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-top: 0;
-            margin-bottom: 0;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 10px;
-            grid-template-areas: "sidebar main";
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .input-section {
-            grid-column: 1 / -1;
-        }
-
-        .left-sidebar {
-            grid-area: sidebar;
-            position: sticky;
-            top: 50px;
-            height: fit-content;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .main-content {
-            grid-area: main;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .right-panel {
-            display: none;
-        }
-
-        @media (max-width: 1400px) {
-            .content {
-                grid-template-columns: 250px 1fr;
-                grid-template-areas: "sidebar main";
-                padding: 15px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding-bottom: 110px;
-            }
-            .container {
-                padding: 0 15px;
-            }
-            .content {
-                grid-template-columns: 1fr;
-                grid-template-areas: "sidebar" "main";
-                gap: 15px;
-                padding: 15px 0;
-            }
-            .left-sidebar {
-                position: relative;
-                top: 0;
-                max-height: none;
-                padding-right: 0;
-            }
-            .header {
-                padding: 10px 15px;
-            }
-            .header h2 {
-                font-size: 20px;
-            }
-            .action-footer {
-                padding: 12px 15px;
-            }
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .tab {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            color: #495057;
-        }
-
-        .tab:hover {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-
-        .tab.active {
-            border-bottom-color: #007bff;
-            color: #007bff;
-            font-weight: 500;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        hr {
-            height: 2px;
-            border-width: 0;
-            color: gray;
-            background-color: gray
-        }
-
-        textarea,
-        input[type="file"] {
-            width: 100%;
-            padding-top: 10px;
-            padding-left: 10px;    
-            border: 2px solid #dee2e6;
-            border-radius: 6px;
-            font-size: 14px;
-            line-height: 1.4;
-            transition: border-color 0.3s;
-            box-sizing: border-box;
-        }
-
-        textarea:focus,
-        input[type="file"]:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        textarea {
-            height: 300px;
-            resize: vertical;
-            max-height: 60vh;
-        }
-
-        input[type="text"],
-        input[type="number"] {
-            box-sizing: border-box;
-        }
-
-        ::file-selector-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        ::file-selector-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-        }
-
-        .sample-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        .sample-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-        }
-
-        .options {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-
-        .left-sidebar .options {
-            padding: 15px;
-            margin-bottom: 0;
-        }
-
-        .left-sidebar .options h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #495057;
-            font-size: 1em;
-        }
-
-        .left-sidebar .options h6 {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            color: #495057;
-            font-size: 0.9em;
-        }
-
-        .left-sidebar .option-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 0;
-            margin-bottom: 12px;
-        }
-
-        .left-sidebar .option-group label {
-            display: inline;
-            margin-right: 0;
-            font-weight: normal;
-            margin-bottom: 0;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .left-sidebar input[type="text"],
-        .left-sidebar input[type="number"] {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .buttons {
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .buttons button {
-            margin: 0;
-        }
-
-        button {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            opacity: 0.3;
-        }
-
-        button:focus {
-            outline: none;
-        }
-
-        .output {
-            display: block;
-        }
-
-        .output.hidden {
-            display: none;
-        }
-
-        .output-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .output-tab {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            color: #495057;
-        }
-
-        .output-tab:hover {
-            background-color: #f8f9fa;
-        }
-
-        .output-tab.active {
-            border-bottom-color: #667EEAFF;
-            color: #667EEAFF;
-            font-weight: 500;
-        }
-
-        .output-content {
-            display: none;
-        }
-
-        .output-content.active {
-            display: block;
-        }
-
-        .json-output,
-        .table-output {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.4;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .output > .stats-output {
-            display: none;
-        }
-
-        th {
-            position: sticky;
-            top: 0;
-        }
-
-        .table-output table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        .table-output th,
-        .table-output td {
-            padding: 4px 6px;
-            text-align: left;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .table-output th {
-            background-color: #e9ecef;
-            font-weight: 600;
-        }
-
-        .table-title {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.4;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-
-        .stats-output {
-            background-color: transparent;
-            padding: 0;
-            border-radius: 0;
-            margin-bottom: 0;
-            display: flex;
-            flex-direction: row;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .stats-output div {
-            background-color: #e9ecef;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .stats-output p {
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .error-output {
-            display: none;
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #f5c6cb;
-            margin-bottom: 20px;
-        }
-
-        .error-output:not(.hidden) {
-            display: block;
-        }
-
-        .download-btn {
-            margin-top: 1rem;
-            background: #28a745;
-            margin-left: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-        }
-
-        .download-btn-hidden {
-            visibility: hidden;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .github-link {
-            color: unset;
-            text-decoration: none;
-        }
-
-        .footer-basic {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            margin-top: 0;
-            padding: 5px;
-            background-color: #ffffff;
-            color: #4b4c4d;
-            z-index: 4;
-            border-top: 1px solid #dee2e6;
-        }
-
         .action-footer {
             position: fixed;
             left: 0;
-            bottom: 52px;
+            right: 0;
+            bottom: 0;
             width: 100%;
-            background-color: white;
-            padding-bottom: 13px;
-            padding-top: 5px;
-            z-index: 5;
+            z-index: 60;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+            padding: 1rem 0.75rem;
         }
-
-        .action-footer .buttons {
-            max-width: 100%;
-            margin: 0;
+        .action-footer-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
             display: flex;
-            gap: 10px;
-            justify-content: center;
             flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
         }
-
-        .action-footer button {
-            margin: 0;
+        .action-footer .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            width: 100%;
         }
-
-        .footer-basic ul {
-            padding: 0;
-            list-style: none;
-            text-align: center;
-            font-size: 16px;
-            line-height: 1.6;
-            margin: 0 0 15px 0;
+        @media (min-width: 640px) {
+            .action-footer .buttons {
+                width: auto;
+            }
         }
-
-        .footer-basic li {
-            padding: 0 10px;
-            display: inline-block;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .footer-basic ul a {
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7c4d7;
+            border-radius: 10px;
+        }
+        .tab, .output-tab {
+            padding: 0.9rem 1.25rem;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
+        .tab.active, .output-tab.active {
+            background: rgba(67, 56, 202, 0.12);
+            color: #4338ca;
+        }
+        .tab:hover, .output-tab:hover {
+            background: rgba(67, 56, 202, 0.08);
+        }
+        .btn-sample {
+            background: rgba(67, 56, 202, 0.08);
+            color: #4338ca;
+            border: 1px solid rgba(67, 56, 202, 0.16);
+            border-radius: 9999px;
+            padding: 0.75rem 1rem;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .btn-sample:hover {
+            background: rgba(67, 56, 202, 0.14);
+            transform: translateY(-1px);
+        }
+        .sample-btn {
+            background: rgba(67, 56, 202, 0.1);
+            color: #4338ca;
+            border: 1.5px solid rgba(67, 56, 202, 0.3);
+            border-radius: 9999px;
+            padding: 0.625rem 1rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+        .sample-btn:hover {
+            background: rgba(67, 56, 202, 0.18);
+            border-color: rgba(67, 56, 202, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.15);
+        }
+        .sample-btn:active {
+            transform: translateY(-1px);
+            background: rgba(67, 56, 202, 0.24);
+        }
+        .table-output {
+            width: 100%;
+            display: block;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        .table-output table {
+            /* Allow table to size to content so headers fit on one line
+               while still filling the container when content is small. */
+            width: max-content;
+            table-layout: auto;
+            min-width: 100%;
+        }
+        .table-output th {
+            background: rgba(67, 56, 202, 0.08);
+            color: #4338ca;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.875rem 1rem;
+            border-bottom: 2px solid rgba(67, 56, 202, 0.2);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .table-output td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+            border-right: 1px solid rgba(15, 23, 42, 0.08);
+            font-size: 0.8125rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .table-output td:last-child {
+            border-right: none;
+        }
+        .table-output tr:hover {
+            background: rgba(67, 56, 202, 0.04);
+        }
+        .table-output tr:last-child td {
+            border-bottom: none;
+        }
+        .tab-content,
+        .output-content {
+            display: none;
+        }
+        .tab-content.active,
+        .output-content.active {
+            display: block;
+        }
+        .error-output {
+            display: none;
+        }
+        .error-output:not(.hidden) {
+            display: block;
+        }
+        .footer-basic {
+            width: 100%;
+            padding: 24px 0;
+            color: #6b7280;
+        }
+        .footer-basic a {
             color: inherit;
             text-decoration: none;
             opacity: 0.8;
         }
-
-        .footer-basic ul a:hover {
+        .footer-basic a:hover {
             opacity: 1;
         }
-
-        .footer-basic .social {
-            text-align: center;
-            padding-top: 0;
-            margin-top: 10px;
-        }
-
         .footer-basic .social > a {
-            font-size: 20px;
-            width: 35px;
-            height: 35px;
-            line-height: 35px;
-            display: inline-block;
-            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            border: 1px solid #ccc;
-            margin: 0 5px;
+            border: 1px solid #d1d5db;
             color: inherit;
             opacity: 0.75;
         }
-
-        .footer-basic .social > a:hover {
-            opacity: 0.9;
+        .hidden {
+            display: none !important;
         }
-
-        .footer-basic .copyright {
-            margin-top: 10px;
-            text-align: center;
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 0;
-        }
-
-
-
-        .chunked-options {
-            margin-left: 20px;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 3px solid #007bff;
-        }
-
-        .chunked-options label {
-            display: inline-block;
-            margin-right: 10px;
-            font-weight: normal;
-        }
-
-        .chunked-options input {
-            width: 80px;
-            display: inline-block;
-        }
-
-        .chunked-options small {
-            color: #6c757d;
-            font-size: 0.85em;
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
     </style>
 </head>
-
-<body>
-<div class="header">
-    <h2>CSV to JSON Converter</h2>
-    <p>Convert CSV files to JSON with <b>no dependencies</b>. Supports Node.js (Sync & Async),
-            and Browser
-            environments with full RFC 4180 compliance.</p>
-</div>
-<div class="container">
-  
-    <div class="content">
-        <div class="left-sidebar">
-            <div class="options">
-                <h3>Parsing Options</h3>
-                <hr>
-                <div class="option-group">
-                    <input type="checkbox" id="format-values" checked>
-                    <label for="format-values">Format values by type</label>
-                </div>
-                <div class="option-group">
-                    <input type="checkbox" id="quoted-fields">
-                    <label for="quoted-fields">Support quoted fields</label>
-                </div>
-                <div class="option-group">
-                    <label for="delimiter">Field Delimiter:</label>
-                    <input type="text" id="delimiter" value="," size="1">
-                </div>
-                <div class="option-group">
-                    <label for="header-index">Header Row Index:</label>
-                    <input type="number" id="header-index" value="0" min="0" size="2">
-                </div>
-                <div class="option-group">
-                    <label for="ignore-column-indexes">Ignore Column Indexes:</label>
-                    <input type="text" id="ignore-column-indexes" placeholder="e.g. 0,2,4">
-                </div>
-                <div id="file-only-options" style="display: none;">
-                    <h3>Streaming Options</h3>
-                    <hr>
-                    <div class="option-group">
-                        <input type="checkbox" id="use-streaming">
-                        <label for="use-streaming">Use streaming</label>
-                    </div>
-                    <div class="option-group">
-                        <input type="checkbox" id="use-chunked">
-                        <label for="use-chunked">Chunked processing</label>
-                    </div>
-                    <div class="option-group chunked-options" id="chunked-options"
-                         style="display: none;">
-                        <label for="chunk-size">Chunk size:</label>
-                        <input type="number" id="chunk-size" value="1000" min="100" max="10000"
-                               size="4">
-                        <small>rows per chunk</small>
-                    </div>
-                </div>
-            </div>
+<body class="bg-background text-on-background font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<nav class="fixed top-0 w-full z-50 h-20 bg-white/90 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(19,27,46,0.08)]">
+    <div class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between gap-6">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-bold tracking-tighter text-indigo-900 font-headline">CSV to JSON Converter</span>
         </div>
-
-        <div class="main-content">
-            <div class="tabs">
-                <button class="tab active" data-tab="text">Paste CSV</button>
-                <button class="tab" data-tab="file">Upload File</button>
-            </div>
-
-            <div id="text-tab" class="tab-content active">
-                <div class="input-section">
-                    <label for="csv-input">CSV Input:</label>
-                    <textarea id="csv-input" placeholder="Paste your CSV data here...
-
-Example:
-name,age,city
-John,25,New York
-Jane,30,London"></textarea>
-                    <label>Try a sample:</label>
-                    <button class="sample-btn" data-sample="basic">Basic CSV</button>
-                    <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
-                    <button class="sample-btn" data-sample="numbers">Numbers</button>
-                    <button class="sample-btn" data-sample="dates">Dates</button>
+        <div class="lg:flex items-center gap-6 text-sm text-secondary">
+            <a href="https://github.com/iuccio/csvToJson" class="hover:text-indigo-600 transition">GitHub</a>
+            <a href="https://github.com/iuccio/csvToJson/blob/master/README.md" class="hover:text-indigo-600 transition">Documentation</a>
+            <a href="https://www.npmjs.com/package/convert-csv-to-json" class="hover:text-indigo-600 transition">npm</a>
+            <a href="https://github.com/iuccio" class="hover:text-indigo-600 transition">About</a>
+        </div>
+    </div>
+</nav>
+<main class="pt-32 pb-16 px-6 md:px-8 max-w-[1600px] mx-auto">
+    <div class="grid content-grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 p-6 shadow-sm">
+                <div class="mb-6">
+                    <p class="text-sm font-bold uppercase tracking-[0.3em] text-secondary">Parsing Options</p>
                 </div>
-            </div>
-
-            <div id="file-tab" class="tab-content">
-                <div class="input-section">
-                    <input type="file" id="csv-file" accept=".csv,text/csv">
-                </div>
-            </div>
-
-            <div id="stats-output-container" style="border-radius: 8px; display: none;">
-                <div class="stats-output" id="stats-output">
-                    <div id="file-info">
-                        <strong></strong>
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
+                        <label for="format-values" class="text-sm font-medium text-on-surface-variant">Format values by type</label>
+                        <input id="format-values" type="checkbox" checked class="accent-primary" />
+                    </div>
+                    <div class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
+                        <label for="quoted-fields" class="text-sm font-medium text-on-surface-variant">Support quoted fields</label>
+                        <input id="quoted-fields" type="checkbox" class="accent-primary" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="delimiter" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Field Delimiter</label>
+                        <input id="delimiter" type="text" value="," class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="header-index" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Header Row Index</label>
+                        <input id="header-index" type="number" value="0" min="0" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="ignore-column-indexes" class="text-xs font-bold uppercase tracking-[0.3em] text-outline">Ignore Column Indexes</label>
+                        <input id="ignore-column-indexes" type="text" placeholder="e.g. 0,2,4" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <div id="file-only-options" style="display: none;" class="space-y-4 rounded-3xl bg-surface-container p-4 border border-outline-variant/10">
+                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-secondary">File Options</p>
+                        <div class="flex items-center justify-between gap-3 px-2">
+                            <label for="use-streaming" class="text-sm text-on-surface">Use streaming</label>
+                            <input id="use-streaming" type="checkbox" class="accent-primary" />
+                        </div>
+                        <div class="flex items-center justify-between gap-3 px-2">
+                            <label for="use-chunked" class="text-sm text-on-surface">Chunked processing</label>
+                            <input id="use-chunked" type="checkbox" class="accent-primary" />
+                        </div>
+                        <div id="chunked-options" style="display: none;" class="space-y-2 rounded-3xl bg-white/90 border border-outline-variant/10 p-3">
+                            <label for="chunk-size" class="text-sm text-on-surface">Chunk size</label>
+                            <input id="chunk-size" type="number" value="1000" min="100" max="10000" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                            <p class="text-xs text-secondary">Rows per chunk</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div id="output" class="output hidden">
-                <div id="error-output" class="error-output hidden"></div>
-
-                <div class="output-tabs">
-                    <button class="output-tab active" data-output="table">Table View</button>
-                    <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
+        </aside>
+        <div class="lg:col-span-9 grid grid-cols-1 gap-8">
+            <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 bg-white/70 px-6 py-5">
+                    <div>
+                        <p class="text-sm font-semibold text-on-surface">Source CSV</p>
+                        <p class="text-sm text-secondary">Paste CSV text or upload a file to convert.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="tab active" data-tab="text">Paste CSV</button>
+                        <button class="tab" data-tab="file">Upload File</button>
+                    </div>
                 </div>
-                <div class="table-title" id="table-title"></div>
-
-                <div id="table-content" class="output-content active">
-                    <div class="table-output" id="table-output"></div>
+                <div class="p-6 space-y-6">
+                    <div id="text-tab" class="tab-content active space-y-5">
+                        <textarea id="csv-input" class="w-full min-h-[320px] rounded-[2rem] border border-outline-variant/20 bg-white/90 p-6 text-sm font-mono leading-6 custom-scrollbar focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Paste your CSV data here...\n\nExample:\nname,age,city\nJohn,25,New York\nJane,30,London"></textarea>
+                        <div class="flex flex-wrap gap-3">
+                            <button class="sample-btn" data-sample="basic">Basic CSV</button>
+                            <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
+                            <button class="sample-btn" data-sample="numbers">Numbers</button>
+                            <button class="sample-btn" data-sample="dates">Dates</button>
+                        </div>
+                    </div>
+                    <div id="file-tab" class="tab-content">
+                        <input id="csv-file" type="file" accept=".csv,text/csv" class="w-full rounded-[2rem] border border-outline-variant/20 bg-white/90 px-5 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
                 </div>
-
-                <div id="json-content" class="output-content">
-                    <div class="json-output" id="json-output"></div>
+            </div>
+            <div class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-6 space-y-6">
+                <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
+                    <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
+                        <div id="file-info"></div>
+                    </div>
+                </div>
+                <div id="output" class="output hidden space-y-4">
+                    <div id="error-output" class="error-output rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 hidden"></div>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex flex-wrap gap-2">
+                            <button class="output-tab active" data-output="table">Table View</button>
+                            <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
+                        </div>
+                        <span class="text-xs uppercase tracking-[0.3em] text-secondary">Preview</span>
+                    </div>
+                    <div id="table-title" class="text-xs text-secondary"></div>
+                    <div id="table-content" class="output-content active">
+                        <div id="table-output" class="table-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar"></div>
+                    </div>
+                    <div id="json-content" class="output-content">
+                        <div id="json-output" class="json-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar whitespace-pre-wrap break-words"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+</main>
 <div class="action-footer">
-    <div class="buttons">
-        <button id="convert-btn">Convert to JSON</button>
-        <button id="clear-btn">Clear</button>
-        <button id="download-json-btn" class="download-btn-hidden" onclick="downloadJSON()">Download JSON</button>
+    <div class="action-footer-inner">
+        <div class="buttons">
+            <button id="convert-btn" class="rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-bold shadow-lg hover:shadow-indigo-200 transition">Convert to JSON</button>
+            <button id="clear-btn" class="rounded-3xl border border-outline-variant/20 bg-white/90 px-6 py-3 text-on-surface font-semibold hover:bg-surface-container transition">Clear</button>
+            <button id="download-json-btn" class="download-btn download-btn-hidden hidden rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-semibold shadow-lg transition">Download JSON</button>
+        </div>
     </div>
-</div>
-
-<div class="footer-basic">
-    <footer>
-        <ul class="list-inline">
-            <li class="list-inline-item">
-                <a href="https://github.com/iuccio/csvToJson">
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-                    <svg fill="#000000" width="24px" height="24px" viewBox="0 0 24 24"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path
-                                d="m12.301 0h.093c2.242 0 4.34.613 6.137 1.68l-.055-.031c1.871 1.094 3.386 2.609 4.449 4.422l.031.058c1.04 1.769 1.654 3.896 1.654 6.166 0 5.406-3.483 10-8.327 11.658l-.087.026c-.063.02-.135.031-.209.031-.162 0-.312-.054-.433-.144l.002.001c-.128-.115-.208-.281-.208-.466 0-.005 0-.01 0-.014v.001q0-.048.008-1.226t.008-2.154c.007-.075.011-.161.011-.249 0-.792-.323-1.508-.844-2.025.618-.061 1.176-.163 1.718-.305l-.076.017c.573-.16 1.073-.373 1.537-.642l-.031.017c.508-.28.938-.636 1.292-1.058l.006-.007c.372-.476.663-1.036.84-1.645l.009-.035c.209-.683.329-1.468.329-2.281 0-.045 0-.091-.001-.136v.007c0-.022.001-.047.001-.072 0-1.248-.482-2.383-1.269-3.23l.003.003c.168-.44.265-.948.265-1.479 0-.649-.145-1.263-.404-1.814l.011.026c-.115-.022-.246-.035-.381-.035-.334 0-.649.078-.929.216l.012-.005c-.568.21-1.054.448-1.512.726l.038-.022-.609.384c-.922-.264-1.981-.416-3.075-.416s-2.153.152-3.157.436l.081-.02q-.256-.176-.681-.433c-.373-.214-.814-.421-1.272-.595l-.066-.022c-.293-.154-.64-.244-1.009-.244-.124 0-.246.01-.364.03l.013-.002c-.248.524-.393 1.139-.393 1.788 0 .531.097 1.04.275 1.509l-.01-.029c-.785.844-1.266 1.979-1.266 3.227 0 .025 0 .051.001.076v-.004c-.001.039-.001.084-.001.13 0 .809.12 1.591.344 2.327l-.015-.057c.189.643.476 1.202.85 1.693l-.009-.013c.354.435.782.793 1.267 1.062l.022.011c.432.252.933.465 1.46.614l.046.011c.466.125 1.024.227 1.595.284l.046.004c-.431.428-.718 1-.784 1.638l-.001.012c-.207.101-.448.183-.699.236l-.021.004c-.256.051-.549.08-.85.08-.022 0-.044 0-.066 0h.003c-.394-.008-.756-.136-1.055-.348l.006.004c-.371-.259-.671-.595-.881-.986l-.007-.015c-.198-.336-.459-.614-.768-.827l-.009-.006c-.225-.169-.49-.301-.776-.38l-.016-.004-.32-.048c-.023-.002-.05-.003-.077-.003-.14 0-.273.028-.394.077l.007-.003q-.128.072-.08.184c.039.086.087.16.145.225l-.001-.001c.061.072.13.135.205.19l.003.002.112.08c.283.148.516.354.693.603l.004.006c.191.237.359.505.494.792l.01.024.16.368c.135.402.38.738.7.981l.005.004c.3.234.662.402 1.057.478l.016.002c.33.064.714.104 1.106.112h.007c.045.002.097.002.15.002.261 0 .517-.021.767-.062l-.027.004.368-.064q0 .609.008 1.418t.008.873v.014c0 .185-.08.351-.208.466h-.001c-.119.089-.268.143-.431.143-.075 0-.147-.011-.214-.032l.005.001c-4.929-1.689-8.409-6.283-8.409-11.69 0-2.268.612-4.393 1.681-6.219l-.032.058c1.094-1.871 2.609-3.386 4.422-4.449l.058-.031c1.739-1.034 3.835-1.645 6.073-1.645h.098-.005zm-7.64 17.666q.048-.112-.112-.192-.16-.048-.208.032-.048.112.112.192.144.096.208-.032zm.497.545q.112-.08-.032-.256-.16-.144-.256-.048-.112.08.032.256.159.157.256.047zm.48.72q.144-.112 0-.304-.128-.208-.272-.096-.144.08 0 .288t.272.112zm.672.673q.128-.128-.064-.304-.192-.192-.32-.048-.144.128.064.304.192.192.32.044zm.913.4q.048-.176-.208-.256-.24-.064-.304.112t.208.24q.24.097.304-.096zm1.009.08q0-.208-.272-.176-.256 0-.256.176 0 .208.272.176.256.001.256-.175zm.929-.16q-.032-.176-.288-.144-.256.048-.224.24t.288.128.225-.224z"/>
-                    </svg>
-                </a>
-            </li>
-            <li class="list-inline-item"><a
-                    href="https://github.com/iuccio/csvToJson/blob/master/README.md">Documentation</a>
-            </li>
-            <li class="list-inline-item"><a
-                    href="https://www.npmjs.com/package/convert-csv-to-json">npm</a></li>
-            <li class="list-inline-item"><a href="./api/index.html">JSDoc</a></li>
-            <li class="list-inline-item"><a href="https://github.com/iuccio">About</a></li>
-        </ul>
-    </footer>
 </div>
 
 <script src="demo.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-        integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
-        integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl"
-        crossorigin="anonymous"></script>
 <script src="csvToJsonDemo.js"></script>
 </body>
-
 </html>
