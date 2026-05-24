@@ -233,6 +233,20 @@
             background: rgba(67, 56, 202, 0.12);
             transform: translateY(-1px);
         }
+        .file-drop-zone {
+            border: 2px solid rgba(67, 56, 202, 0.2);
+            background: rgba(67, 56, 202, 0.02);
+            cursor: pointer;
+        }
+        .file-drop-zone:hover {
+            border-color: rgba(67, 56, 202, 0.4);
+            background: rgba(67, 56, 202, 0.06);
+        }
+        .file-drop-zone.drag-over {
+            border-color: rgba(67, 56, 202, 0.8);
+            background: rgba(67, 56, 202, 0.15);
+            box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.1);
+        }
         #output-container {
             min-height: 260px;
         }
@@ -471,10 +485,12 @@
                         </div>
                     </div>
                     <div id="file-tab" class="tab-content">
-                        <label for="csv-file" class="file-btn w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm">
-                            Choose file
-                            <input id="csv-file" type="file" accept=".csv,text/csv" class="hidden" />
-                        </label>
+                        <div id="drop-zone" class="file-drop-zone w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm transition-all">
+                            <label for="csv-file" class="file-btn w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm">
+                                Choose file or drag and drop
+                                <input id="csv-file" type="file" accept=".csv,text/csv" class="hidden" />
+                            </label>
+                        </div>
                         <div id="file-info" class="px-3 mt-3 text-sm text-secondary"></div>
                     </div>
                 </div>
