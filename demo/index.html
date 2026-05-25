@@ -1,111 +1,124 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Fast Online conversion of CSV Files to JSON. RFC 4180 Compliant. Large File Support. Custom field delimiters. Allows mapping of header row index and value formatting. Works in Browser environments with full RFC 4180 compliance."/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Fast Online conversion of CSV Files to JSON. RFC 4180 Compliant. Large File Support. Custom field delimiters. Allows mapping of header row index and value formatting. Works in Browser environments with full RFC 4180 compliance." />
+    <link rel="icon" type="image/x-icon" href="csvToJson.ico">
     <title>CSV to JSON Converter</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary-fixed": "#e3dfff",
-              "surface-dim": "#d2d9f4",
-              "tertiary-fixed": "#c9e6ff",
-              "on-surface-variant": "#464554",
-              "surface": "#faf8ff",
-              "surface-container": "#eaedff",
-              "outline": "#777586",
-              "surface-tint": "#5148d7",
-              "secondary-fixed": "#d3e4fe",
-              "on-secondary-container": "#54647a",
-              "on-primary-container": "#c1beff",
-              "on-tertiary-fixed-variant": "#004c6e",
-              "on-error-container": "#93000a",
-              "background": "#faf8ff",
-              "on-secondary-fixed-variant": "#38485d",
-              "tertiary-container": "#00577e",
-              "primary": "#2a14b4",
-              "surface-container-highest": "#dae2fd",
-              "on-tertiary-fixed": "#001e2f",
-              "on-background": "#131b2e",
-              "on-secondary-fixed": "#0b1c30",
-              "on-surface": "#131b2e",
-              "surface-container-high": "#e2e7ff",
-              "primary-container": "#4338ca",
-              "primary-fixed-dim": "#c3c0ff",
-              "secondary-container": "#d0e1fb",
-              "inverse-primary": "#c3c0ff",
-              "on-tertiary": "#ffffff",
-              "tertiary-fixed-dim": "#89ceff",
-              "secondary": "#505f76",
-              "surface-container-lowest": "#ffffff",
-              "on-tertiary-container": "#84cdff",
-              "secondary-fixed-dim": "#b7c8e1",
-              "tertiary": "#003f5c",
-              "error": "#ba1a1a",
-              "on-primary-fixed-variant": "#372abf",
-              "on-error": "#ffffff",
-              "on-primary": "#ffffff",
-              "outline-variant": "#c7c4d7",
-              "on-primary-fixed": "#100069",
-              "surface-container-low": "#f2f3ff",
-              "surface-variant": "#dae2fd",
-              "on-secondary": "#ffffff",
-              "inverse-surface": "#283044",
-              "error-container": "#ffdad6",
-              "surface-bright": "#faf8ff",
-              "inverse-on-surface": "#eef0ff"
-            },
-            fontFamily: {
-              "headline": ["Space Grotesk"],
-              "body": ["Inter"],
-              "label": ["Inter"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"}
-          }
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed": "#e3dfff",
+                        "surface-dim": "#d2d9f4",
+                        "tertiary-fixed": "#c9e6ff",
+                        "on-surface-variant": "#464554",
+                        "surface": "#faf8ff",
+                        "surface-container": "#eaedff",
+                        "outline": "#777586",
+                        "surface-tint": "#5148d7",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "on-primary-container": "#c1beff",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "on-error-container": "#93000a",
+                        "background": "#faf8ff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-container": "#00577e",
+                        "primary": "#2a14b4",
+                        "surface-container-highest": "#dae2fd",
+                        "on-tertiary-fixed": "#001e2f",
+                        "on-background": "#131b2e",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-surface": "#131b2e",
+                        "surface-container-high": "#e2e7ff",
+                        "primary-container": "#4338ca",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "secondary-container": "#d0e1fb",
+                        "inverse-primary": "#c3c0ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#89ceff",
+                        "secondary": "#505f76",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#84cdff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#003f5c",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#372abf",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c7c4d7",
+                        "on-primary-fixed": "#100069",
+                        "surface-container-low": "#f2f3ff",
+                        "surface-variant": "#dae2fd",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#283044",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#eef0ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" }
+                }
+            }
         }
-      }
     </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
         }
+
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #c7c4d7;
             border-radius: 10px;
         }
+
         /* Toggle switch style for checkboxes */
         input[type="checkbox"] {
             -webkit-appearance: none;
             appearance: none;
             width: 44px;
             height: 24px;
-            background: rgba(15,23,42,0.06);
+            background: rgba(15, 23, 42, 0.06);
             border-radius: 9999px;
             position: relative;
             display: inline-block;
             vertical-align: middle;
             margin: 0;
             cursor: pointer;
-            border: 1px solid rgba(15,23,42,0.06);
+            border: 1px solid rgba(15, 23, 42, 0.06);
             transition: background 0.18s ease, border-color 0.18s ease;
         }
+
         input[type="checkbox"]::after {
             content: "";
             position: absolute;
@@ -115,32 +128,42 @@
             height: 20px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: 0 2px 6px rgba(2,6,23,0.12);
+            box-shadow: 0 2px 6px rgba(2, 6, 23, 0.12);
             transition: transform 0.18s ease, background 0.18s ease;
         }
+
         input[type="checkbox"]:checked {
             background: linear-gradient(90deg, #4338ca 0%, #6d28d9 100%);
             border-color: transparent;
         }
+
         input[type="checkbox"]:checked::after {
             transform: translateX(20px);
         }
+
         input[type="checkbox"]:focus {
-            box-shadow: 0 0 0 4px rgba(67,56,202,0.12);
+            box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.12);
             outline: none;
         }
-        .tab, .output-tab {
+
+        .tab,
+        .output-tab {
             padding: 0.9rem 1.25rem;
             border-radius: 9999px;
             transition: all 0.2s ease;
         }
-        .tab.active, .output-tab.active {
+
+        .tab.active,
+        .output-tab.active {
             background: rgba(67, 56, 202, 0.12);
             color: #4338ca;
         }
-        .tab:hover, .output-tab:hover {
+
+        .tab:hover,
+        .output-tab:hover {
             background: rgba(67, 56, 202, 0.08);
         }
+
         .btn-sample {
             background: rgba(67, 56, 202, 0.08);
             color: #4338ca;
@@ -149,10 +172,12 @@
             padding: 0.75rem 1rem;
             transition: transform 0.2s ease, background 0.2s ease;
         }
+
         .btn-sample:hover {
             background: rgba(67, 56, 202, 0.14);
             transform: translateY(-1px);
         }
+
         .sample-btn {
             background: rgba(67, 56, 202, 0.1);
             color: #4338ca;
@@ -168,16 +193,19 @@
             justify-content: center;
             white-space: nowrap;
         }
+
         .sample-btn:hover {
             background: rgba(67, 56, 202, 0.18);
             border-color: rgba(67, 56, 202, 0.5);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(67, 56, 202, 0.15);
         }
+
         .sample-btn:active {
             transform: translateY(-1px);
             background: rgba(67, 56, 202, 0.24);
         }
+
         .download-btn {
             display: inline-flex;
             align-items: center;
@@ -190,23 +218,28 @@
             text-decoration: none;
             transition: color 0.18s ease;
         }
+
         .download-btn:hover {
             color: #2a14b4;
             text-decoration: none;
             background: transparent;
         }
+
         .download-btn:focus-visible {
             outline: 2px solid rgba(67, 56, 202, 0.35);
             outline-offset: 2px;
         }
+
         .download-btn .material-symbols-outlined {
             font-size: 1rem;
             line-height: 1;
         }
+
         .download-btn:focus-visible {
-            outline: 2px solid rgba(255,255,255,0.9);
+            outline: 2px solid rgba(255, 255, 255, 0.9);
             outline-offset: 3px;
         }
+
         .file-btn {
             background: rgba(67, 56, 202, 0.06);
             color: #4338ca;
@@ -222,30 +255,37 @@
             cursor: pointer;
             transition: all 0.18s ease;
         }
+
         .file-btn:hover {
             background: rgba(67, 56, 202, 0.12);
             transform: translateY(-1px);
         }
+
         .file-drop-zone {
             border: 2px solid rgba(67, 56, 202, 0.2);
             background: rgba(67, 56, 202, 0.02);
             cursor: pointer;
         }
+
         .file-drop-zone:hover {
             border-color: rgba(67, 56, 202, 0.4);
             background: rgba(67, 56, 202, 0.06);
         }
+
         .file-drop-zone.drag-over {
             border-color: rgba(67, 56, 202, 0.8);
             background: rgba(67, 56, 202, 0.15);
             box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.1);
         }
+
         #output-container {
             min-height: 170px;
         }
+
         body.file-tab-active #output-container {
             min-height: 597px;
         }
+
         .table-output {
             width: 100%;
             display: block;
@@ -253,6 +293,7 @@
             overflow-y: auto;
             max-height: 500px;
         }
+
         .table-output table {
             /* Allow table to size to content so headers fit on one line
                while still filling the container when content is small. */
@@ -260,8 +301,9 @@
             table-layout: auto;
             min-width: 100%;
         }
+
         .table-output th {
-            background: rgba(241,242,254, 1);
+            background: rgba(241, 242, 254, 1);
             color: #4338ca;
             font-weight: 600;
             text-align: left;
@@ -272,6 +314,7 @@
             top: 0;
             z-index: 10;
         }
+
         .table-output td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid rgba(15, 23, 42, 0.1);
@@ -281,15 +324,19 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .table-output td:last-child {
             border-right: none;
         }
+
         .table-output tr:hover {
             background: rgba(67, 56, 202, 0.04);
         }
+
         .table-output tr:last-child td {
             border-bottom: none;
         }
+
         .json-output {
             position: relative;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
@@ -298,36 +345,39 @@
             color: #e6eef8;
             padding: 1rem;
             border-radius: 1rem;
-            border: 1px solid rgba(99,102,241,0.12);
-            box-shadow: 0 6px 18px rgba(3,7,18,0.45);
+            border: 1px solid rgba(99, 102, 241, 0.12);
+            box-shadow: 0 6px 18px rgba(3, 7, 18, 0.45);
             overflow-x: auto;
             overflow-y: auto;
             max-height: 500px;
             white-space: pre;
             line-height: 1.45;
         }
+
         .json-output::before {
             content: "JSON";
             position: absolute;
-            top: 0.5rem;
+            bottom: 0.5rem;
             right: 0.75rem;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             color: #c7d2fe;
-            border: 1px solid rgba(199,210,254,0.12);
+            border: 1px solid rgba(199, 210, 254, 0.12);
             padding: 0.25rem 0.5rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
             z-index: 20;
         }
+
         .copy-json-btn {
             position: absolute;
             top: 0.5rem;
-            right: 4.75rem; /* nudged right for visibility */
+            right: 0.75rem;
+            /* nudged right for visibility */
             z-index: 30;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             color: #e6eef8;
-            border: 1px solid rgba(199,210,254,0.08);
+            border: 1px solid rgba(199, 210, 254, 0.08);
             padding: 0.25rem 0.6rem;
             border-radius: 8px;
             font-size: 0.75rem;
@@ -338,6 +388,7 @@
             align-items: center;
             gap: 0.4rem;
         }
+
         .copy-json-btn svg {
             width: 14px;
             height: 14px;
@@ -345,13 +396,19 @@
             vertical-align: middle;
             color: #c7d2fe;
         }
-        .copy-json-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.08); }
+
+        .copy-json-btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         .spinner-container {
             display: flex;
             align-items: center;
             gap: 1rem;
             justify-content: center;
         }
+
         .spinner {
             width: 2rem;
             height: 2rem;
@@ -360,42 +417,52 @@
             border-radius: 9999px;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
         }
+
         .tab-content,
         .output-content {
             display: none;
         }
+
         .tab-content.active,
         .output-content.active {
             display: block;
         }
+
         .error-output {
             display: none;
         }
+
         .error-output:not(.hidden) {
             display: block;
         }
+
         .footer-basic {
             width: 100%;
             padding: 24px 0;
             color: #6b7280;
         }
+
         .footer-basic a {
             color: inherit;
             text-decoration: none;
             opacity: 0.8;
         }
+
         .footer-basic a:hover {
             opacity: 1;
         }
-        .footer-basic .social > a {
+
+        .footer-basic .social>a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -406,9 +473,11 @@
             color: inherit;
             opacity: 0.75;
         }
+
         .hidden {
             display: none !important;
         }
+
         @media (max-width: 1024px) {
             .content-grid {
                 grid-template-columns: 1fr !important;
@@ -416,168 +485,214 @@
         }
     </style>
 </head>
+
 <body class="bg-background text-on-background font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
-<nav class="fixed top-0 w-full z-50 h-20 bg-white/90 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(19,27,46,0.08)]">
-    <div class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between gap-6">
-        <div class="flex items-center gap-8">
-            <span class="text-2xl font-bold tracking-tighter text-indigo-900 font-headline">CSV to JSON Converter</span>
-        </div>
-        <div class="lg:flex items-center gap-6 text-sm text-secondary">
-            <a href="https://github.com/iuccio/csvToJson" class="hover:text-indigo-600 transition">GitHub</a>
-            <a href="https://github.com/iuccio/csvToJson/blob/master/README.md" class="hover:text-indigo-600 transition">Documentation</a>
-            <a href="https://www.npmjs.com/package/convert-csv-to-json" class="hover:text-indigo-600 transition">npm</a>
-            <a href="https://github.com/iuccio" class="hover:text-indigo-600 transition">About</a>
-        </div>
-    </div>
-</nav>
-<main class="pt-24 pb-16 px-6 md:px-8 max-w-[1600px] mx-auto">
-    <div class="grid content-grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <aside class="lg:col-span-3 space-y-6">
-            <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 p-6 shadow-sm">
-                <div class="mb-6">
-                    <p class="text-sm font-bold uppercase tracking-[0.3em] text-secondary">Parsing Options</p>
-                </div>
-                <div class="space-y-5">
-                    <div class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
-                        <label for="format-values" class="text-sm font-medium text-on-surface-variant">Format values by type</label>
-                        <input id="format-values" type="checkbox" checked class="accent-primary" />
-                    </div>
-                    <div class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
-                        <label for="quoted-fields" class="text-sm font-medium text-on-surface-variant">Support quoted fields</label>
-                        <input id="quoted-fields" type="checkbox" class="accent-primary" />
-                    </div>
-                    <div class="space-y-2">
-                        <label for="delimiter" class="text-xs font-bold uppercase text-outline">Field Delimiter</label>
-                        <input id="delimiter" type="text" value="," class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                    </div>
-                    <div class="space-y-2">
-                        <label for="header-index" class="text-xs font-bold uppercase text-outline">Header Row Index</label>
-                        <input id="header-index" type="number" value="0" min="0" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                    </div>
-                    <div class="space-y-2">
-                        <label for="ignore-column-indexes" class="text-xs font-bold uppercase text-outline">Ignore Column Indexes</label>
-                        <input id="ignore-column-indexes" type="text" placeholder="e.g. 0,2,4" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                    </div>
-                    <div id="file-only-options" style="display: none;" class="space-y-4 rounded-3xl bg-surface-container p-4 border border-outline-variant/10">
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-secondary">File Options</p>
-                        <div class="flex items-center justify-between gap-3 px-2">
-                            <label for="use-streaming" class="text-sm text-on-surface">Use streaming</label>
-                            <input id="use-streaming" type="checkbox" class="accent-primary" />
-                        </div>
-                        <div class="flex items-center justify-between gap-3 px-2">
-                            <label for="use-chunked" class="text-sm text-on-surface">Chunked processing</label>
-                            <input id="use-chunked" type="checkbox" class="accent-primary" />
-                        </div>
-                        <div id="chunked-options" style="display: none;" class="space-y-2 rounded-3xl bg-white/90 border border-outline-variant/10 p-3">
-                            <label for="chunk-size" class="text-sm text-on-surface">Chunk size</label>
-                            <input id="chunk-size" type="number" value="1000" min="100" max="10000" class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                            <p class="text-xs text-secondary">Rows per chunk</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-3 pt-4 border-t border-outline-variant/10">
-                        <button id="convert-btn" class="rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-bold shadow-lg hover:shadow-indigo-200 transition">Convert to JSON</button>
-                        <button id="clear-btn" class="rounded-3xl border border-outline-variant/20 bg-white/90 px-6 py-3 text-on-surface font-semibold hover:bg-surface-container transition">Clear</button>
-                    </div>
-                </div>
+    <nav
+        class="fixed top-0 w-full z-50 h-20 bg-white/90 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(19,27,46,0.08)]">
+        <div class="max-w-7xl mx-auto h-full flex items-center justify-between gap-6">
+            <div class="flex items-center gap-8">
+                <span class="text-2xl font-bold tracking-tighter text-indigo-900 font-headline">CSV to JSON
+                    Converter</span>
             </div>
-        </aside>
-        <div class="lg:col-span-9 grid grid-cols-1 gap-4">
-            <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 bg-white/70 px-6 py-3">
-                    <div>
-                        <p class="text-sm font-semibold text-on-surface">Source CSV</p>
-                        <p class="text-sm text-secondary">Paste CSV text or upload a file to convert.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button class="tab active" data-tab="text">Paste CSV</button>
-                        <button class="tab" data-tab="file">Upload File</button>
-                    </div>
-                </div>
-                <div class="p-2 space-y-2">
-                    <div id="text-tab" class="tab-content active space-y-5">
-                        <textarea id="csv-input" class="w-full min-h-[320px] rounded-[2rem] border border-outline-variant/20 bg-white/90 p-6 text-sm font-mono leading-6 custom-scrollbar focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Paste your CSV data here..."></textarea>
-                        <div class="flex flex-wrap gap-3">
-                            <button class="sample-btn" data-sample="basic">Basic CSV</button>
-                            <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
-                            <button class="sample-btn" data-sample="numbers">Numbers</button>
-                            <button class="sample-btn" data-sample="dates">Dates</button>
-                        </div>
-                    </div>
-                    <div id="file-tab" class="tab-content">
-                        <div id="drop-zone" class="file-drop-zone w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm transition-all">
-                            <label for="csv-file" class="file-btn w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm">
-                                Choose file or drag and drop
-                                <input id="csv-file" type="file" accept=".csv,text/csv" class="hidden" />
-                            </label>
-                        </div>
-                        <div id="file-info" class="px-3 mt-3 text-sm text-secondary"></div>
-                    </div>
-                </div>
+            <div class="lg:flex items-center gap-2 text-sm text-secondary">
+                <a href="https://github.com/iuccio/csvToJson" class="hover:text-indigo-600 transition">
+                    <?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30px"
+                        height="30px">
+                        <path
+                            d="M15,3C8.373,3,3,8.373,3,15c0,5.623,3.872,10.328,9.092,11.63C12.036,26.468,12,26.28,12,26.047v-2.051 c-0.487,0-1.303,0-1.508,0c-0.821,0-1.551-0.353-1.905-1.009c-0.393-0.729-0.461-1.844-1.435-2.526 c-0.289-0.227-0.069-0.486,0.264-0.451c0.615,0.174,1.125,0.596,1.605,1.222c0.478,0.627,0.703,0.769,1.596,0.769 c0.433,0,1.081-0.025,1.691-0.121c0.328-0.833,0.895-1.6,1.588-1.962c-3.996-0.411-5.903-2.399-5.903-5.098 c0-1.162,0.495-2.286,1.336-3.233C9.053,10.647,8.706,8.73,9.435,8c1.798,0,2.885,1.166,3.146,1.481C13.477,9.174,14.461,9,15.495,9 c1.036,0,2.024,0.174,2.922,0.483C18.675,9.17,19.763,8,21.565,8c0.732,0.731,0.381,2.656,0.102,3.594 c0.836,0.945,1.328,2.066,1.328,3.226c0,2.697-1.904,4.684-5.894,5.097C18.199,20.49,19,22.1,19,23.313v2.734 c0,0.104-0.023,0.179-0.035,0.268C23.641,24.676,27,20.236,27,15C27,8.373,21.627,3,15,3z" />
+                    </svg>
+                </a>
+                <a href="./api/index.html" class="hover:text-indigo-600 transition">JSDoc</a>
+                <a href="https://www.npmjs.com/package/convert-csv-to-json"
+                    class="hover:text-indigo-600 transition">npm</a>
+                <a href="https://github.com/iuccio" class="hover:text-indigo-600 transition">About</a>
             </div>
-            <div id="output-container" class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-2 space-y-4">
-                <div id="output" class="output hidden space-y-4">
-                    <div id="error-output" class="error-output rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 hidden"></div>
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button class="output-tab active" data-output="table">Table View</button>
-                            <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
-                            <button id="download-json-btn" type="button" class="download-btn download-btn-hidden hidden inline-flex items-center gap-2" aria-label="Download JSON">
-                                <span class="material-symbols-outlined" aria-hidden="true">download</span>
-                                <span>Download</span>
-                            </button>
-                            <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
-                                <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
+        </div>
+    </nav>
+    <main class="pt-24 pb-16 px-6 md:px-8 max-w-[1600px] mx-auto">
+        <div class="grid content-grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <aside class="lg:col-span-3 space-y-6">
+                <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 p-6 shadow-sm">
+                    <div class="mb-6">
+                        <p class="text-sm font-bold uppercase tracking-[0.3em] text-secondary">Parsing Options</p>
+                    </div>
+                    <div class="space-y-5">
+                        <div
+                            class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
+                            <label for="format-values" class="text-sm font-medium text-on-surface-variant">Format values
+                                by type</label>
+                            <input id="format-values" type="checkbox" checked class="accent-primary" />
+                        </div>
+                        <div
+                            class="flex items-center justify-between gap-3 rounded-3xl bg-white/80 border border-outline-variant/20 px-4 py-4">
+                            <label for="quoted-fields" class="text-sm font-medium text-on-surface-variant">Support
+                                quoted fields</label>
+                            <input id="quoted-fields" type="checkbox" class="accent-primary" />
+                        </div>
+                        <div class="space-y-2">
+                            <label for="delimiter" class="text-xs font-bold uppercase text-outline">Field
+                                Delimiter</label>
+                            <input id="delimiter" type="text" value=","
+                                class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                        </div>
+                        <div class="space-y-2">
+                            <label for="header-index" class="text-xs font-bold uppercase text-outline">Header Row
+                                Index</label>
+                            <input id="header-index" type="number" value="0" min="0"
+                                class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                        </div>
+                        <div class="space-y-2">
+                            <label for="ignore-column-indexes" class="text-xs font-bold uppercase text-outline">Ignore
+                                Column Indexes</label>
+                            <input id="ignore-column-indexes" type="text" placeholder="e.g. 0,2,4"
+                                class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                        </div>
+                        <div id="file-only-options" style="display: none;"
+                            class="space-y-4 rounded-3xl bg-surface-container p-4 border border-outline-variant/10">
+                            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-secondary">File Options</p>
+                            <div class="flex items-center justify-between gap-3 px-2">
+                                <label for="use-streaming" class="text-sm text-on-surface">Use streaming</label>
+                                <input id="use-streaming" type="checkbox" class="accent-primary" />
+                            </div>
+                            <div class="flex items-center justify-between gap-3 px-2">
+                                <label for="use-chunked" class="text-sm text-on-surface">Chunked processing</label>
+                                <input id="use-chunked" type="checkbox" class="accent-primary" />
+                            </div>
+                            <div id="chunked-options" style="display: none;"
+                                class="space-y-2 rounded-3xl bg-white/90 border border-outline-variant/10 p-3">
+                                <label for="chunk-size" class="text-sm text-on-surface">Chunk size</label>
+                                <input id="chunk-size" type="number" value="1000" min="100" max="10000"
+                                    class="w-full rounded-3xl border border-outline-variant/20 bg-white/90 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                                <p class="text-xs text-secondary">Rows per chunk</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3 pt-4 border-t border-outline-variant/10">
+                            <button id="convert-btn"
+                                class="rounded-3xl bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 font-bold shadow-lg hover:shadow-indigo-200 transition">Convert
+                                to JSON</button>
+                            <button id="clear-btn"
+                                class="rounded-3xl border border-outline-variant/20 bg-white/90 px-6 py-3 text-on-surface font-semibold hover:bg-surface-container transition">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <div class="lg:col-span-9 grid grid-cols-1 gap-4">
+                <div
+                    class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 bg-white/70 px-6 py-3">
+                        <div>
+                            <p class="text-sm font-semibold text-on-surface">Source CSV</p>
+                            <p class="text-sm text-secondary">Paste CSV text or upload a file to convert.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="tab active" data-tab="text">Paste CSV</button>
+                            <button class="tab" data-tab="file">Upload File</button>
+                        </div>
+                    </div>
+                    <div class="p-2 space-y-2">
+                        <div id="text-tab" class="tab-content active space-y-5">
+                            <textarea id="csv-input"
+                                class="w-full min-h-[320px] rounded-[2rem] border border-outline-variant/20 bg-white/90 p-6 text-sm font-mono leading-6 custom-scrollbar focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                placeholder="Paste your CSV data here..."></textarea>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="sample-btn" data-sample="basic">Basic CSV</button>
+                                <button class="sample-btn" data-sample="quoted">Quoted Fields</button>
+                                <button class="sample-btn" data-sample="numbers">Numbers</button>
+                                <button class="sample-btn" data-sample="dates">Dates</button>
+                            </div>
+                        </div>
+                        <div id="file-tab" class="tab-content">
+                            <div id="drop-zone"
+                                class="file-drop-zone w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm transition-all">
+                                <label for="csv-file"
+                                    class="file-btn w-full rounded-[2rem] border-outline-variant/20 px-5 py-4 text-sm">
+                                    Choose file or drag and drop
+                                    <input id="csv-file" type="file" accept=".csv,text/csv" class="hidden" />
+                                </label>
+                            </div>
+                            <div id="file-info" class="px-3 mt-3 text-sm text-secondary"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="output-container"
+                    class="bg-surface-container-low rounded-3xl border border-outline-variant/10 shadow-sm p-2 space-y-4">
+                    <div id="output" class="output hidden space-y-4">
+                        <div id="error-output"
+                            class="error-output rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 hidden">
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button class="output-tab active" data-output="table">Table View</button>
+                                <button class="output-tab" data-output="json" id="output-tab-json">JSON View</button>
+                                <button id="download-json-btn" type="button"
+                                    class="download-btn download-btn-hidden hidden inline-flex items-center gap-2"
+                                    aria-label="Download JSON">
+                                    <span class="material-symbols-outlined" aria-hidden="true">download</span>
+                                    <span>Download</span>
+                                </button>
+                                <div id="stats-output-container" class="rounded-3xl bg-white/90 p-4 hidden">
+                                    <div id="stats-output" class="flex flex-wrap gap-3 text-sm text-secondary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="table-title" class="text-xs text-secondary"></div>
+                        <div id="table-content" class="output-content active">
+                            <div id="table-output"
+                                class="table-output rounded-3xl border border-outline-variant/10 bg-white/90 overflow-auto custom-scrollbar">
+                            </div>
+                        </div>
+                        <div id="json-content" class="output-content">
+                            <div class="json-output-wrapper" style="position:relative">
+                                <button id="copy-json-btn" class="copy-json-btn" aria-label="Copy JSON">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true">
+                                        <rect x="9" y="9" width="10" height="10" rx="1.5" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <path d="M7 15H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"
+                                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    Copy
+                                </button>
+                                <div id="json-output"
+                                    class="json-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="table-title" class="text-xs text-secondary"></div>
-                    <div id="table-content" class="output-content active">
-                        <div id="table-output" class="table-output rounded-3xl border border-outline-variant/10 bg-white/90 overflow-auto custom-scrollbar"></div>
-                    </div>
-                    <div id="json-content" class="output-content">
-                        <div class="json-output-wrapper" style="position:relative">
-                            <button id="copy-json-btn" class="copy-json-btn" aria-label="Copy JSON">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <rect x="9" y="9" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5" />
-                                    <path d="M7 15H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Copy
-                            </button>
-                            <div id="json-output" class="json-output rounded-3xl border border-outline-variant/10 bg-white/90 p-5 overflow-auto custom-scrollbar"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
-<script src="demo.bundle.js"></script>
-<script src="csvToJsonDemo.js"></script>
-<script>
-document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'copy-json-btn') {
-        const btn = e.target;
-        const out = document.getElementById('json-output');
-        if (!out) return;
-        const text = out.textContent || out.innerText || '';
-        if (!navigator.clipboard) {
-            // fallback
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (err) {}
-            document.body.removeChild(ta);
-        } else {
-            navigator.clipboard.writeText(text).catch(()=>{});
-        }
-        const orig = btn.textContent;
-        btn.textContent = 'Copied';
-        btn.disabled = true;
-        setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1500);
-    }
-});
-</script>
+    </main>
+    <script src="demo.bundle.js"></script>
+    <script src="csvToJsonDemo.js"></script>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'copy-json-btn') {
+                const btn = e.target;
+                const out = document.getElementById('json-output');
+                if (!out) return;
+                const text = out.textContent || out.innerText || '';
+                if (!navigator.clipboard) {
+                    // fallback
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try { document.execCommand('copy'); } catch (err) { }
+                    document.body.removeChild(ta);
+                } else {
+                    navigator.clipboard.writeText(text).catch(() => { });
+                }
+                const orig = btn.textContent;
+                btn.textContent = 'Copied';
+                btn.disabled = true;
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+            }
+        });
+    </script>
 </body>
+
 </html>
