@@ -23,7 +23,6 @@
     },
     "better-docs": {
       "name": "Convert CSV to JSON",
-      "logo": "./demo/csvToJson.ico",
       "css": "./node_modules/better-docs/css/better-docs.css",
       "hideGenerator": false,
       "trackingCode": "",

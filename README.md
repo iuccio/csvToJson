@@ -16,7 +16,7 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
 >
-Convert CSV files to JSON with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance. **Memory-efficient streaming** for processing large files without loading them entirely into memory.
+Convert CSV files to JSON with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance. **Memory-efficient streaming** for processing large files without loading them entirely into memory. See the [Demo](https://iuccio.github.io/csvToJson/).
 
 ## Overview
 
