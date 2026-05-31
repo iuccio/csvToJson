@@ -24,6 +24,7 @@
     "better-docs": {
       "name": "Convert CSV to JSON",
       "css": "./node_modules/better-docs/css/better-docs.css",
+      "logo": "./demo/logo.png",
       "hideGenerator": false,
       "trackingCode": "",
       "navLinks": [
