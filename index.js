@@ -8,6 +8,7 @@
 "use strict";
 
 let csvToJson = require("./src/csvToJson.js");
+let jsonToCsv = require("./src/jsonToCsv.js");
 
 const encodingOps = {
     utf8: 'utf8',
@@ -20,6 +21,7 @@ const encodingOps = {
 };
 
 const csvToJsonAsync = require('./src/csvToJsonAsync');
+const jsonToCsvAsync = require('./src/jsonToCsvAsync');
 
 /**
  * Apply the same parser configuration update to every parser client.
@@ -31,6 +33,8 @@ const csvToJsonAsync = require('./src/csvToJsonAsync');
 function applyConfigToAllClients(configFn) {
   configFn(csvToJson);
   configFn(csvToJsonAsync);
+  configFn(jsonToCsv);
+  configFn(jsonToCsvAsync);
   if (exports.browser) {
     configFn(exports.browser);
   }
@@ -378,6 +382,188 @@ exports.csvStringToJsonStringified = function(csvString) {
   return csvToJson.csvStringToJsonStringified(csvString);
 };
 
+// ======================== JSON to CSV API ========================
 
+/**
+ * Convert JSON array to CSV string (synchronous)
+ * @param {Array<object>} jsonData - Array of objects to convert
+ * @returns {string} CSV formatted string
+ * @throws {InputValidationError} If jsonData is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const rows = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+ * const csv = converter.jsonToCsvStringified(rows);
+ * console.log(csv);
+ */
+exports.jsonToCsvStringified = function(jsonData) {
+  if (!jsonData) {
+    throw new Error("jsonData is not defined!!!");
+  }
+  return jsonToCsv.jsonToCsvStringified(jsonData);
+};
+
+/**
+ * Convert JSON array and write to CSV file (synchronous)
+ * @param {Array<object>} jsonData - Array of objects to convert
+ * @param {string} fileOutputName - Path to output CSV file
+ * @throws {Error} If jsonData or fileOutputName is not defined
+ * @throws {InputValidationError} If jsonData is invalid
+ * @throws {FileOperationError} If file write fails
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const rows = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+ * converter.generateCsvFileFromJson(rows, 'output.csv');
+ */
+exports.generateCsvFileFromJson = function(jsonData, fileOutputName) {
+  if (!jsonData) {
+    throw new Error("jsonData is not defined!!!");
+  }
+  if (!fileOutputName) {
+    throw new Error("fileOutputName is not defined!!!");
+  }
+  jsonToCsv.generateCsvFileFromJson(jsonData, fileOutputName);
+};
+
+/**
+ * Read JSON file and convert to CSV string (synchronous)
+ * @param {string} fileInputName - Path to input JSON file
+ * @returns {string} CSV formatted string
+ * @throws {Error} If fileInputName is not defined
+ * @throws {FileOperationError} If file read fails
+ * @throws {JsonValidationError} If JSON is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const csv = converter.getCsvFromJson('data.json');
+ * console.log(csv);
+ */
+exports.getCsvFromJson = function(fileInputName) {
+  if (!fileInputName) {
+    throw new Error("fileInputName is not defined!!!");
+  }
+  return jsonToCsv.getCsvFromJson(fileInputName);
+};
+
+/**
+ * Generate CSV file from JSON file (synchronous)
+ * @param {string} fileInputName - Path to input JSON file
+ * @param {string} fileOutputName - Path to output CSV file
+ * @throws {Error} If fileInputName or fileOutputName is not defined
+ * @throws {FileOperationError} If file operations fail
+ * @throws {JsonValidationError} If JSON is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * converter.generateCsvFileFromJsonFile('input.json', 'output.csv');
+ */
+exports.generateCsvFileFromJsonFile = function(fileInputName, fileOutputName) {
+  if (!fileInputName) {
+    throw new Error("fileInputName is not defined!!!");
+  }
+  if (!fileOutputName) {
+    throw new Error("fileOutputName is not defined!!!");
+  }
+  jsonToCsv.generateCsvFileFromJsonFile(fileInputName, fileOutputName);
+};
+
+/**
+ * Convert JSON array to CSV string (asynchronous)
+ * @param {Array<object>} jsonData - Array of objects to convert
+ * @returns {Promise<string>} Promise resolving to CSV formatted string
+ * @throws {InputValidationError} If jsonData is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const rows = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+ * const csv = await converter.jsonToCsvAsync(rows);
+ * console.log(csv);
+ */
+exports.jsonToCsvAsync = function(jsonData) {
+  return jsonToCsvAsync.jsonToCsvAsync(jsonData, { raw: true });
+};
+
+/**
+ * Convert JSON array from raw string/data asynchronously
+ * @param {string|Array} input - JSON string or array of objects
+ * @param {object} [options] - Configuration options
+ * @param {boolean} [options.raw] - If true, treats input as JSON data; if false, reads from file
+ * @returns {Promise<string>} Promise resolving to CSV formatted string
+ * @throws {InputValidationError} If input is invalid
+ * @throws {JsonValidationError} If JSON parsing fails
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const jsonString = '[{"name":"Alice","age":30}]';
+ * const csv = await converter.jsonToCsvStringAsync(jsonString, {raw: true});
+ */
+exports.jsonToCsvStringAsync = function(input, options) {
+  return jsonToCsvAsync.jsonToCsvAsync(input, options);
+};
+
+/**
+ * Convert JSON array and write to CSV file (asynchronous)
+ * @param {Array<object>} jsonData - Array of objects to convert
+ * @param {string} fileOutputName - Path to output CSV file
+ * @returns {Promise<void>} Promise resolving when file is written
+ * @throws {InputValidationError} If jsonData is invalid
+ * @throws {FileOperationError} If file write fails
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const rows = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+ * await converter.generateCsvFileFromJsonAsync(rows, 'output.csv');
+ */
+exports.generateCsvFileFromJsonAsync = function(jsonData, fileOutputName) {
+  if (!jsonData) {
+    throw new Error("jsonData is not defined!!!");
+  }
+  if (!fileOutputName) {
+    throw new Error("fileOutputName is not defined!!!");
+  }
+  return jsonToCsvAsync.generateCsvFileFromJson(jsonData, fileOutputName);
+};
+
+/**
+ * Read JSON file and generate CSV file (asynchronous)
+ * @param {string} fileInputName - Path to input JSON file
+ * @param {string} fileOutputName - Path to output CSV file
+ * @returns {Promise<void>} Promise resolving when file is written
+ * @throws {FileOperationError} If file operations fail
+ * @throws {JsonValidationError} If JSON is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * await converter.generateCsvFileFromJsonFileAsync('input.json', 'output.csv');
+ */
+exports.generateCsvFileFromJsonFileAsync = function(fileInputName, fileOutputName) {
+  if (!fileInputName) {
+    throw new Error("fileInputName is not defined!!!");
+  }
+  if (!fileOutputName) {
+    throw new Error("fileOutputName is not defined!!!");
+  }
+  return jsonToCsvAsync.generateCsvFileFromJsonFile(fileInputName, fileOutputName);
+};
+
+/**
+ * Read JSON file and return converted CSV string (asynchronous)
+ * @param {string} fileInputName - Path to input JSON file
+ * @returns {Promise<string>} Promise resolving to CSV formatted string
+ * @throws {FileOperationError} If file read fails
+ * @throws {JsonValidationError} If JSON is invalid
+ * @category 2-Core API
+ * @example
+ * const converter = require('convert-csv-to-json');
+ * const csv = await converter.getCsvFromJsonAsync('data.json');
+ * console.log(csv);
+ */
+exports.getCsvFromJsonAsync = function(fileInputName) {
+  if (!fileInputName) {
+    throw new Error("fileInputName is not defined!!!");
+  }
+  return jsonToCsvAsync.getCsvFromJson(fileInputName);
+};
 
 exports.browser = require('./src/browserApi');

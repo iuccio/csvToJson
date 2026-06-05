@@ -156,6 +156,70 @@ declare module 'convert-csv-to-json' {
      */
     csvStringToJsonStringified(csvString: string): string;
 
+    /**
+     * Convert a JSON array to CSV string
+     * @param jsonData Array of objects to convert
+     * @returns CSV formatted string
+     */
+    jsonToCsvStringified(jsonData: any[]): string;
+
+    /**
+     * Convert JSON array and write to CSV file (synchronous)
+     * @param jsonData Array of objects to convert
+     * @param fileOutputName Path to output CSV file
+     */
+    generateCsvFileFromJson(jsonData: any[], fileOutputName: string): void;
+
+    /**
+     * Convert JSON array and write to CSV file (asynchronous)
+     * @param jsonData Array of objects to convert
+     * @param fileOutputName Path to output CSV file
+     */
+    generateCsvFileFromJsonAsync(jsonData: any[], fileOutputName: string): Promise<void>;
+
+    /**
+     * Read JSON file and return converted CSV string (synchronous)
+     * @param fileInputName Path to input JSON file
+     * @returns CSV formatted string
+     */
+    getCsvFromJson(fileInputName: string): string;
+
+    /**
+     * Read JSON file and return converted CSV string (asynchronous)
+     * @param fileInputName Path to input JSON file
+     * @returns Promise resolving to CSV formatted string
+     */
+    getCsvFromJsonAsync(fileInputName: string): Promise<string>;
+
+    /**
+     * Generate CSV file from JSON file (synchronous)
+     * @param fileInputName Path to input JSON file
+     * @param fileOutputName Path to output CSV file
+     */
+    generateCsvFileFromJsonFile(fileInputName: string, fileOutputName: string): void;
+
+    /**
+     * Generate CSV file from JSON file (asynchronous)
+     * @param fileInputName Path to input JSON file
+     * @param fileOutputName Path to output CSV file
+     */
+    generateCsvFileFromJsonFileAsync(fileInputName: string, fileOutputName: string): Promise<void>;
+
+    /**
+     * Convert JSON array to CSV string (asynchronous)
+     * @param jsonData Array of objects to convert
+     * @returns Promise resolving to CSV formatted string
+     */
+    jsonToCsvAsync(jsonData: any[]): Promise<string>;
+
+    /**
+     * Convert JSON from raw string/data asynchronously
+     * @param input JSON string or array of objects
+     * @param options Configuration options
+     * @returns Promise resolving to CSV formatted string
+     */
+    jsonToCsvStringAsync(input: string | any[], options?: { raw?: boolean }): Promise<string>;
+
   }
   const converter: ConvertCsvToJson;
   /**
@@ -214,6 +278,29 @@ declare module 'convert-csv-to-json' {
      * Parse CSV from a File object using streaming for memory-efficient processing
      */
     getJsonFromFileStreamingAsync(file: File): Promise<any[]>;
+
+    /**
+     * Convert JSON array to CSV string (synchronous)
+     * @param jsonData Array of objects to convert
+     * @returns CSV formatted string
+     */
+    jsonStringToCsv(jsonData: any[]): string;
+
+    /**
+
+     * Convert JSON array to CSV string (asynchronous)
+     * @param jsonData Array of objects to convert
+     * @returns Promise resolving to CSV formatted string
+     */
+    jsonToCsvAsync(jsonData: any[]): Promise<string>;
+
+    /**
+     * Convert JSON from raw string/data asynchronously
+     * @param input JSON string or array of objects
+     * @param options Configuration options
+     * @returns Promise resolving to CSV formatted string
+     */
+    jsonToCsvStringAsync(input: string | any[], options?: { raw?: boolean }): Promise<string>;
   }
 
   export const browser: BrowserApi;

@@ -359,6 +359,80 @@ class BrowserApi extends Configurable {
     });
   }
 
+  /**
+   * Convert JSON array to CSV string (browser-safe)
+   * @param {Array<object>} jsonData - Array of objects to convert
+   * @returns {string} CSV formatted string
+   * @throws {InputValidationError} If jsonData is invalid
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const data = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+   * const csv = csvToJson.browser.jsonToCsvStringified(data);
+   * console.log(csv);
+   */
+  jsonToCsvStringified(jsonData) {
+    const config = this.getParserConfig();
+    // Note: We need access to jsonToCsv instance. For now, we'll require it
+    const jsonToCsv = require('./jsonToCsv');
+    return jsonToCsv.jsonToCsvWithConfig(jsonData, config);
+  }
+
+  /**
+   * Convert JSON array to CSV string (asynchronous browser-safe version)
+   * @param {Array<object>} jsonData - Array of objects to convert
+   * @returns {Promise<string>} Promise resolving to CSV formatted string
+   * @throws {InputValidationError} If jsonData is invalid
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const data = [{name: 'Alice', age: 30}, {name: 'Bob', age: 25}];
+   * const csv = await csvToJson.browser.jsonToCsvAsync(data);
+   * console.log(csv);
+   */
+  jsonToCsvAsync(jsonData) {
+    return Promise.resolve(this.jsonStringToCsv(jsonData));
+  }
+
+  /**
+   * Convert JSON from raw string/data asynchronously (browser-safe)
+   * @param {string|Array} input - JSON string or array of objects
+   * @param {object} [options] - Configuration options
+   * @param {boolean} [options.raw] - If true, treats input as JSON data
+   * @returns {Promise<string>} Promise resolving to CSV formatted string
+   * @throws {InputValidationError} If input is invalid
+   * @example
+   * const csvToJson = require('convert-csv-to-json');
+   * const jsonString = '[{"name":"Alice","age":30}]';
+   * const csv = await csvToJson.browser.jsonToCsvStringAsync(jsonString, {raw: true});
+   */
+  async jsonToCsvStringAsync(input, options) {
+    if (options && options.raw) {
+      // Input is raw JSON string or already parsed data
+      let jsonData;
+      if (typeof input === 'string') {
+        try {
+          jsonData = JSON.parse(input);
+        } catch {
+          throw new InputValidationError(
+            'input',
+            'Valid JSON string or array',
+            typeof input,
+            'Invalid JSON format'
+          );
+        }
+      } else {
+        jsonData = input;
+      }
+      return this.jsonStringToCsv(jsonData);
+    } else {
+      throw new InputValidationError(
+        'options.raw',
+        'true',
+        'false',
+        'Browser API does not support file-based JSON to CSV conversion. Use raw option with JSON data.'
+      );
+    }
+  }
+
 }
 
 module.exports = new BrowserApi();

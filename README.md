@@ -16,11 +16,11 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
 >
-Convert CSV files to JSON with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance. **Memory-efficient streaming** for processing large files without loading them entirely into memory. See the [Demo](https://iuccio.github.io/csvToJson/).
+Convert **between CSV and JSON** with **no dependencies**. Supports Node.js (Sync & Async), and Browser environments with full RFC 4180 compliance. **Memory-efficient streaming** for processing large files without loading them entirely into memory. See the [Demo](https://iuccio.github.io/csvToJson/).
 
 ## Overview
 
-Transform CSV data into JSON with a simple, chainable API. Choose your implementation style:
+Transform data bidirectionally between CSV and JSON with a simple, chainable API. Choose your implementation style:
 
 - **[Synchronous API](docs/SYNC.md)** - Blocking operations for simple workflows
 - **[Asynchronous API](docs/ASYNC.md)** - Promise-based for modern async/await patterns with **memory-efficient streaming** for large files
@@ -93,19 +93,43 @@ const convert = require('convert-csv-to-json');
 const json = await convert.browser.parseFile(file);
 ```
 
+### JSON to CSV (Reverse)
+
+```js
+const csvToJson = require('convert-csv-to-json');
+const csv = csvToJson.jsonToCsvStringified([{ name: 'Alice', age: 30 }]);
+// Output: "name,age\nAlice,30"
+```
+
 ## Documentation
 
 | Implementation | Use Case | Learn More |
 |---|---|---|
-| **Sync API** | Simple, blocking operations | [Read SYNC.md](docs/SYNC.md) |
-| **Async API** | Concurrent operations, large files | [Read ASYNC.md](docs/ASYNC.md) |
+| **CSV to JSON (Sync)** | Simple, blocking operations | [Read SYNC.md](docs/SYNC.md) |
+| **CSV to JSON (Async)** | Concurrent operations, large files | [Read ASYNC.md](docs/ASYNC.md) |
 | **Browser API** | Client-side file parsing | [Read BROWSER.md](docs/BROWSER.md) |
+| **JSON to CSV** | Convert JSON to CSV format | [Read JSON_TO_CSV_API.md](JSON_TO_CSV_API.md) |
 
 ## Common Tasks
 
 ### Parse CSV String
 ```js
 const json = csvToJson.csvStringToJson('name,age\nAlice,30');
+```
+
+### Convert JSON to CSV
+```js
+const csv = csvToJson.jsonToCsvStringified([
+  { name: 'Alice', age: 30 },
+  { name: 'Bob', age: 25 }
+]);
+// Output: "name,age\nAlice,30\nBob,25"
+
+// Save to file
+csvToJson.generateCsvFileFromJson(data, 'output.csv');
+
+// Async
+const csv = await csvToJson.jsonToCsvAsync(data);
 ```
 
 ### Custom Delimiter
