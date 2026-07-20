@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
@@ -44,7 +44,7 @@ jobs:
     - uses: fregante/setup-git-user@v2      
     - run: git config --global user.name "dependabot"
     - name: Use Node.js 24.x
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: 24.x
         registry-url: 'https://registry.npmjs.org'
@@ -68,7 +68,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Use Node.js 24.x
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: 24.x
     - name: Install dependencies
