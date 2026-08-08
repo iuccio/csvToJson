@@ -1,34 +1,35 @@
 
-# Guida al Rilascio Automatico con Semantic-Release
-Questa guida spiega come configurare e utilizzare `semantic-release` per gestire in modo centralizzato e automatico il versionamento del progetto, che include un backend **Java/Spring Boot (Gradle)** e un frontend **Angular (TypeScript)**, integrando le informazioni dei ticket **Jira** direttamente nel `CHANGELOG.md`.
+# Automatic Release Management Guide with Semantic-Release
+
+This guide explains how to configure and use `semantic-release` to centrally and automatically manage versioning for a full-stack project containing a **Java/Spring Boot (Gradle)** backend and an **Angular (TypeScript)** frontend. It also covers how to pull **Jira** ticket information directly into the root `CHANGELOG.md`.
 
 ---
 
-## 🛠️ Architettura del Progetto
+## 🛠️ Project Architecture
 
-Il progetto utilizza un approccio **Mono-version (Single-version)**: tutti i moduli condividono lo stesso numero di versione, gestito globalmente dalla root del repository.
+The project follows a **Mono-version (Single-version)** approach: all sub-modules share the exact same version number, orchestrated globally from the root of the repository.
 
 ```text
-├── CHANGELOG.md                    <-- Creato e aggiornato nella root globale
-├── gradle.properties               <-- Contiene la versione centralizzata di Gradle
-├── .releaserc.json                 <-- Configurazione globale di semantic-release
-├── package.json                    <-- Dipendenze Node.js per la pipeline di release
-├── backend/                        <-- Sotto-modulo Java Spring Boot
-└── frontend/                       <-- Sotto-modulo Angular (contiene il suo package.json)
+├── CHANGELOG.md <-- Created and updated in the global root
+├── gradle.properties <-- Holds the centralized Gradle version
+├── .releaserc.json <-- Global semantic-release configuration file
+├── package.json <-- Node.js dependencies for the release pipeline
+├── backend/ <-- Java Spring Boot sub-module
+└── frontend/ <-- Angular sub-module (contains its own package.json)
 ```
 
 ---
 
-## ⚙️ File di Configurazione
+## ⚙️ Configuration Files
 
 ### 1. `gradle.properties` (Root)
-Inizializza la versione nella root di Gradle. Il file `backend/build.gradle` erediterà automaticamente questo valore.
+Initialize the version at the Gradle root level. The `backend/build.gradle` file will automatically inherit this value.
 ```properties
 version=1.0.0
 ```
 
 ### 2. `package.json` (Root)
-File necessario per installare lo strumento di release e il plugin per l'integrazione con Jira.
+This file is required to install the release toolrunner and the specific Jira community plugin.
 ```json
 {
   "name": "my-fullstack-app-root",
@@ -47,7 +48,7 @@ File necessario per installare lo strumento di release e il plugin per l'integra
 ```
 
 ### 3. `.releaserc.json` (Root)
-Questo file orchestra l'aggiornamento simultaneo di Gradle, Angular e l'arricchimento del Changelog tramite Jira.
+This file orchestrates the simultaneous updates of Gradle, Angular, and the Jira-enriched changelog generation.
 ```json
 {
   "branches": ["main"],
@@ -56,7 +57,7 @@ Questo file orchestra l'aggiornamento simultaneo di Gradle, Angular e l'arricchi
     [
       "semantic-release-jira-notes",
       {
-        "jiraHost": "il-tuo-dominio.atlassian.net",
+        "jiraHost": "your-domain.atlassian.net",
         "ticketPrefixes": ["PROJ", "STORY"]
       }
     ],
@@ -99,33 +100,33 @@ Questo file orchestra l'aggiornamento simultaneo di Gradle, Angular e l'arricchi
 
 ---
 
-## 📖 How-To-Do Guide (Guida Operativa)
+## 📖 How-To-Do Guide
 
-### Fase 1: Come scrivere i Commit (Standard)
-Semantic-release si basa sulla struttura dei messaggi Git per capire se creare una versione Major, Minor o Patch. Includi sempre il codice del ticket Jira.
+### Step 1: Writing Git Commits (The Standard)
+Semantic-release parses Git commit messages to determine if it should trigger a Major, Minor, or Patch release. Always include your Jira ticket keys in the message body or header.
 
-*   **Patch Release (`1.0.0` -> `1.0.1`)** - Per correzioni di bug:
+* **Patch Release (`1.0.0` -> `1.0.1`)** - For bug fixes:
     ```bash
-    git commit -m "fix(backend): PROJ-123 risolto problema di autenticazione ai servizi"
+    git commit -m "fix(backend): PROJ-123 resolved authentication token timeout"
     ```
-*   **Minor Release (`1.0.0` -> `1.1.0`)** - Per nuove funzionalità:
+* **Minor Release (`1.0.0` -> `1.1.0`)** - For new features:
     ```bash
-    git commit -m "feat(frontend): PROJ-456 aggiunto nuovo pannello di controllo"
+    git commit -m "feat(frontend): PROJ-456 added real-time analytics dashboard"
     ```
-*   **Major Release (`1.0.0` -> `2.0.0`)** - Per modifiche importanti (Breaking Changes):
+* **Major Release (`1.0.0` -> `2.0.0`)** - For Breaking Changes:
     ```bash
-    git commit -m "feat(api): PROJ-789 rifattorizzazione endpoint pubblici\n\nBREAKING CHANGE: il vecchio endpoint v1 è deprecato"
+    git commit -m "feat(api): PROJ-789 overhauled public user endpoints\n\nBREAKING CHANGE: the legacy v1 endpoint is now completely deprecated"
     ```
 
-### Fase 2: Configurazione dei Segreti in Ambiente CI/CD
-Per consentire a semantic-release di scrivere sul tuo repository e leggere da Jira, devi configurare le seguenti variabili d'ambiente (es. in GitHub Secrets o GitLab Variables):
+### Step 2: Configuring Environment Secrets
+To allow semantic-release to write back to your Git repository and fetch data from Jira, you must expose the following environment variables in your CI/CD runner settings (e.g., GitHub Secrets):
 
-1.  `GITHUB_TOKEN` o `GL_TOKEN`: Il token della tua piattaforma Git (gestito automaticamente da GitHub Actions).
-2.  `JIRA_AUTH_USERNAME`: L'indirizzo email del tuo account Jira (es. `developer@azienda.com`).
-3.  `JIRA_AUTH_PASSWORD`: Un **API Token** di Jira, generabile su [Atlassian Security](https://atlassian.com).
+1. `GITHUB_TOKEN`: The Git platform token (injected automatically inside GitHub Actions).
+2. `JIRA_AUTH_USERNAME`: The email address associated with your Jira/Atlassian developer account (e.g., `developer@company.com`).
+3. `JIRA_AUTH_PASSWORD`: A **Jira API Token** instead of your plain password. You can generate one at [Atlassian Security Accounts](https://atlassian.com).
 
-### Fase 3: Esecuzione nella Pipeline (Esempio GitHub Actions)
-Crea un file `.github/workflows/release.yml` per automatizzare il processo ad ogni merge sul ramo `main`:
+### Step 3: Automating with CI/CD (GitHub Actions Example)
+Create a `.github/workflows/release.yml` file to trigger the release workflow automatically every time code is merged into the `main` branch:
 
 ```yaml
 name: Release Automation
@@ -139,21 +140,21 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout codice
+      - name: Checkout Codebase
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: Setup Node.js
+      - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Installa dipendenze di release
+      - name: Install Release Dependencies
         run: npm install
 
-      - name: Esegui Semantic Release
+      - name: Run Semantic Release
         run: npx semantic-release
         env:
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
@@ -163,12 +164,14 @@ jobs:
 
 ---
 
-## 🔄 Cosa succede durante il rilascio?
-1. **Analisi**: Lo strumento analizza i nuovi commit dal precedente tag Git.
-2. **Arricchimento Jira**: Trova i codici dei ticket (es. `PROJ-123`), contatta l'API di Jira e recupera il titolo della storia.
-3. **Changelog**: Scrive il nuovo blocco di note in testa al file `CHANGELOG.md` della root.
-4. **Aggiornamento Codice**:
-   * Esegue lo script `sed` modificando la versione in `gradle.properties`.
-   * Entra nella cartella `frontend/` e aggiorna il file `package.json` di Angular.
-5. **Git Commit & Tag**: Crea un commit di push automatico con i file modificati (usando la dicitura `[skip ci]` per evitare loop infiniti della pipeline) e genera un tag Git globale (es. `v1.1.0`).
+## 🔄 The Release Workflow Lifecycle
+
+When the pipeline runs successfully, the following automated steps occur:
+1. **Analysis**: The tool extracts all commits made since the last Git tag.
+2. **Jira Enrichment**: It scans the commit messages for ticket prefixes (e.g., `PROJ-123`), queries the Jira API, and retrieves the corresponding story summary/title.
+3. **Changelog Updates**: It prepends the newly generated release notes directly to the top of the root `CHANGELOG.md`.
+4. **Codebase Version Syncing**:
+   * Runs the `sed` execution utility to swap the version string inside the root `gradle.properties` file.
+   * Enters the `frontend/` directory and updates the Angular `package.json` version metadata.
+5. **Git Commit & Tagging**: It commits the modified files back to the branch (including a `[skip ci]` flag to avoid infinitely looping the pipeline triggers) and tags the commit with a global tag (e.g., `v1.1.0`).
 
