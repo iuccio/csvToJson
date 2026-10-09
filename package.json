@@ -60,7 +60,7 @@
     "jest": "^30.2.0",
     "jsdoc": "^4.0.5",
     "ts-jest": "^29.4.5",
-    "typescript": "^6.0.2"
+    "typescript": "^7.0.2"
   },
   "publishConfig": {
     "provenance": true,
