@@ -4,6 +4,7 @@
 ![CodeQL](https://github.com/iuccio/csvToJson/actions/workflows/codeql-analysis.yml/badge.svg)
 [![Maintainability](https://qlty.sh/gh/iuccio/projects/csvToJson/maintainability.svg)](https://qlty.sh/gh/iuccio/projects/csvToJson)
 [![NPM Version](https://img.shields.io/npm/v/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
+[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-npm-181717?logo=github)](https://github.com/iuccio/csvToJson/pkgs/npm/convert-csv-to-json)
 ![NodeJS Version](https://img.shields.io/badge/nodeJS-%3E=18.x-brightgreen.svg)
 [![Downloads](https://img.shields.io/npm/dm/convert-csv-to-json.svg)](https://npmjs.org/package/convert-csv-to-json)
 [![NPM total downloads](https://img.shields.io/npm/dt/convert-csv-to-json.svg?style=flat)](https://npmjs.org/package/convert-csv-to-json)
