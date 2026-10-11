@@ -4,7 +4,15 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
