@@ -213,18 +213,23 @@ describe('FileUtils', () => {
                 }
             });
 
-            it('should handle permission errors', async () => {
-                const restrictedFile = path.join(testDir, 'restricted.txt');
-                
-                // Create file with restricted permissions
-                fs.writeFileSync(restrictedFile, 'test');
-                fs.chmodSync(restrictedFile, 0o000);
+            it.each(['EACCES', 'EPERM'])('should handle permission errors (%s)', async (code) => {
+                const permissionError = Object.assign(new Error('Permission denied'), { code });
+                // chmod does not deny read access on Windows or for privileged users.
+                const readFile = jest.spyOn(fs.promises, 'readFile')
+                    .mockRejectedValueOnce(permissionError);
 
-                await expect(fileUtils.readFileAsync(restrictedFile))
-                    .rejects.toThrow();
-
-                // Restore permissions for cleanup
-                fs.chmodSync(restrictedFile, 0o666);
+                try {
+                    await expect(fileUtils.readFileAsync(testFile)).rejects.toMatchObject({
+                        name: 'FileOperationError',
+                        code: 'FILE_OPERATION_ERROR',
+                        originalError: permissionError,
+                        context: { operation: 'read', filePath: testFile }
+                    });
+                    expect(readFile).toHaveBeenCalledWith(testFile, 'utf8');
+                } finally {
+                    readFile.mockRestore();
+                }
             });
 
             it('should handle directory paths as file paths', async () => {
